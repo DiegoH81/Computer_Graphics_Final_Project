@@ -210,6 +210,67 @@ Vector3 Shape::get_normal(int in_face_id)
     return normals[in_face_id];
 }
 
+// MESH 3D
+
+Mesh3D::Mesh3D(std::filesystem::path in_current_path, std::string in_file_path)
+{
+    in_current_path = in_current_path / "models" / in_file_path;
+    load_object(in_current_path.string());
+    
+    init_buffers();
+}
+
+void Mesh3D::load_object(std::string in_path)
+{
+    std::vector<Point3>  positions;
+    std::vector<Vector3> normals_raw;
+
+    std::ifstream file(in_path);
+    std::string line;
+
+    while (std::getline(file, line))
+    {
+        std::istringstream ss(line);
+        std::string token;
+        ss >> token;
+
+        if (token == "v")
+        {
+            float x, y, z, r, g, b;
+            ss >> x >> y >> z >> r >> g >> b; // tu formato tiene color también
+            positions.push_back(Point3(x, y, z));
+        }
+        else if (token == "vn")
+        {
+            float x, y, z;
+            ss >> x >> y >> z;
+            normals_raw.push_back(Vector3(x, y, z));
+        }
+        else if (token == "f")
+        {
+            // formato: f 34//34 1243//1243 593//593
+            for (int i = 0; i < 3; i++)
+            {
+                std::string chunk;
+                ss >> chunk; // "34//34"
+
+                int vi, vni;
+                sscanf(chunk.c_str(), "%d//%d", &vi, &vni);
+
+                vertices.push_back(Vertex(
+                    positions[vi - 1],
+                    normals_raw[vni - 1],
+                    Point2(0, 0)
+                ));
+                indices.push_back(indices.size());
+            }
+        }
+    }
+
+    info_faces.push_back(IndicesInfo(0, indices.size(), GL_TRIANGLES, YES_EBO, &base_color));
+}
+
+
 // CIRCLE
 
 Circle::Circle(const unsigned int& in_points, const float& in_radius)

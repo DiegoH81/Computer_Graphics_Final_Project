@@ -20,6 +20,7 @@ Integrantes:
 #include <deque>
 #include <cmath>
 #include <thread>
+#include <filesystem>
 
 #include "utils.h"
 #include "shader_list.h"
@@ -212,6 +213,12 @@ int main()
         return -1;
     }
 
+    // Path
+    std::filesystem::path current_path = std::filesystem::current_path();
+	current_path = current_path.parent_path();
+    current_path = current_path / "ownProjects" / "COMPUTER_GRAPHICS_FINAL_PROJECT";
+
+
 
     // ***********************
     // SHADERSS
@@ -222,7 +229,7 @@ int main()
     shaders.add_fragment_shader("UNIQUE", fragmentShader);
     shaders.delete_shaders();
     
-    TextureList textures;
+    TextureList textures(current_path);
 
     
     // Colors
@@ -248,9 +255,79 @@ int main()
 
 	
     
-    SceneNode* root = new SceneNode(-1);
+    SceneNode* root = new SceneNode(0);
 	nodes.push_back(root);
 	
+    Cube cubito(0.3f);
+    cubito.add_faces();
+    cubito.set_face_color(0, &red);
+    cubito.set_face_color(1, &radioactive);
+    cubito.set_face_color(2, &red);
+    cubito.set_face_color(3, &radioactive);
+    cubito.set_face_color(4, &red);
+    cubito.set_face_color(5, &radioactive);
+    cubito.set_face_color(6, &red);
+    cubito.set_face_color(7, &radioactive);
+
+    cubito.add_edges(&le_lime);
+    cubito.set_edge_color(0, &radioactive);
+    cubito.set_edge_color(6, &radioactive);
+
+    cubito.add_points(&purple);
+    cubito.set_point_color(0, &radioactive);
+    cubito.set_point_color(6, &radioactive);
+
+    SceneNode* cubito_node = new SceneNode(1, &cubito);
+    cubito_node->traslate(Vector3(-0.5f, 0.0f, 0.0f), true);
+
+    Pyramid piramide(0.3f, 0.2f);
+    piramide.add_faces(&golden);
+    piramide.set_face_color(0, &pink);
+    piramide.set_face_color(1, &radioactive);
+    piramide.set_face_color(2, &turquesa);
+    piramide.set_face_color(3, &radioactive);
+    piramide.set_face_color(4, &pink);
+
+    piramide.add_edges(&le_lime);
+    piramide.add_points(&purple);
+    SceneNode* piramide_node = new SceneNode(2, &piramide);
+    piramide_node->traslate(Vector3(0.5f, 0.0f, 0.0f), true);
+
+
+    Cone conito(40, 0.3f, 0.2f);
+    conito.add_faces();
+    conito.set_face_color(0, &pink);
+    conito.set_face_color(1, &radioactive);
+
+    conito.add_edges(&le_lime);
+    conito.add_points(&purple);
+    SceneNode* conito_node = new SceneNode(3, &conito);
+    conito_node->traslate(Vector3(0.0f, -0.5f, 0.0f), true);
+
+    Sphere esferita(40, 0.3f);
+    esferita.add_faces(&golden);
+    esferita.set_face_color(0, &pink);
+    esferita.set_face_color(4, &pink);
+    //esferita.add_edges(&le_lime);
+    //esferita.add_points(&purple);
+
+    SceneNode* sphere_node = new SceneNode(3, &esferita);
+    sphere_node->traslate(Vector3(0.0f, 0.5f, 0.0f), true);
+
+    Mesh3D tetera(current_path, "teapot.obj");
+    tetera.add_faces();
+
+    SceneNode* tetera_node = new SceneNode(3, &tetera);
+    tetera_node->scale(Vector3(0.2f, 0.2f, 0.2f), true);
+
+    root->add_children(cubito_node);
+    root->add_children(piramide_node);
+    root->add_children(conito_node);
+    root->add_children(sphere_node);
+    root->add_children(tetera_node);
+
+
+
     // Bucle
 	glPointSize(10.0f);
 

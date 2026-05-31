@@ -9,15 +9,13 @@
 
 #include "texture_list.h"
 
-TextureList::TextureList():
-    textures()
+TextureList::TextureList(std::filesystem::path in_current_path):
+    textures(), current_path(in_current_path)
 {}
 
 void TextureList::add_texture(const std::string& texture_name, const std::string& texture_path)
 {
-    std::filesystem::path current_path = std::filesystem::current_path();
-	current_path = current_path.parent_path();
-    current_path = current_path / "ownProjects" / "COMPUTER_GRAPHICS_FINAL_PROJECT" / "textures" / texture_path;
+    current_path = current_path / "textures" / texture_path;
     //std::cout << "Ruta actual: "<< current_path << "\n";
 
     unsigned int texture;

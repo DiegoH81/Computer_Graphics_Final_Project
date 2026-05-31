@@ -5,6 +5,7 @@
 #define NO_EBO false
 
 #include <vector>
+#include <fstream>
 
 #include "matrix.h"
 #include "utils.h"
@@ -55,6 +56,14 @@ protected:
 
     virtual void setup_edges(Color *in_color = &base_color);
     virtual void setup_points(Color *in_color = &base_color);
+};
+
+class Mesh3D: public Shape
+{
+public:
+    Mesh3D(std::filesystem::path in_current_path, std::string in_file_path);
+private:
+    void load_object(std::string in_path);
 };
 
 
