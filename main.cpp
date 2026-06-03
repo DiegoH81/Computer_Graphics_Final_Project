@@ -30,6 +30,8 @@ Integrantes:
 
 #include "gecko.h"
 #include "spider.h"
+#include "tadpole.h"
+#include "butterfly.h"
 
 
 Color background_color(205, 208, 255, true);
@@ -321,15 +323,25 @@ int main()
     geckito.get_root()->traslate(Vector3(0.0f, 0.0f, -2.0f), true);
 
     Spider aranita(current_path);
+    aranita.get_root()->traslate(Vector3(0.7f, 0.0f, 0.0f), true);
 
+    Tadpole tadpolin(current_path);
+    tadpolin.get_root()->traslate(Vector3(-0.7f, 0.0f, 0.0f), true);
+    
+    Butterfly mariposa(current_path);
+    mariposa.get_root()->traslate(Vector3(0.0f, 0.4f, 0.0f), true);
+
+
+    /*
     root->add_children(cubito_node);
     root->add_children(piramide_node);
     root->add_children(conito_node);
     root->add_children(sphere_node);
+    */
     root->add_children(geckito.get_root());
     root->add_children(aranita.get_root());
-
-
+    root->add_children(tadpolin.get_root());
+    root->add_children(mariposa.get_root());
 
     // Bucle
 	glPointSize(10.0f);
