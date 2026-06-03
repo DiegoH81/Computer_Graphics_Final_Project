@@ -214,7 +214,7 @@ Vector3 Shape::get_normal(int in_face_id)
 
 Mesh3D::Mesh3D(std::filesystem::path in_current_path, std::string in_file_path)
 {
-    in_current_path = in_current_path / "models" / in_file_path;
+    in_current_path = in_current_path / in_file_path;
     load_object(in_current_path.string());
     
     init_buffers();
@@ -224,6 +224,8 @@ void Mesh3D::load_object(std::string in_path)
 {
     std::vector<Point3>  positions;
     std::vector<Vector3> normals_raw;
+
+    std::vector<Point2>  uvs_raw;
 
     std::ifstream file(in_path);
     std::string line;
@@ -236,9 +238,15 @@ void Mesh3D::load_object(std::string in_path)
 
         if (token == "v")
         {
-            float x, y, z, r, g, b;
-            ss >> x >> y >> z >> r >> g >> b; // tu formato tiene color también
+            float x, y, z;
+            ss >> x >> y >> z;
             positions.push_back(Point3(x, y, z));
+        }
+        else if (token == "vt")
+        {
+            float u, v;
+            ss >> u >> v;
+            uvs_raw.push_back(Point2(u, v));
         }
         else if (token == "vn")
         {
@@ -248,25 +256,39 @@ void Mesh3D::load_object(std::string in_path)
         }
         else if (token == "f")
         {
-            // formato: f 34//34 1243//1243 593//593
-            for (int i = 0; i < 3; i++)
+            std::vector<std::tuple<int,int,int>> face_verts;
+
+            std::string chunk;
+            while (ss >> chunk)
             {
-                std::string chunk;
-                ss >> chunk; // "34//34"
+                int vi = 0, vti = 0, vni = 0;
+                if (chunk.find("//") != std::string::npos)
+                    sscanf(chunk.c_str(), "%d//%d", &vi, &vni);
+                else
+                    sscanf(chunk.c_str(), "%d/%d/%d", &vi, &vti, &vni);
+                face_verts.push_back({vi, vti, vni});
+            }
 
-                int vi, vni;
-                sscanf(chunk.c_str(), "%d//%d", &vi, &vni);
+            
+            for (int i = 1; i + 1 < (int)face_verts.size(); i++)
+            {
+                for (int j : {0, i, i+1})
+                {
+                    auto [vi, vti, vni] = face_verts[j];
 
-                vertices.push_back(Vertex(
-                    positions[vi - 1],
-                    normals_raw[vni - 1],
-                    Point2(0, 0)
-                ));
-                indices.push_back(indices.size());
+                    Point2 uv = (vti > 0) ? uvs_raw[vti-1] : Point2(0,0);
+
+                    vertices.push_back(Vertex(
+                        positions[vi-1],
+                        normals_raw[vni-1],
+                        uv
+                    ));
+                    
+                    indices.push_back(indices.size());
+                }
             }
         }
     }
-
     info_faces.push_back(IndicesInfo(0, indices.size(), GL_TRIANGLES, YES_EBO, &base_color));
 }
 

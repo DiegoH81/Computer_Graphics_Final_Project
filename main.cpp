@@ -28,6 +28,9 @@ Integrantes:
 #include "camera.h"
 #include "texture_list.h"
 
+#include "gecko.h"
+#include "spider.h"
+
 
 Color background_color(205, 208, 255, true);
 Camera camera_world;
@@ -313,18 +316,18 @@ int main()
 
     SceneNode* sphere_node = new SceneNode(3, &esferita);
     sphere_node->traslate(Vector3(0.0f, 0.5f, 0.0f), true);
+    
+    Gecko geckito(current_path);
+    geckito.get_root()->traslate(Vector3(0.0f, 0.0f, -2.0f), true);
 
-    Mesh3D tetera(current_path, "teapot.obj");
-    tetera.add_faces();
-
-    SceneNode* tetera_node = new SceneNode(3, &tetera);
-    tetera_node->scale(Vector3(0.2f, 0.2f, 0.2f), true);
+    Spider aranita(current_path);
 
     root->add_children(cubito_node);
     root->add_children(piramide_node);
     root->add_children(conito_node);
     root->add_children(sphere_node);
-    root->add_children(tetera_node);
+    root->add_children(geckito.get_root());
+    root->add_children(aranita.get_root());
 
 
 
@@ -357,6 +360,8 @@ int main()
         shaders.set_mat4("UNIQUE", "view", view_matrix);
 		
 		root->draw(shaders, textures, Matrix_4());
+        //geckito.draw(shaders, textures, Matrix_4());
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();
