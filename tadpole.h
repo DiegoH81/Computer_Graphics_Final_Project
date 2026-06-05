@@ -13,12 +13,11 @@ public:
     Tadpole(std::filesystem::path in_current_path):
         skin(110, 109, 85, true), black(0, 0, 0, false), material()
     {
-        /*
         material.ambient = Vector3(0.3f, 0.2f, 0.1f);
         material.diffuse = Vector3(0.6f, 0.4f, 0.2f);
         material.specular = Vector3(0.1f, 0.1f, 0.1f);
         material.shininess = 8.0f;
-        */
+        
 
         in_current_path = in_current_path / "models" / "tadpole" ;
 
