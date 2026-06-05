@@ -16,12 +16,12 @@ public:
     {
         in_current_path = in_current_path / "models" / "butterfly" ;
 
-        /*
+        
         material.ambient = Vector3(0.0f, 0.0f, 0.15f);
         material.diffuse = Vector3(0.05f, 0.05f, 0.6f);
         material.specular = Vector3(0.2f, 0.2f, 0.2f);
         material.shininess = 16.0f;
-        */
+        
 
         Mesh3D* torso_mesh = new Mesh3D(in_current_path, "torso_BUTTERFLY.obj");
         torso_mesh->add_faces(&black);
