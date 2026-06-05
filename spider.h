@@ -15,12 +15,12 @@ public:
     {
         in_current_path = in_current_path / "models" / "spider" ;
 
-        /*
+        
         material.ambient = Vector3(0.2f, 0.0f, 0.3f);
         material.diffuse = Vector3(0.5f, 0.0f, 0.7f);
         material.specular = Vector3(0.4f, 0.4f, 0.4f);
         material.shininess = 32.0f;
-        */
+        
 
         Mesh3D* torso_mesh = new Mesh3D(in_current_path, "spider_torso.obj");
         torso_mesh->add_faces(&purple);
