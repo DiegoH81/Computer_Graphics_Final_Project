@@ -22,6 +22,7 @@ public:
     Vector3 operator / (const float& div) const;
 
     Vector3& operator = (const Vector3& other);
+
 };
 
 class Vector2
@@ -35,6 +36,8 @@ public:
 };
 
 Vector3 cross (const Vector3& v1, const Vector3& v2);
+
+float dot_product (const Vector3& v1, const Vector3& v2);
 
 float vec_length(const Vector3& in_vec);
 

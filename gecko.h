@@ -5,57 +5,78 @@
 
 #include "scene.h"
 #include "shape.h"
-
+#include "material.h"
 
 class Gecko
 {
 public:
     Gecko(std::filesystem::path in_current_path):
-        green(84, 161, 69, true), black(0, 0, 0, false)
+        green(84, 161, 69, true), black(0, 0, 0, false), material()
     {
+        /*
+        material.ambient = Vector3(0.1f, 0.3f, 0.05f);
+        material.diffuse = Vector3(0.2f, 0.7f, 0.1f);
+        material.specular = Vector3(0.1f, 0.1f, 0.1f);
+        material.shininess = 8.0f;
+        */
+
         in_current_path = in_current_path / "models" / "gecko" ;
 
         Mesh3D* head_mesh = new Mesh3D(in_current_path, "cabeza_GECKO.obj");
         head_mesh->add_faces(&green);
+        head_mesh->set_material(&material);
 
         Mesh3D* eyes_mesh = new Mesh3D(in_current_path, "ojos_GECKO.obj");
         eyes_mesh->add_faces(&black);
+        eyes_mesh->set_material(&material);
 
         Mesh3D* tail_1_mesh = new Mesh3D(in_current_path, "cola_1_GECKO.obj");
         tail_1_mesh->add_faces(&green);
+        tail_1_mesh->set_material(&material);
 
         Mesh3D* tail_2_mesh = new Mesh3D(in_current_path, "cola_2_GECKO.obj");
         tail_2_mesh->add_faces(&green);
+        tail_2_mesh->set_material(&material);
 
         Mesh3D* tail_3_mesh = new Mesh3D(in_current_path, "cola_3_GECKO.obj");
         tail_3_mesh->add_faces(&green);
+        tail_3_mesh->set_material(&material);
 
         Mesh3D* torso_mesh = new Mesh3D(in_current_path, "torso_GECKO.obj");
         torso_mesh->add_faces(&green);
+        torso_mesh->set_material(&material);
 
         Mesh3D* pata_A_D_1_mesh = new Mesh3D(in_current_path, "pata_A_D_1_GECKO.obj");
         pata_A_D_1_mesh->add_faces(&green);
+        pata_A_D_1_mesh->set_material(&material);
 
         Mesh3D* pata_A_D_2_mesh = new Mesh3D(in_current_path, "pata_A_D_2_GECKO.obj");
         pata_A_D_2_mesh->add_faces(&green);
+        pata_A_D_2_mesh->set_material(&material);
 
         Mesh3D* pata_A_I_1_mesh = new Mesh3D(in_current_path, "pata_A_I_1_GECKO.obj");
         pata_A_I_1_mesh->add_faces(&green);
+        pata_A_I_1_mesh->set_material(&material);
 
         Mesh3D* pata_A_I_2_mesh = new Mesh3D(in_current_path, "pata_A_I_2_GECKO.obj");
         pata_A_I_2_mesh->add_faces(&green);
+        pata_A_I_2_mesh->set_material(&material);
 
         Mesh3D* pata_D_D_1_mesh = new Mesh3D(in_current_path, "pata_D_D_1_GECKO.obj");
         pata_D_D_1_mesh->add_faces(&green);
+        pata_D_D_1_mesh->set_material(&material);
 
         Mesh3D* pata_D_D_2_mesh = new Mesh3D(in_current_path, "pata_D_D_2_GECKO.obj");
         pata_D_D_2_mesh->add_faces(&green);
+        pata_D_D_2_mesh->set_material(&material);
 
         Mesh3D* pata_D_I_1_mesh = new Mesh3D(in_current_path, "pata_D_I_1_GECKO.obj");
         pata_D_I_1_mesh->add_faces(&green);
+        pata_D_I_1_mesh->set_material(&material);
 
         Mesh3D* pata_D_I_2_mesh = new Mesh3D(in_current_path, "pata_D_I_2_GECKO.obj");
         pata_D_I_2_mesh->add_faces(&green);
+        pata_D_I_2_mesh->set_material(&material);
 
 
         // --- Crear nodos ---
@@ -141,6 +162,7 @@ private:
                                  *tail_1, *tail_2, *tail_3;
 
     Color green, black;
+    Material material;
 };
 
 

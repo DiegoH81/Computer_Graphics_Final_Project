@@ -27,6 +27,7 @@ Integrantes:
 #include "animation_list.h"
 #include "camera.h"
 #include "texture_list.h"
+#include "light.h"
 
 #include "gecko.h"
 #include "spider.h"
@@ -43,43 +44,7 @@ std::vector<SceneNode*> nodes;
 float offset = 0.1f;
 float angle = 10.0f;
 bool is_moving = true;
-
 int current_id = 0;
-
-const char *vertexShaderSource = "#version 330 core\n"
-                                 "layout (location = 0) in vec3 aPos;\n"
-                                 "layout (location = 1) in vec3 aNormal;\n"
-                                 "layout (location = 2) in vec2 aTexCoord;\n"
-                                 "uniform mat4 model;\n"
-                                 "uniform mat4 view;\n"
-                                 "uniform mat4 projection;\n"
-                                 "out vec2 TexCoord;\n"
-                                 "void main()\n"
-                                 "{\n"
-                                 "  gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
-                                 "  TexCoord = aTexCoord;\n"
-                                 "}\0";
-
-const char *fragmentShader = "#version 330 core\n"
-                             "out vec4 FragColor;\n"
-                             "in vec2 TexCoord;\n"
-                             "uniform bool useTexture;\n"
-                             "uniform vec3 color;\n"
-                             "uniform sampler2D ourTexture;\n"
-                             "void main()\n"
-                             "{\n"
-                             "   if(useTexture)\n"
-                             "   {\n"
-                             "      FragColor = texture(ourTexture, TexCoord);\n"
-                             "   }\n"
-                             "   else\n"
-                             "   {\n"
-                             "      FragColor = vec4(color, 1.0f);\n"
-                             "   }\n"
-                             "}\0";
-						   								   
-
-
 
 void traslate(const Vector3& in_m)
 {
@@ -224,17 +189,25 @@ int main()
     current_path = current_path / "ownProjects" / "COMPUTER_GRAPHICS_FINAL_PROJECT";
 
 
+    // ***********************
+    // SHADERS
+    // ***********************
+    
+    ShaderList shaders(current_path);
 
-    // ***********************
-    // SHADERSS
-    // ***********************
+    // Normal Shader
+    shaders.create_shader("UNIQUE", "normal_shader.vs", "normal_fragment.fs");
+    // Light Shader
+    shaders.create_shader("LIGHT_SHADER", "light_shader.vs", "light_fragment.fs");
     
-    ShaderList shaders;
-    shaders.create_vertex_shader(vertexShaderSource);
-    shaders.add_fragment_shader("UNIQUE", fragmentShader);
-    shaders.delete_shaders();
-    
+
     TextureList textures(current_path);
+    Light world_sun;
+    world_sun.ambient = Vector3(0.6f, 0.6f, 0.6f);
+    world_sun.diffuse = Vector3(0.8f, 0.8f, 0.8f);
+    world_sun.specular = Vector3(1.0f, 1.0f, 1.0f);
+
+    world_sun.light_node->traslate(Vector3(0.0f, 1.0f, 0.0f), true);
 
     
     // Colors
@@ -258,7 +231,6 @@ int main()
     // Figuras
 	glLineWidth(10.0f);
 
-	
     
     SceneNode* root = new SceneNode(0);
 	nodes.push_back(root);
@@ -338,6 +310,7 @@ int main()
     root->add_children(conito_node);
     root->add_children(sphere_node);
     */
+    root->add_children(world_sun.light_node);
     root->add_children(geckito.get_root());
     root->add_children(aranita.get_root());
     root->add_children(tadpolin.get_root());
@@ -351,10 +324,15 @@ int main()
     float delta_time = 0.0f;
     float last_frame = 0.0f;
 	
-    shaders.use_shader("UNIQUE");
     auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 100.0f);
+    shaders.use_shader("UNIQUE");
     shaders.set_mat4("UNIQUE", "projection", projection_matrix);
+    shaders.set_light("UNIQUE", "light", &world_sun);
+    
+    
 
+    shaders.use_shader("LIGHT_SHADER");
+    shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
     while(!glfwWindowShouldClose(window))
     {
         float current_frame = glfwGetTime();
@@ -369,11 +347,17 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         auto view_matrix = camera_world.get_look_at();
+        auto camera_pos = camera_world.pos;
+
+        shaders.use_shader("UNIQUE");
         shaders.set_mat4("UNIQUE", "view", view_matrix);
+        shaders.set_vec3("UNIQUE", "view_pos", camera_pos.x, camera_pos.y, camera_pos.z);
+
+
+        shaders.use_shader("LIGHT_SHADER");
+        shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);
 		
 		root->draw(shaders, textures, Matrix_4());
-        //geckito.draw(shaders, textures, Matrix_4());
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();

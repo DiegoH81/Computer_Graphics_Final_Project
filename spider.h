@@ -5,78 +5,111 @@
 
 #include "scene.h"
 #include "shape.h"
-
+#include "material.h"
 
 class Spider
 {
 public:
     Spider(std::filesystem::path in_current_path):
-        purple(97, 49, 130, true)
+        purple(97, 49, 130, true), material()
     {
         in_current_path = in_current_path / "models" / "spider" ;
 
+        /*
+        material.ambient = Vector3(0.2f, 0.0f, 0.3f);
+        material.diffuse = Vector3(0.5f, 0.0f, 0.7f);
+        material.specular = Vector3(0.4f, 0.4f, 0.4f);
+        material.shininess = 32.0f;
+        */
+
         Mesh3D* torso_mesh = new Mesh3D(in_current_path, "spider_torso.obj");
         torso_mesh->add_faces(&purple);
+        torso_mesh->set_material(&material);
         
         Mesh3D* back_mesh = new Mesh3D(in_current_path, "spider_back.obj");
         back_mesh->add_faces(&purple);
+        back_mesh->set_material(&material);
 
         // Pata IZQ 1 (original)
         Mesh3D* leg_1_mesh = new Mesh3D(in_current_path, "spider_leg1.obj");
         leg_1_mesh->add_faces(&purple);
+        leg_1_mesh->set_material(&material);
         Mesh3D* leg_2_mesh = new Mesh3D(in_current_path, "spider_leg2.obj");
         leg_2_mesh->add_faces(&purple);
+        leg_2_mesh->set_material(&material);
         Mesh3D* leg_3_mesh = new Mesh3D(in_current_path, "spider_leg3.obj");
         leg_3_mesh->add_faces(&purple);
+        leg_3_mesh->set_material(&material);
         // Pata IZQ 2
         Mesh3D* leg_1_m_i2 = new Mesh3D(in_current_path, "spider_leg1.obj");
         leg_1_m_i2->add_faces(&purple);
+        leg_1_m_i2->set_material(&material);
         Mesh3D* leg_2_m_i2 = new Mesh3D(in_current_path, "spider_leg2.obj");
         leg_2_m_i2->add_faces(&purple);
+        leg_2_m_i2->set_material(&material);
         Mesh3D* leg_3_m_i2 = new Mesh3D(in_current_path, "spider_leg3.obj");
         leg_3_m_i2->add_faces(&purple);
+        leg_3_m_i2->set_material(&material);
         // Pata IZQ 3
         Mesh3D* leg_1_m_i3 = new Mesh3D(in_current_path, "spider_leg1.obj");
         leg_1_m_i3->add_faces(&purple);
+        leg_1_m_i3->set_material(&material);
         Mesh3D* leg_2_m_i3 = new Mesh3D(in_current_path, "spider_leg2.obj");
         leg_2_m_i3->add_faces(&purple);
+        leg_2_m_i3->set_material(&material);
         Mesh3D* leg_3_m_i3 = new Mesh3D(in_current_path, "spider_leg3.obj");
         leg_3_m_i3->add_faces(&purple);
+        leg_3_m_i3->set_material(&material);
         // Pata IZQ 4
         Mesh3D* leg_1_m_i4 = new Mesh3D(in_current_path, "spider_leg1.obj");
         leg_1_m_i4->add_faces(&purple);
+        leg_1_m_i4->set_material(&material);
         Mesh3D* leg_2_m_i4 = new Mesh3D(in_current_path, "spider_leg2.obj");
         leg_2_m_i4->add_faces(&purple);
+        leg_2_m_i4->set_material(&material);
         Mesh3D* leg_3_m_i4 = new Mesh3D(in_current_path, "spider_leg3.obj");
         leg_3_m_i4->add_faces(&purple);
+        leg_3_m_i4->set_material(&material);
         // Pata DER 1
         Mesh3D* leg_1_m_d1 = new Mesh3D(in_current_path, "spider_leg1.obj");
         leg_1_m_d1->add_faces(&purple);
+        leg_1_m_d1->set_material(&material);
         Mesh3D* leg_2_m_d1 = new Mesh3D(in_current_path, "spider_leg2.obj");
         leg_2_m_d1->add_faces(&purple);
+        leg_2_m_d1->set_material(&material);
         Mesh3D* leg_3_m_d1 = new Mesh3D(in_current_path, "spider_leg3.obj");
         leg_3_m_d1->add_faces(&purple);
+        leg_3_m_d1->set_material(&material);
         // Pata DER 2
         Mesh3D* leg_1_m_d2 = new Mesh3D(in_current_path, "spider_leg1.obj");
         leg_1_m_d2->add_faces(&purple);
+        leg_1_m_d2->set_material(&material);
         Mesh3D* leg_2_m_d2 = new Mesh3D(in_current_path, "spider_leg2.obj");
         leg_2_m_d2->add_faces(&purple);
+        leg_2_m_d2->set_material(&material);
         Mesh3D* leg_3_m_d2 = new Mesh3D(in_current_path, "spider_leg3.obj");
         leg_3_m_d2->add_faces(&purple);
+        leg_3_m_d2->set_material(&material);
         // Pata DER 3
         Mesh3D* leg_1_m_d3 = new Mesh3D(in_current_path, "spider_leg1.obj");
         leg_1_m_d3->add_faces(&purple);
+        leg_1_m_d3->set_material(&material);
         Mesh3D* leg_2_m_d3 = new Mesh3D(in_current_path, "spider_leg2.obj");
         leg_2_m_d3->add_faces(&purple);
+        leg_2_m_d3->set_material(&material);
         Mesh3D* leg_3_m_d3 = new Mesh3D(in_current_path, "spider_leg3.obj");
         leg_3_m_d3->add_faces(&purple);
+        leg_3_m_d3->set_material(&material);
         // Pata DER 4
         Mesh3D* leg_1_m_d4 = new Mesh3D(in_current_path, "spider_leg1.obj");
         leg_1_m_d4->add_faces(&purple);
+        leg_1_m_d4->set_material(&material);
         Mesh3D* leg_2_m_d4 = new Mesh3D(in_current_path, "spider_leg2.obj"); 
         leg_2_m_d4->add_faces(&purple);
+        leg_2_m_d4->set_material(&material);
         Mesh3D* leg_3_m_d4 = new Mesh3D(in_current_path, "spider_leg3.obj");
         leg_3_m_d4->add_faces(&purple);
+        leg_3_m_d4->set_material(&material);
 
 
         // Torso y back
@@ -218,9 +251,8 @@ private:
                                     *leg_d3_1, *leg_d3_2, *leg_d3_3,
                                     *leg_d4_1, *leg_d4_2, *leg_d4_3;
 
-
-
     Color purple;
+    Material material;
 };
 
 
