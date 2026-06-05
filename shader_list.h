@@ -9,19 +9,23 @@
 */
 
 
+#include <iostream>
 #include <vector>
 #include <map>
 #include <string>
+#include <filesystem>
+#include <fstream>
+
 #include "matrix.h"
 
 class ShaderList
 {
 public:
-    ShaderList();
+    ShaderList(std::filesystem::path in_current_path);
 
-    void create_vertex_shader(const char *vertexShaderSource);
+    void create_vertex_shader(const std::string& shader_path);
 
-    void add_fragment_shader(const std::string& shader_name, const char *fragment_Shader_Source);
+    void add_fragment_shader(const std::string& shader_name, const std::string& shader_path);
 
     void delete_shaders();
 
@@ -46,6 +50,9 @@ public:
 private:
     unsigned int VERTEX;
     std::map<std::string, unsigned int> shader_programs;
+    std::filesystem::path current_path;
+
+    std::string read_shader_source(const std::string& source_path);
 };
 
 

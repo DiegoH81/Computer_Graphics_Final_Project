@@ -3,22 +3,33 @@
 
 #include "shader_list.h"
 
-ShaderList::ShaderList():
-    VERTEX(0), shader_programs() {}
-
-
-void ShaderList::create_vertex_shader(const char *vertexShaderSource)
+ShaderList::ShaderList(std::filesystem::path in_current_path):
+    VERTEX(0), shader_programs(), current_path(in_current_path)
 {
+    current_path = current_path / "shaders";
+}
+
+
+void ShaderList::create_vertex_shader(const std::string& shader_path)
+{
+    auto new_path =  current_path  / shader_path;
+    auto shader_source = read_shader_source(new_path.string());
+    const char* const_src = shader_source.c_str();
+
     VERTEX = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(VERTEX, 1, &vertexShaderSource, nullptr);
+    glShaderSource(VERTEX, 1, &const_src, nullptr);
     glCompileShader(VERTEX);
 }
 
-void ShaderList::add_fragment_shader(const std::string& shader_name, const char *fragment_Shader_Source)
+void ShaderList::add_fragment_shader(const std::string& shader_name, const std::string& shader_path)
 {
+    auto new_path =  current_path  / shader_path;
+    auto shader_source = read_shader_source(new_path.string());
+    const char* const_src = shader_source.c_str();
+
     unsigned int fragment_source_shader = 0;
     fragment_source_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_source_shader, 1, &fragment_Shader_Source, nullptr);
+    glShaderSource(fragment_source_shader, 1, &const_src, nullptr);
     glCompileShader(fragment_source_shader);
 
 
@@ -97,4 +108,25 @@ void ShaderList::set_bool(const std::string& shader_name, const std::string& uni
     unsigned int current_program = shader_programs[shader_name];
     int uniform = glGetUniformLocation(current_program, uniform_name.c_str());
     glUniform1i(uniform, in_bool? 1 : 0);
+}
+
+std::string ShaderList::read_shader_source(const std::string& source_path)
+{
+    std::ifstream file(source_path, std::ios::binary | std::ios::ate);
+    
+    if (!file.is_open())
+    {
+        std::cout << "Error opening file: " << source_path << std::endl;
+        return "";
+    }
+
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    std::string to_return_content(size, '\0');
+    
+    if (file.read(&to_return_content[0], size))
+        return to_return_content;
+
+    return "";
 }
