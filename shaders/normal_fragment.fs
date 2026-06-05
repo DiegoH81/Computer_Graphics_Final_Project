@@ -12,12 +12,19 @@ struct Material
     float shininess;
 };
 
+struct Light
+{
+    vec3 position;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
 uniform bool useTexture;
 uniform vec3 color;
-uniform vec3 light_color;
-uniform vec3 light_pos;
 uniform vec3 view_pos;
 uniform Material material;
+uniform Light light;
 
 uniform sampler2D ourTexture;
 
@@ -32,19 +39,19 @@ void main()
         vec3 norm = normalize(Normal);
 
         // Ambiente
-        vec3 ambient = material.ambient * light_color;
+        vec3 ambient = light.ambient * material.ambient;
 
         // Difusa
-        vec3 light_dir = normalize(light_pos - PixelPosition);
+        vec3 light_dir = normalize(light.position - PixelPosition);
         float diff = max(dot(norm, light_dir), 0.0);
-        vec3 diffuse = light_color * (diff * material.diffuse);
+        vec3 diffuse = light.diffuse * (diff * material.diffuse);
 
         // Specular
         vec3 view_dir = normalize(view_pos - PixelPosition);
         vec3 reflect_dir = reflect(-light_dir, norm);
 
         float spec = pow(max(dot(view_dir, reflect_dir), 0.0), material.shininess);
-        vec3 specular = light_color * (material.specular * spec);
+        vec3 specular = light.specular * (material.specular * spec);
 
         vec3 result = (ambient + diffuse + specular) * color;
 

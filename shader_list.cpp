@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include "shader_list.h"
+#include "light.h"
 
 ShaderList::ShaderList(std::filesystem::path in_current_path):
     shader_programs(), current_path(in_current_path)
@@ -117,6 +118,23 @@ void ShaderList::set_material(const std::string& shader_name, const std::string&
     glUniform3f(diffuse, in_material->diffuse.x, in_material->diffuse.y, in_material->diffuse.z);
     glUniform3f(specular, in_material->specular.x, in_material->specular.y, in_material->specular.z);
     glUniform1f(shiny, in_material->shininess);
+}
+
+void ShaderList::set_light(const std::string& shader_name, const std::string& uniform_name, Light* in_light)
+{
+    unsigned int current_program = shader_programs[shader_name];
+    
+    int position = glGetUniformLocation(current_program, (uniform_name + ".position").c_str());
+    int ambient = glGetUniformLocation(current_program, (uniform_name + ".ambient").c_str());
+    int diffuse = glGetUniformLocation(current_program, (uniform_name + ".diffuse").c_str());
+    int specular = glGetUniformLocation(current_program, (uniform_name + ".specular").c_str());
+
+    auto center = in_light->light_node->get_center();
+    glUniform3f(position, center.x, center.y, center.z);
+
+    glUniform3f(ambient, in_light->ambient.x, in_light->ambient.y, in_light->ambient.z);
+    glUniform3f(diffuse, in_light->diffuse.x, in_light->diffuse.y, in_light->diffuse.z);
+    glUniform3f(specular, in_light->specular.x, in_light->specular.y, in_light->specular.z);
 }
 
 std::string ShaderList::read_shader_source(const std::string& source_path)

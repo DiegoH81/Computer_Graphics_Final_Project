@@ -203,6 +203,9 @@ int main()
 
     TextureList textures(current_path);
     Light world_sun;
+    world_sun.ambient = Vector3(0.6f, 0.6f, 0.6f);
+    world_sun.diffuse = Vector3(0.8f, 0.8f, 0.8f);
+    world_sun.specular = Vector3(1.0f, 1.0f, 1.0f);
 
     world_sun.light_node->traslate(Vector3(0.0f, 1.0f, 0.0f), true);
 
@@ -228,7 +231,6 @@ int main()
     // Figuras
 	glLineWidth(10.0f);
 
-	
     
     SceneNode* root = new SceneNode(0);
 	nodes.push_back(root);
@@ -325,10 +327,9 @@ int main()
     auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 100.0f);
     shaders.use_shader("UNIQUE");
     shaders.set_mat4("UNIQUE", "projection", projection_matrix);
-    shaders.set_vec3("UNIQUE", "light_color", 1.0f, 1.0f, 1.0f);
+    shaders.set_light("UNIQUE", "light", &world_sun);
     
-    auto light_center = world_sun.light_node->get_center();
-    shaders.set_vec3("UNIQUE", "light_pos", light_center.x, light_center.y, light_center.z);
+    
 
     shaders.use_shader("LIGHT_SHADER");
     shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);

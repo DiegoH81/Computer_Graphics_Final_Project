@@ -3,7 +3,7 @@
 
 #include "shape.h"
 #include "scene.h"
-
+#include "vector.h"
 /*
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
@@ -15,8 +15,10 @@ class Light
 {
 public:
     SceneNode* light_node;
+    Vector3 ambient, diffuse, specular;
 
-    Light()
+    Light():
+        ambient(), diffuse(), specular()
     {
         Cube* light_cube = new Cube(0.1f);
         light_cube->add_faces();
