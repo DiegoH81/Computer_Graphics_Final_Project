@@ -17,6 +17,7 @@
 #include <fstream>
 
 #include "matrix.h"
+#include "material.h"
 
 class ShaderList
 {
@@ -42,6 +43,8 @@ public:
     void set_texture(const std::string& shader_name, const std::string& uniform_name, int slot);
 
     void set_bool(const std::string& shader_name, const std::string& uniform_name, bool in_bool);
+
+    void set_material(const std::string& shader_name, const std::string& uniform_name, Material* in_material);
 
 private:
     std::map<std::string, unsigned int> shader_programs;

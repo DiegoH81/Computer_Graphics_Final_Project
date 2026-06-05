@@ -104,6 +104,21 @@ void ShaderList::set_bool(const std::string& shader_name, const std::string& uni
     glUniform1i(uniform, in_bool? 1 : 0);
 }
 
+void ShaderList::set_material(const std::string& shader_name, const std::string& uniform_name, Material* in_material)
+{
+    unsigned int current_program = shader_programs[shader_name];
+
+    int ambient = glGetUniformLocation(current_program, (uniform_name + ".ambient").c_str());
+    int diffuse = glGetUniformLocation(current_program, (uniform_name + ".diffuse").c_str());
+    int specular = glGetUniformLocation(current_program, (uniform_name + ".specular").c_str());
+    int shiny = glGetUniformLocation(current_program, (uniform_name + ".shininess").c_str());
+
+    glUniform3f(ambient, in_material->ambient.x, in_material->ambient.y, in_material->ambient.z);
+    glUniform3f(diffuse, in_material->diffuse.x, in_material->diffuse.y, in_material->diffuse.z);
+    glUniform3f(specular, in_material->specular.x, in_material->specular.y, in_material->specular.z);
+    glUniform1f(shiny, in_material->shininess);
+}
+
 std::string ShaderList::read_shader_source(const std::string& source_path)
 {
     std::ifstream file(source_path, std::ios::binary | std::ios::ate);

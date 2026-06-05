@@ -7,7 +7,7 @@
 // SHAPE
 
 Shape::Shape():
-    vertices(), indices(), center(), shader_name("UNIQUE"),
+    vertices(), indices(), center(), shader_name("UNIQUE"), material(&base_material),
 
     has_faces(false),
     has_edges(false),
@@ -59,6 +59,11 @@ void Shape::set_shader_name(const std::string& in_shader_name)
     shader_name = in_shader_name;
 }
 
+void Shape::set_material(Material* in_material)
+{
+    material = in_material;
+}
+
 void Shape::draw(ShaderList& shaders, TextureList& in_textures, const Matrix_4& in_world)
 {
     glBindVertexArray(VAO);
@@ -66,7 +71,7 @@ void Shape::draw(ShaderList& shaders, TextureList& in_textures, const Matrix_4& 
     shaders.use_shader(shader_name);
     shaders.set_mat4(shader_name, "model", in_world);
     shaders.set_bool(shader_name, "useTexture", uses_texture);
-
+    shaders.set_material(shader_name, "material", material);
 
     if (has_faces)
     {
