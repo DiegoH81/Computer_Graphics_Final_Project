@@ -4,32 +4,30 @@
 #include "shader_list.h"
 
 ShaderList::ShaderList(std::filesystem::path in_current_path):
-    VERTEX(0), shader_programs(), current_path(in_current_path)
+    shader_programs(), current_path(in_current_path)
 {
     current_path = current_path / "shaders";
 }
 
-
-void ShaderList::create_vertex_shader(const std::string& shader_path)
+void ShaderList::create_shader(const std::string& shader_name, const std::string& vertex_path, const std::string& fragment_path)
 {
-    auto new_path =  current_path  / shader_path;
-    auto shader_source = read_shader_source(new_path.string());
-    const char* const_src = shader_source.c_str();
+    // Vertex Shader
+    auto new_path =  current_path  / vertex_path;
+    auto shader_source_vrtx = read_shader_source(new_path.string());
+    const char* const_src_vrtx = shader_source_vrtx.c_str();
 
-    VERTEX = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(VERTEX, 1, &const_src, nullptr);
+    unsigned int VERTEX = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(VERTEX, 1, &const_src_vrtx, nullptr);
     glCompileShader(VERTEX);
-}
 
-void ShaderList::add_fragment_shader(const std::string& shader_name, const std::string& shader_path)
-{
-    auto new_path =  current_path  / shader_path;
-    auto shader_source = read_shader_source(new_path.string());
-    const char* const_src = shader_source.c_str();
+    // Fragment Shader
+    new_path =  current_path  / fragment_path;
+    auto shader_source_frgmt = read_shader_source(new_path.string());
+    const char* const_src_frgmt = shader_source_frgmt.c_str();
 
     unsigned int fragment_source_shader = 0;
     fragment_source_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_source_shader, 1, &const_src, nullptr);
+    glShaderSource(fragment_source_shader, 1, &const_src_frgmt, nullptr);
     glCompileShader(fragment_source_shader);
 
 
@@ -40,15 +38,11 @@ void ShaderList::add_fragment_shader(const std::string& shader_name, const std::
     glAttachShader(shader_program, fragment_source_shader);
     glLinkProgram(shader_program);
     
-
+    glDeleteShader(VERTEX);
     glDeleteShader(fragment_source_shader);
 
     shader_programs[shader_name] = shader_program;
-}
 
-void ShaderList::delete_shaders()
-{
-    glDeleteShader(VERTEX);
 }
 
 void ShaderList::use_shader(const std::string& in_shader)
@@ -116,7 +110,7 @@ std::string ShaderList::read_shader_source(const std::string& source_path)
     
     if (!file.is_open())
     {
-        std::cout << "Error opening file: " << source_path << std::endl;
+        std::cout << "Error opening file (SHADER): " << source_path << std::endl;
         return "";
     }
 

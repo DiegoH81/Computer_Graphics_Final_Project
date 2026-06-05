@@ -27,6 +27,7 @@ Integrantes:
 #include "animation_list.h"
 #include "camera.h"
 #include "texture_list.h"
+#include "light.h"
 
 #include "gecko.h"
 #include "spider.h"
@@ -188,17 +189,22 @@ int main()
     current_path = current_path / "ownProjects" / "COMPUTER_GRAPHICS_FINAL_PROJECT";
 
 
-
     // ***********************
-    // SHADERSS
+    // SHADERS
     // ***********************
     
     ShaderList shaders(current_path);
-    shaders.create_vertex_shader("shader.vs");
-    shaders.add_fragment_shader("UNIQUE", "fragment.fs");
-    shaders.delete_shaders();
+
+    // Normal Shader
+    shaders.create_shader("UNIQUE", "shader.vs", "fragment.fs");
+    // Light Shader
+    shaders.create_shader("LIGHT_SHADER", "light_shader.vs", "light_fragment.fs");
     
+
     TextureList textures(current_path);
+    Light world_sun;
+
+    world_sun.light_node->traslate(Vector3(0.0f, -0.5f, 0.0f), true);
 
     
     // Colors
@@ -302,6 +308,7 @@ int main()
     root->add_children(conito_node);
     root->add_children(sphere_node);
     */
+    root->add_children(world_sun.light_node);
     root->add_children(geckito.get_root());
     root->add_children(aranita.get_root());
     root->add_children(tadpolin.get_root());
@@ -315,10 +322,12 @@ int main()
     float delta_time = 0.0f;
     float last_frame = 0.0f;
 	
-    shaders.use_shader("UNIQUE");
     auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 100.0f);
+    shaders.use_shader("UNIQUE");
     shaders.set_mat4("UNIQUE", "projection", projection_matrix);
 
+    shaders.use_shader("LIGHT_SHADER");
+    shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
     while(!glfwWindowShouldClose(window))
     {
         float current_frame = glfwGetTime();
@@ -333,11 +342,14 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         auto view_matrix = camera_world.get_look_at();
+
+        shaders.use_shader("UNIQUE");
         shaders.set_mat4("UNIQUE", "view", view_matrix);
+
+        shaders.use_shader("LIGHT_SHADER");
+        shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);
 		
 		root->draw(shaders, textures, Matrix_4());
-        //geckito.draw(shaders, textures, Matrix_4());
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();

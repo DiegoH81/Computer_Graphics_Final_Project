@@ -23,11 +23,7 @@ class ShaderList
 public:
     ShaderList(std::filesystem::path in_current_path);
 
-    void create_vertex_shader(const std::string& shader_path);
-
-    void add_fragment_shader(const std::string& shader_name, const std::string& shader_path);
-
-    void delete_shaders();
+    void create_shader(const std::string& shader_name, const std::string& vertex_path, const std::string& fragment_path);
 
     void use_shader(const std::string& in_shader);
 
@@ -48,7 +44,6 @@ public:
     void set_bool(const std::string& shader_name, const std::string& uniform_name, bool in_bool);
 
 private:
-    unsigned int VERTEX;
     std::map<std::string, unsigned int> shader_programs;
     std::filesystem::path current_path;
 
