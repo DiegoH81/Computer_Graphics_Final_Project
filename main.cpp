@@ -33,12 +33,15 @@ Integrantes:
 #include "spider.h"
 #include "tadpole.h"
 #include "butterfly.h"
+#include "shrimp.h"
 
 
-Color background_color(205, 208, 255, true);
+
+Color background_color(191, 133, 76, true);
 Camera camera_world;
 
 AnimationList camera_animations;
+AnimationList light_animations;
 std::vector<SceneNode*> nodes;
 
 float offset = 0.1f;
@@ -139,6 +142,8 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
             camera_animations.add_animation({AnimationInfo(0, 180, "ORBIT_Y", "")}, 3.0);
         else if ( key == GLFW_KEY_B)
             camera_animations.add_animation({AnimationInfo(0, 180, "ORBIT_X", "")}, 3.0);
+        else if ( key == GLFW_KEY_F)
+            light_animations.add_animation({AnimationInfo(ALL_IDs, 180, "ROTATE_C_Z", "PUBLIC")}, 2.0);
         else if ( key == GLFW_KEY_LEFT )
         {
             current_id --;
@@ -203,8 +208,8 @@ int main()
 
     TextureList textures(current_path);
     Light world_sun;
-    world_sun.ambient = Vector3(0.6f, 0.6f, 0.6f);
-    world_sun.diffuse = Vector3(0.8f, 0.8f, 0.8f);
+    world_sun.ambient = Vector3(0.3f, 0.3f, 0.3f);
+    world_sun.diffuse = Vector3(1.0f, 0.9f, 0.9f);
     world_sun.specular = Vector3(1.0f, 1.0f, 1.0f);
 
     world_sun.light_node->traslate(Vector3(0.0f, 1.0f, 0.0f), true);
@@ -302,6 +307,9 @@ int main()
     
     Butterfly mariposa(current_path);
     mariposa.get_root()->traslate(Vector3(0.0f, 0.4f, 0.0f), true);
+	
+	Shrimp shrimpy(current_path);
+	shrimpy.get_root()->traslate(Vector3(0.0f,0.0f,0.8f),true);
 
 
     /*
@@ -315,6 +323,7 @@ int main()
     root->add_children(aranita.get_root());
     root->add_children(tadpolin.get_root());
     root->add_children(mariposa.get_root());
+	root->add_children(shrimpy.get_root());
 
     // Bucle
 	glPointSize(10.0f);
@@ -327,7 +336,6 @@ int main()
     auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 100.0f);
     shaders.use_shader("UNIQUE");
     shaders.set_mat4("UNIQUE", "projection", projection_matrix);
-    shaders.set_light("UNIQUE", "light", &world_sun);
     
     
 
@@ -341,6 +349,7 @@ int main()
 
 
         camera_animations.process_animations_camera(camera_world, nodes, delta_time);
+        light_animations.process_animations({world_sun.light_node}, delta_time);
 
 
         glClearColor(background_color.r, background_color.g, background_color.b, 1.0f);
@@ -352,6 +361,7 @@ int main()
         shaders.use_shader("UNIQUE");
         shaders.set_mat4("UNIQUE", "view", view_matrix);
         shaders.set_vec3("UNIQUE", "view_pos", camera_pos.x, camera_pos.y, camera_pos.z);
+        shaders.set_light("UNIQUE", "light", &world_sun);
 
 
         shaders.use_shader("LIGHT_SHADER");
