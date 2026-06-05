@@ -196,7 +196,7 @@ int main()
     ShaderList shaders(current_path);
 
     // Normal Shader
-    shaders.create_shader("UNIQUE", "shader.vs", "fragment.fs");
+    shaders.create_shader("UNIQUE", "normal_shader.vs", "normal_fragment.fs");
     // Light Shader
     shaders.create_shader("LIGHT_SHADER", "light_shader.vs", "light_fragment.fs");
     
@@ -204,7 +204,7 @@ int main()
     TextureList textures(current_path);
     Light world_sun;
 
-    world_sun.light_node->traslate(Vector3(0.0f, -0.5f, 0.0f), true);
+    world_sun.light_node->traslate(Vector3(0.0f, 1.0f, 0.0f), true);
 
     
     // Colors
@@ -325,6 +325,10 @@ int main()
     auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 100.0f);
     shaders.use_shader("UNIQUE");
     shaders.set_mat4("UNIQUE", "projection", projection_matrix);
+    shaders.set_vec3("UNIQUE", "light_color", 1.0f, 1.0f, 1.0f);
+    
+    auto light_center = world_sun.light_node->get_center();
+    shaders.set_vec3("UNIQUE", "light_pos", light_center.x, light_center.y, light_center.z);
 
     shaders.use_shader("LIGHT_SHADER");
     shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
@@ -342,9 +346,12 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         auto view_matrix = camera_world.get_look_at();
+        auto camera_pos = camera_world.pos;
 
         shaders.use_shader("UNIQUE");
         shaders.set_mat4("UNIQUE", "view", view_matrix);
+        shaders.set_vec3("UNIQUE", "view_pos", camera_pos.x, camera_pos.y, camera_pos.z);
+
 
         shaders.use_shader("LIGHT_SHADER");
         shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);
