@@ -33,6 +33,8 @@ Integrantes:
 #include "spider.h"
 #include "tadpole.h"
 #include "butterfly.h"
+#include "shrimp.h"
+
 
 
 Color background_color(191, 133, 76, true);
@@ -305,6 +307,9 @@ int main()
     
     Butterfly mariposa(current_path);
     mariposa.get_root()->traslate(Vector3(0.0f, 0.4f, 0.0f), true);
+	
+	Shrimp shrimpy(current_path);
+	shrimpy.get_root()->traslate(Vector3(0.0f,0.0f,0.8f),true);
 
 
     /*
@@ -318,6 +323,7 @@ int main()
     root->add_children(aranita.get_root());
     root->add_children(tadpolin.get_root());
     root->add_children(mariposa.get_root());
+	root->add_children(shrimpy.get_root());
 
     // Bucle
 	glPointSize(10.0f);
