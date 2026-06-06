@@ -143,7 +143,9 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         else if ( key == GLFW_KEY_B)
             camera_animations.add_animation({AnimationInfo(0, 180, "ORBIT_X", "")}, 3.0);
         else if ( key == GLFW_KEY_F)
-            light_animations.add_animation({AnimationInfo(ALL_IDs, 180, "ROTATE_C_Z", "PUBLIC")}, 2.0);
+		{
+			light_animations.add_animation({AnimationInfo(ALL_IDs, 180, "ROTATE_C_X", "PUBLIC")}, 2.0);
+		}
         else if ( key == GLFW_KEY_LEFT )
         {
             current_id --;
@@ -207,12 +209,29 @@ int main()
     
 
     TextureList textures(current_path);
-    Light world_sun;
+	
+    PointLight world_sun;
     world_sun.ambient = Vector3(0.3f, 0.3f, 0.3f);
     world_sun.diffuse = Vector3(1.0f, 0.9f, 0.9f);
     world_sun.specular = Vector3(1.0f, 1.0f, 1.0f);
+	world_sun.light_node->traslate(Vector3(0.0f, 0.0f, 2.0f), true);
+	
+	DirectionalLight world_directional;
+	world_directional.ambient = Vector3(0.3f, 0.3f, 0.3f);
+    world_directional.diffuse = Vector3(1.0f, 0.9f, 0.9f);
+    world_directional.specular = Vector3(1.0f, 1.0f, 1.0f);
+	world_directional.direction = Vector3(1.0f, -1.0f, -1.0f);
+	
+	SpotLight world_spot_light;
+	world_spot_light.ambient = Vector3(0.3f, 0.3f, 0.3f);
+    world_spot_light.diffuse = Vector3(1.0f, 0.9f, 0.9f);
+    world_spot_light.specular = Vector3(1.0f, 1.0f, 1.0f);
+	world_spot_light.direction = Vector3(0.0f, 0.0f, 1.0f);
+	world_spot_light.cut_off = std::cos(utils::ang_to_rad(25.0f));
+	world_spot_light.outer_cut_off = std::cos(utils::ang_to_rad(30.0f));
+	
 
-    world_sun.light_node->traslate(Vector3(0.0f, 1.0f, 0.0f), true);
+    
 
     
     // Colors
@@ -361,7 +380,11 @@ int main()
         shaders.use_shader("UNIQUE");
         shaders.set_mat4("UNIQUE", "view", view_matrix);
         shaders.set_vec3("UNIQUE", "view_pos", camera_pos.x, camera_pos.y, camera_pos.z);
-        shaders.set_light("UNIQUE", "light", &world_sun);
+        
+		world_sun.apply(shaders, 0);
+		world_directional.apply(shaders, 0);
+		world_spot_light.apply(shaders, 0);
+		
 
 
         shaders.use_shader("LIGHT_SHADER");

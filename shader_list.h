@@ -15,9 +15,11 @@
 #include <string>
 #include <filesystem>
 #include <fstream>
+#include <cmath>
 
 #include "matrix.h"
 #include "material.h"
+#include "utils.h"
 
 class Light; // forward declaration
 
@@ -47,8 +49,6 @@ public:
     void set_bool(const std::string& shader_name, const std::string& uniform_name, bool in_bool);
 
     void set_material(const std::string& shader_name, const std::string& uniform_name, Material* in_material);
-
-    void set_light(const std::string& shader_name, const std::string& uniform_name, Light* in_light);
 
 private:
     std::map<std::string, unsigned int> shader_programs;
