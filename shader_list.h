@@ -44,6 +44,8 @@ public:
 
     void set_float(const std::string& shader_name, const std::string& uniform_name, float val);
 
+    void set_int(const std::string& shader_name, const std::string& uniform_name, int val);
+
     void set_texture(const std::string& shader_name, const std::string& uniform_name, int slot);
 
     void set_bool(const std::string& shader_name, const std::string& uniform_name, bool in_bool);

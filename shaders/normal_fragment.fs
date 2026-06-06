@@ -4,8 +4,8 @@ in vec2 TexCoord;
 in vec3 Normal;
 in vec3 PixelPosition;
 
-#define MAX_POINT_LIGHTS 1
-#define MAX_SPOT_LIGHTS 1
+#define MAX_POINT_LIGHTS 8
+#define MAX_SPOT_LIGHTS 4
 
 struct Material
 {
@@ -50,6 +50,9 @@ uniform bool useTexture;
 uniform vec3 color;
 uniform vec3 view_pos;
 uniform Material material;
+
+uniform int num_point_lights;
+uniform int num_spot_lights;
 
 uniform DirectionalLight directional_light;
 uniform PointLight point_lights[MAX_POINT_LIGHTS];
@@ -143,10 +146,10 @@ void main()
 
         vec3 result = get_directional_light(norm, directional_light, material);
 		
-		for (int i = 0; i < MAX_POINT_LIGHTS; i++)
+		for (int i = 0; i < num_point_lights; i++)
 			result += get_point_light(norm, point_lights[i], material);
 		
-		for (int i = 0; i < MAX_SPOT_LIGHTS; i++)
+		for (int i = 0; i < num_spot_lights; i++)
 			result += get_spotlight(norm, spot_lights[i], material);
 
         FragColor = vec4(result, 1.0f);
