@@ -116,29 +116,29 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         if (key ==GLFW_KEY_ESCAPE)
             glfwSetWindowShouldClose(in_window, true);
         else if ( key == GLFW_KEY_A )
-            traslate(Vector3(-offset, 0.0f, 0.0f));
+            camera_world.traslate(Vector3(-offset, 0.0f, 0.0f));
         else if ( key == GLFW_KEY_D)
-            traslate(Vector3(offset, 0.0f, 0.0f));
+            camera_world.traslate(Vector3(offset, 0.0f, 0.0f));
         else if ( key == GLFW_KEY_W)
-            traslate(Vector3(0.0f, offset, 0.0f));
+            camera_world.traslate(Vector3(0.0f, offset, 0.0f));
         else if ( key == GLFW_KEY_S)
-            traslate(Vector3(0.0f, -offset, 0.0f));
+            camera_world.traslate(Vector3(0.0f, -offset, 0.0f));
         else if ( key == GLFW_KEY_I)
-            rotate_c_x(angle);
+            camera_world.orbit_x(angle);
         else if ( key == GLFW_KEY_O)
-            rotate_c_x(-angle);
+            camera_world.orbit_x(-angle);
         else if ( key == GLFW_KEY_K)
-            rotate_c_y(angle);
+            camera_world.orbit_y(angle);
         else if ( key == GLFW_KEY_L)
-            rotate_c_y(-angle);
+            camera_world.orbit_y(-angle);
         else if ( key == GLFW_KEY_N)
-            rotate_c_z(angle);
+            camera_world.orbit_z(angle);
         else if ( key == GLFW_KEY_M)
-            rotate_c_z(-angle);
+            camera_world.orbit_z(-angle);
         else if ( key == GLFW_KEY_X)
-            scale(1.0f + offset);
+            camera_world.zoom(offset);
         else if ( key == GLFW_KEY_C)
-            scale(1.0f + -offset);
+            camera_world.zoom(-offset);
         else if ( key == GLFW_KEY_T)
             is_moving = !is_moving;
         else if ( key == GLFW_KEY_V )
@@ -173,11 +173,17 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
 
             std::cout << "Current light preset: " << preset_id << "\n";
         }
+
+        /*
+        else if ( key == GLFW_KEY_X)
+            scale(1.0f + offset);
+        else if ( key == GLFW_KEY_C)
+            scale(1.0f + -offset);
         else if ( key == GLFW_KEY_LEFT )
         {
             current_id --;
             if (current_id < 0)
-                current_id = nodes.size() -1;
+            current_id = nodes.size() -1;
             
             std::cout << "S_size: " << nodes.size() << " << current_id: " << current_id << "\n";
         }
@@ -185,10 +191,11 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         {
             current_id ++;
             if (current_id >= nodes.size())
-                current_id = 0;
+            current_id = 0;
             
             std::cout << "S_size: " << nodes.size() << " << current_id: " << current_id << "\n";
         }
+        */
     }	
 }
 
