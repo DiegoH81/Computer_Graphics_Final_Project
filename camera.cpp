@@ -124,6 +124,14 @@ void Camera::orbit_z(float in_angle)
     initialize();
 }
 
+void Camera::zoom(float distance)
+{
+    auto new_vec = Vector3(w.x * distance, w.y * distance, w.z * distance);
+    pos = pos - new_vec;
+
+    initialize();
+}
+
 Matrix_4 Camera::get_look_at()
 {
     Matrix_4 all_vecs_camera;
