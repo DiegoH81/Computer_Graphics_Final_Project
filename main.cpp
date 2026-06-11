@@ -1,0 +1,514 @@
+#define GLAD_GL_IMPLEMENTATION
+#include <glad/gl.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+
+/*
+
+Integrantes:
+	Cornejo Castro, José Gabriel
+	Hidalgo Machaca, Diego Alejandro
+	Huarcaya Lizarraga, Astrid Judith
+
+
+*/
+
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <deque>
+#include <cmath>
+#include <thread>
+#include <filesystem>
+
+#include "utils.h"
+#include "shader_list.h"
+#include "animation_list.h"
+#include "camera.h"
+#include "texture_list.h"
+#include "light.h"
+
+#include "gecko.h"
+#include "spider.h"
+#include "tadpole.h"
+#include "butterfly.h"
+#include "shrimp.h"
+#include "bettle.h"
+#include "mushroom.h"
+#include "rock.h"
+#include "rockCave.h"
+#include "stump.h"
+#include "bush.h"
+#include "flower.h"
+#include "algae.h"
+#include "nenufar.h"
+#include "bottle.h"
+
+
+
+
+#define BIG_MUSHROOM 1
+#define LIL_MUSHROOM 0
+
+#define NENUFAR_FLOWER 1
+#define NENUFAR 0
+
+#define WHITE 0
+#define RED 1
+#define YELLOW 2
+#define BLUE 3
+
+
+
+Color background_color(191, 133, 76, true);
+Camera camera_world;
+
+AnimationList camera_animations;
+AnimationList light_animations;
+std::vector<SceneNode*> nodes;
+
+float offset = 0.1f;
+float angle = 10.0f;
+bool is_moving = true;
+int current_id = 0;
+
+void traslate(const Vector3& in_m)
+{
+    for (auto &m_i : nodes)
+    {
+		if (m_i->id != current_id)
+			continue;
+		
+        m_i->traslate(in_m, true);
+    }
+}
+
+void scale(float factor)
+{
+    for (auto &m_i : nodes)
+	{
+		if (m_i->id != current_id)
+			continue;
+
+		m_i->scale(Vector3(factor, factor, factor), true);
+	}
+}
+
+void rotate_c_x(float angle)
+{
+    for (auto &m_i : nodes)
+    {
+		if (m_i->id != current_id)
+			continue;
+        m_i->rotate_x_local(angle, true);
+    }
+}
+
+void rotate_c_y(float angle)
+{
+    for (auto &m_i : nodes)
+    {
+		if (m_i->id != current_id)
+			continue;
+        m_i->rotate_y_local(angle, true);
+    }
+}
+
+void rotate_c_z(float angle)
+{
+    for (auto &m_i : nodes)
+    {
+		if (m_i->id != current_id)
+			continue;
+        m_i->rotate_z_local(angle, true);
+    }
+}
+
+void frame_buffer_size_call_back(GLFWwindow* in_window, int in_w, int in_h)
+{
+    glViewport(0, 0, in_w, in_h);
+}
+
+void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, int mods)
+{
+    if (action == GLFW_PRESS || action == GLFW_REPEAT)
+    {
+        if (key ==GLFW_KEY_ESCAPE)
+            glfwSetWindowShouldClose(in_window, true);
+        else if ( key == GLFW_KEY_A )
+            traslate(Vector3(-offset, 0.0f, 0.0f));
+        else if ( key == GLFW_KEY_D)
+            traslate(Vector3(offset, 0.0f, 0.0f));
+        else if ( key == GLFW_KEY_W)
+            traslate(Vector3(0.0f, offset, 0.0f));
+        else if ( key == GLFW_KEY_S)
+            traslate(Vector3(0.0f, -offset, 0.0f));
+        else if ( key == GLFW_KEY_I)
+            rotate_c_x(angle);
+        else if ( key == GLFW_KEY_O)
+            rotate_c_x(-angle);
+        else if ( key == GLFW_KEY_K)
+            rotate_c_y(angle);
+        else if ( key == GLFW_KEY_L)
+            rotate_c_y(-angle);
+        else if ( key == GLFW_KEY_N)
+            rotate_c_z(angle);
+        else if ( key == GLFW_KEY_M)
+            rotate_c_z(-angle);
+        else if ( key == GLFW_KEY_X)
+            scale(1.0f + offset);
+        else if ( key == GLFW_KEY_C)
+            scale(1.0f + -offset);
+        else if ( key == GLFW_KEY_T)
+            is_moving = !is_moving;
+        else if ( key == GLFW_KEY_V )
+            camera_animations.add_animation({AnimationInfo(0, 180, "ORBIT_Y", "")}, 3.0);
+        else if ( key == GLFW_KEY_B)
+            camera_animations.add_animation({AnimationInfo(0, 180, "ORBIT_X", "")}, 3.0);
+        else if ( key == GLFW_KEY_F)
+            light_animations.add_animation({AnimationInfo(ALL_IDs, 180, "ROTATE_C_Z", "PUBLIC")}, 2.0);
+        else if ( key == GLFW_KEY_LEFT )
+        {
+            current_id --;
+            if (current_id < 0)
+                current_id = nodes.size() -1;
+            
+            std::cout << "S_size: " << nodes.size() << " << current_id: " << current_id << "\n";
+        }
+        else if ( key == GLFW_KEY_RIGHT )
+        {
+            current_id ++;
+            if (current_id >= nodes.size())
+                current_id = 0;
+            
+            std::cout << "S_size: " << nodes.size() << " << current_id: " << current_id << "\n";
+        }
+    }	
+}
+
+int main()
+{
+    const int width = 900;
+    const int height = 900;
+
+    // Initialize
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    GLFWwindow* window = glfwCreateWindow(width, height, "Animation", nullptr, nullptr);
+
+    glfwMakeContextCurrent(window);
+    
+    glfwSetFramebufferSizeCallback(window, frame_buffer_size_call_back);
+    glfwSetKeyCallback(window, key_call_back);
+
+    // Init glad
+    if (!gladLoadGL(glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }
+
+    // Path
+    std::filesystem::path current_path = std::filesystem::current_path();
+	current_path = current_path.parent_path();
+    current_path = current_path / "ownProjects" / "COMPUTER_GRAPHICS_FINAL_PROJECT";
+
+
+    // ***********************
+    // SHADERS
+    // ***********************
+    
+    ShaderList shaders(current_path);
+
+    // Normal Shader
+    shaders.create_shader("UNIQUE", "normal_shader.vs", "normal_fragment.fs");
+    // Light Shader
+    shaders.create_shader("LIGHT_SHADER", "light_shader.vs", "light_fragment.fs");
+    
+
+    TextureList textures(current_path);
+    Light world_sun;
+    world_sun.ambient = Vector3(0.3f, 0.3f, 0.3f);
+    world_sun.diffuse = Vector3(1.0f, 0.9f, 0.9f);
+    world_sun.specular = Vector3(1.0f, 1.0f, 1.0f);
+
+    world_sun.light_node->traslate(Vector3(0.0f, 1.0f, 0.0f), true);
+
+    
+    // Colors
+    Color pink(255.0f, 0.0f, 255.0f, true);
+    Color blue(10.0f, 15.0f, 40.0f, true);
+    Color mint(10.0f, 15.0f, 40.0f, true);
+    Color lava(226.0f, 45.0f, 0.0f, true);
+    Color radioactive(199.0f, 255.0f, 0.0f, true);
+    Color turquesa(0.0f, 128.0f, 128.0f, true);
+    Color purple(157.0f, 0.0f, 255.0f, true);
+    Color golden(225.0f, 190.0f, 150.0f, true);
+    Color le_lime(133.0f, 235.0f, 52.0f, true);
+    Color red(255.0f, 0.0f, 0.0f, true);
+    Color white(255.0f, 255.0f, 255.0f, true);
+
+    // Camera
+    camera_world.set_pos(Point3(0.0f, 0.0f, 5.0f));
+    camera_world.set_objective(Point3(0.0f, 0.0f, 0.0f));
+
+
+    // Figuras
+	glLineWidth(10.0f);
+
+    
+    SceneNode* root = new SceneNode(0);
+	nodes.push_back(root);
+	
+    Cube cubito(0.3f);
+    cubito.add_faces();
+    cubito.set_face_color(0, &red);
+    cubito.set_face_color(1, &radioactive);
+    cubito.set_face_color(2, &red);
+    cubito.set_face_color(3, &radioactive);
+    cubito.set_face_color(4, &red);
+    cubito.set_face_color(5, &radioactive);
+    cubito.set_face_color(6, &red);
+    cubito.set_face_color(7, &radioactive);
+
+    cubito.add_edges(&le_lime);
+    cubito.set_edge_color(0, &radioactive);
+    cubito.set_edge_color(6, &radioactive);
+
+    cubito.add_points(&purple);
+    cubito.set_point_color(0, &radioactive);
+    cubito.set_point_color(6, &radioactive);
+
+    SceneNode* cubito_node = new SceneNode(1, &cubito);
+    cubito_node->traslate(Vector3(-0.5f, 0.0f, 0.0f), true);
+
+    Pyramid piramide(0.3f, 0.2f);
+    piramide.add_faces(&golden);
+    piramide.set_face_color(0, &pink);
+    piramide.set_face_color(1, &radioactive);
+    piramide.set_face_color(2, &turquesa);
+    piramide.set_face_color(3, &radioactive);
+    piramide.set_face_color(4, &pink);
+
+    piramide.add_edges(&le_lime);
+    piramide.add_points(&purple);
+    SceneNode* piramide_node = new SceneNode(2, &piramide);
+    piramide_node->traslate(Vector3(0.5f, 0.0f, 0.0f), true);
+
+
+    Cone conito(40, 0.3f, 0.2f);
+    conito.add_faces();
+    conito.set_face_color(0, &pink);
+    conito.set_face_color(1, &radioactive);
+
+    conito.add_edges(&le_lime);
+    conito.add_points(&purple);
+    SceneNode* conito_node = new SceneNode(3, &conito);
+    conito_node->traslate(Vector3(0.0f, -0.5f, 0.0f), true);
+
+    Sphere esferita(40, 0.3f);
+    esferita.add_faces(&golden);
+    esferita.set_face_color(0, &pink);
+    esferita.set_face_color(4, &pink);
+    //esferita.add_edges(&le_lime);
+    //esferita.add_points(&purple);
+
+    SceneNode* sphere_node = new SceneNode(3, &esferita);
+    sphere_node->traslate(Vector3(0.0f, 0.5f, 0.0f), true);
+    
+    Gecko geckito(current_path);
+    geckito.get_root()->traslate(Vector3(0.0f, 0.0f, -2.0f), true);
+
+    Spider aranita(current_path);
+    aranita.get_root()->traslate(Vector3(0.7f, 0.0f, 0.0f), true);
+
+    Tadpole tadpolin(current_path);
+    tadpolin.get_root()->traslate(Vector3(-0.8f, 0.0f, 0.0f), true);
+    
+    Butterfly mariposa(current_path);
+    mariposa.get_root()->traslate(Vector3(0.0f, 0.4f, 0.0f), true);
+	
+	Shrimp shrimpy(current_path);
+	shrimpy.get_root()->traslate(Vector3(0.0f,0.0f,0.8f),true);
+	
+	Bettle carabajito(current_path);
+	carabajito.get_root()->traslate(Vector3(0.0f,-0.8f,0.0f),true);
+
+	Mushroom hongo1(current_path,BIG_MUSHROOM);
+	hongo1.get_root()->traslate(Vector3(-0.7f,-0.8f,0.0f),true);
+	
+	Mushroom honguito1(current_path,LIL_MUSHROOM);
+	honguito1.get_root()->traslate(Vector3(0.7f,-0.8f,0.0f),true);
+	
+	Rock piedras1(current_path);
+	piedras1.get_root()->traslate(Vector3(0.0f, -0.8f, -0.5f),true);
+	
+	RockCave cueva1(current_path);
+	cueva1.get_root()->traslate(Vector3(-2.0f, -0.8f, -0.5f),true);
+
+	Stump tronco1(current_path);
+	tronco1.get_root()->traslate(Vector3(2.0f, -0.8f, -0.5f),true);
+	
+	Bush hojas1(current_path,1);
+	hojas1.get_root()->traslate(Vector3(2.0f, -2.8f, -0.5f),true);
+	
+	Bush hojas2(current_path,2);
+	hojas2.get_root()->traslate(Vector3(2.0f, -1.8f, -0.5f),true);
+	
+	Bush hojas3(current_path,3);
+	hojas3.get_root()->traslate(Vector3(1.0f, -1.8f, -0.5f),true);
+	
+	Bush hojas4(current_path,4);
+	hojas4.get_root()->traslate(Vector3(0.0f, -1.8f, -0.5f),true);
+	
+	Bush hojas5(current_path,5);
+	hojas5.get_root()->traslate(Vector3(-1.0f, -1.8f, -0.5f),true);
+	
+	Bush hojas6(current_path,6);
+	hojas6.get_root()->traslate(Vector3(-2.0f, -1.8f, -0.5f),true);
+	
+	Bush hojas7(current_path,7);
+	hojas7.get_root()->traslate(Vector3(-2.0f, -2.8f, -0.5f),true);
+	
+	Bush hojas8(current_path,8);
+	hojas8.get_root()->traslate(Vector3(-1.0f, -2.8f, -0.5f),true);
+	
+	Bush pasto(current_path,0);
+	pasto.get_root()->traslate(Vector3(-1.0f, -0.8f, -0.5f),true);
+
+
+	Flower flor1(current_path,WHITE); 
+	flor1.get_root()->traslate(Vector3(-2.0f, -0.8f, -1.5f),true);
+	
+	Flower flor2(current_path,RED); 
+	flor2.get_root()->traslate(Vector3(-1.0f, -0.8f, -1.5f),true);
+	
+	Flower flor3(current_path,YELLOW); 
+	flor3.get_root()->traslate(Vector3(0.0f, -0.8f, -1.5f),true);
+	
+	Flower flor4(current_path,BLUE); 
+	flor4.get_root()->traslate(Vector3(1.0f, -0.8f, -1.5f),true);
+	
+	
+	Algae alga(current_path); 
+	alga.get_root()->traslate(Vector3(2.0f, -0.8f, -1.5f),true);
+
+
+	Nenufar lilypad(current_path,NENUFAR); 
+	lilypad.get_root()->traslate(Vector3(-1.0f, -0.8f, 1.5f),true);
+	
+	Nenufar lilypad_flor(current_path,NENUFAR_FLOWER); 
+	lilypad_flor.get_root()->traslate(Vector3(1.0f, -0.8f, 1.5f),true);
+	
+	Bottle botella(current_path); 
+	botella.get_root()->traslate(Vector3(0.0f, -0.8f, -3.5f),true);
+	
+	
+	
+    /*
+    root->add_children(cubito_node);
+    root->add_children(piramide_node);
+    root->add_children(conito_node);
+    root->add_children(sphere_node);
+    */
+    root->add_children(world_sun.light_node);
+    root->add_children(geckito.get_root());
+    root->add_children(aranita.get_root());
+    root->add_children(tadpolin.get_root());
+    root->add_children(mariposa.get_root());
+	root->add_children(shrimpy.get_root());
+	root->add_children(carabajito.get_root());
+	
+	root->add_children(hongo1.get_root());
+	root->add_children(honguito1.get_root());
+	
+	root->add_children(piedras1.get_root());
+	root->add_children(cueva1.get_root());
+	
+	root->add_children(tronco1.get_root());
+	
+	root->add_children(hojas1.get_root());
+	root->add_children(hojas2.get_root());
+	root->add_children(hojas3.get_root());
+	root->add_children(hojas3.get_root());
+	root->add_children(hojas4.get_root());
+	root->add_children(hojas5.get_root());
+	root->add_children(hojas6.get_root());
+	root->add_children(hojas7.get_root());
+	root->add_children(hojas8.get_root());
+	root->add_children(pasto.get_root());
+	
+	
+	root->add_children(flor1.get_root());
+	root->add_children(flor2.get_root());
+	root->add_children(flor3.get_root());
+	root->add_children(flor4.get_root());
+	
+	root->add_children(alga.get_root());
+	
+	root->add_children(lilypad.get_root());
+	root->add_children(lilypad_flor.get_root());
+	
+	root->add_children(botella.get_root());
+	
+
+	
+	
+
+    // Bucle
+	glPointSize(10.0f);
+
+    glEnable(GL_DEPTH_TEST);
+
+    float delta_time = 0.0f;
+    float last_frame = 0.0f;
+	
+    auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 100.0f);
+    shaders.use_shader("UNIQUE");
+    shaders.set_mat4("UNIQUE", "projection", projection_matrix);
+    
+    
+
+    shaders.use_shader("LIGHT_SHADER");
+    shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
+    while(!glfwWindowShouldClose(window))
+    {
+        float current_frame = glfwGetTime();
+        delta_time = std::min(current_frame - last_frame, 0.05f);
+        last_frame = current_frame;
+
+
+        camera_animations.process_animations_camera(camera_world, nodes, delta_time);
+        light_animations.process_animations({world_sun.light_node}, delta_time);
+
+
+        glClearColor(background_color.r, background_color.g, background_color.b, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        auto view_matrix = camera_world.get_look_at();
+        auto camera_pos = camera_world.pos;
+
+        shaders.use_shader("UNIQUE");
+        shaders.set_mat4("UNIQUE", "view", view_matrix);
+        shaders.set_vec3("UNIQUE", "view_pos", camera_pos.x, camera_pos.y, camera_pos.z);
+        shaders.set_light("UNIQUE", "light", &world_sun);
+
+
+        shaders.use_shader("LIGHT_SHADER");
+        shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);
+		
+		root->draw(shaders, textures, Matrix_4());
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+    
+    // Delete - optional
+    shaders.delete_programs();
+    glfwTerminate();
+    return 0;
+}
