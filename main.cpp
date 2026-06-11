@@ -27,7 +27,7 @@ Integrantes:
 #include "animation_list.h"
 #include "camera.h"
 #include "texture_list.h"
-#include "light.h"
+#include "light_preset.h"
 
 #include "gecko.h"
 #include "spider.h"
@@ -67,11 +67,14 @@ Camera camera_world;
 AnimationList camera_animations;
 AnimationList light_animations;
 std::vector<SceneNode*> nodes;
+std::vector<LightPreset*> presets;
+
+SceneNode* root = new SceneNode(0);
 
 float offset = 0.1f;
 float angle = 10.0f;
 bool is_moving = true;
-int current_id = 0;
+int current_id = 0, preset_id = 0;
 
 void traslate(const Vector3& in_m)
 {
@@ -137,29 +140,29 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         if (key ==GLFW_KEY_ESCAPE)
             glfwSetWindowShouldClose(in_window, true);
         else if ( key == GLFW_KEY_A )
-            traslate(Vector3(-offset, 0.0f, 0.0f));
+            camera_world.traslate(Vector3(-offset, 0.0f, 0.0f));
         else if ( key == GLFW_KEY_D)
-            traslate(Vector3(offset, 0.0f, 0.0f));
+            camera_world.traslate(Vector3(offset, 0.0f, 0.0f));
         else if ( key == GLFW_KEY_W)
-            traslate(Vector3(0.0f, offset, 0.0f));
+            camera_world.traslate(Vector3(0.0f, offset, 0.0f));
         else if ( key == GLFW_KEY_S)
-            traslate(Vector3(0.0f, -offset, 0.0f));
+            camera_world.traslate(Vector3(0.0f, -offset, 0.0f));
         else if ( key == GLFW_KEY_I)
-            rotate_c_x(angle);
+            camera_world.orbit_x(angle);
         else if ( key == GLFW_KEY_O)
-            rotate_c_x(-angle);
+            camera_world.orbit_x(-angle);
         else if ( key == GLFW_KEY_K)
-            rotate_c_y(angle);
+            camera_world.orbit_y(angle);
         else if ( key == GLFW_KEY_L)
-            rotate_c_y(-angle);
+            camera_world.orbit_y(-angle);
         else if ( key == GLFW_KEY_N)
-            rotate_c_z(angle);
+            camera_world.orbit_z(angle);
         else if ( key == GLFW_KEY_M)
-            rotate_c_z(-angle);
+            camera_world.orbit_z(-angle);
         else if ( key == GLFW_KEY_X)
-            scale(1.0f + offset);
+            camera_world.zoom(offset);
         else if ( key == GLFW_KEY_C)
-            scale(1.0f + -offset);
+            camera_world.zoom(-offset);
         else if ( key == GLFW_KEY_T)
             is_moving = !is_moving;
         else if ( key == GLFW_KEY_V )
@@ -167,12 +170,44 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         else if ( key == GLFW_KEY_B)
             camera_animations.add_animation({AnimationInfo(0, 180, "ORBIT_X", "")}, 3.0);
         else if ( key == GLFW_KEY_F)
-            light_animations.add_animation({AnimationInfo(ALL_IDs, 180, "ROTATE_C_Z", "PUBLIC")}, 2.0);
+			light_animations.add_animation({AnimationInfo(ALL_IDs, 180, "ROTATE_C_X", "PUBLIC")}, 2.0);
+        else if ( key == GLFW_KEY_G )
+        {
+            // Delete current nodes from root
+            for (auto ptr: presets[preset_id]->get_point_lights_ptr())
+            {
+                for (auto it = root->children.begin(); it != root->children.end(); it++)
+                {
+                    if (*it == ptr)
+                    {
+                        root->children.erase(it);
+                        break;
+                    }
+                }
+            }
+
+            preset_id++;
+            if (preset_id >= presets.size())
+                preset_id = 0;
+            
+
+            // Add new light nodes from root
+            for (auto ptr: presets[preset_id]->get_point_lights_ptr())
+                root->add_children(ptr);
+
+            std::cout << "Current light preset: " << preset_id << "\n";
+        }
+
+        /*
+        else if ( key == GLFW_KEY_X)
+            scale(1.0f + offset);
+        else if ( key == GLFW_KEY_C)
+            scale(1.0f + -offset);
         else if ( key == GLFW_KEY_LEFT )
         {
             current_id --;
             if (current_id < 0)
-                current_id = nodes.size() -1;
+            current_id = nodes.size() -1;
             
             std::cout << "S_size: " << nodes.size() << " << current_id: " << current_id << "\n";
         }
@@ -180,10 +215,11 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         {
             current_id ++;
             if (current_id >= nodes.size())
-                current_id = 0;
+            current_id = 0;
             
             std::cout << "S_size: " << nodes.size() << " << current_id: " << current_id << "\n";
         }
+        */
     }	
 }
 
@@ -231,14 +267,21 @@ int main()
     
 
     TextureList textures(current_path);
-    Light world_sun;
-    world_sun.ambient = Vector3(0.3f, 0.3f, 0.3f);
-    world_sun.diffuse = Vector3(1.0f, 0.9f, 0.9f);
-    world_sun.specular = Vector3(1.0f, 1.0f, 1.0f);
+	
 
-    world_sun.light_node->traslate(Vector3(0.0f, 1.0f, 0.0f), true);
+    LightPreset day = get_day();
+    LightPreset night = get_night();
+    LightPreset cyber_punk = get_cyberpunk();
+    LightPreset desert = get_desert();
 
+    presets.push_back(&day);
+    presets.push_back(&night);
+    presets.push_back(&cyber_punk);
+    presets.push_back(&desert);
     
+    
+    
+	
     // Colors
     Color pink(255.0f, 0.0f, 255.0f, true);
     Color blue(10.0f, 15.0f, 40.0f, true);
@@ -259,9 +302,7 @@ int main()
 
     // Figuras
 	glLineWidth(10.0f);
-
     
-    SceneNode* root = new SceneNode(0);
 	nodes.push_back(root);
 	
     Cube cubito(0.3f);
@@ -415,7 +456,10 @@ int main()
     root->add_children(conito_node);
     root->add_children(sphere_node);
     */
-    root->add_children(world_sun.light_node);
+
+    for (auto ptr: presets[current_id]->get_point_lights_ptr())
+        root->add_children(ptr);
+    
     root->add_children(geckito.get_root());
     root->add_children(aranita.get_root());
     root->add_children(tadpolin.get_root());
@@ -483,7 +527,7 @@ int main()
 
 
         camera_animations.process_animations_camera(camera_world, nodes, delta_time);
-        light_animations.process_animations({world_sun.light_node}, delta_time);
+        light_animations.process_animations(presets[preset_id]->get_point_lights_ptr(), delta_time);
 
 
         glClearColor(background_color.r, background_color.g, background_color.b, 1.0f);
@@ -495,7 +539,9 @@ int main()
         shaders.use_shader("UNIQUE");
         shaders.set_mat4("UNIQUE", "view", view_matrix);
         shaders.set_vec3("UNIQUE", "view_pos", camera_pos.x, camera_pos.y, camera_pos.z);
-        shaders.set_light("UNIQUE", "light", &world_sun);
+        
+		presets[preset_id]->apply(shaders, background_color);
+		
 
 
         shaders.use_shader("LIGHT_SHADER");
