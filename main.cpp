@@ -34,6 +34,30 @@ Integrantes:
 #include "tadpole.h"
 #include "butterfly.h"
 #include "shrimp.h"
+#include "bettle.h"
+#include "mushroom.h"
+#include "rock.h"
+#include "rockCave.h"
+#include "stump.h"
+#include "bush.h"
+#include "flower.h"
+#include "algae.h"
+#include "nenufar.h"
+#include "bottle.h"
+
+
+
+
+#define BIG_MUSHROOM 1
+#define LIL_MUSHROOM 0
+
+#define NENUFAR_FLOWER 1
+#define NENUFAR 0
+
+#define WHITE 0
+#define RED 1
+#define YELLOW 2
+#define BLUE 3
 
 
 
@@ -303,15 +327,88 @@ int main()
     aranita.get_root()->traslate(Vector3(0.7f, 0.0f, 0.0f), true);
 
     Tadpole tadpolin(current_path);
-    tadpolin.get_root()->traslate(Vector3(-0.7f, 0.0f, 0.0f), true);
+    tadpolin.get_root()->traslate(Vector3(-0.8f, 0.0f, 0.0f), true);
     
     Butterfly mariposa(current_path);
     mariposa.get_root()->traslate(Vector3(0.0f, 0.4f, 0.0f), true);
 	
 	Shrimp shrimpy(current_path);
 	shrimpy.get_root()->traslate(Vector3(0.0f,0.0f,0.8f),true);
+	
+	Bettle carabajito(current_path);
+	carabajito.get_root()->traslate(Vector3(0.0f,-0.8f,0.0f),true);
+
+	Mushroom hongo1(current_path,BIG_MUSHROOM);
+	hongo1.get_root()->traslate(Vector3(-0.7f,-0.8f,0.0f),true);
+	
+	Mushroom honguito1(current_path,LIL_MUSHROOM);
+	honguito1.get_root()->traslate(Vector3(0.7f,-0.8f,0.0f),true);
+	
+	Rock piedras1(current_path);
+	piedras1.get_root()->traslate(Vector3(0.0f, -0.8f, -0.5f),true);
+	
+	RockCave cueva1(current_path);
+	cueva1.get_root()->traslate(Vector3(-2.0f, -0.8f, -0.5f),true);
+
+	Stump tronco1(current_path);
+	tronco1.get_root()->traslate(Vector3(2.0f, -0.8f, -0.5f),true);
+	
+	Bush hojas1(current_path,1);
+	hojas1.get_root()->traslate(Vector3(2.0f, -2.8f, -0.5f),true);
+	
+	Bush hojas2(current_path,2);
+	hojas2.get_root()->traslate(Vector3(2.0f, -1.8f, -0.5f),true);
+	
+	Bush hojas3(current_path,3);
+	hojas3.get_root()->traslate(Vector3(1.0f, -1.8f, -0.5f),true);
+	
+	Bush hojas4(current_path,4);
+	hojas4.get_root()->traslate(Vector3(0.0f, -1.8f, -0.5f),true);
+	
+	Bush hojas5(current_path,5);
+	hojas5.get_root()->traslate(Vector3(-1.0f, -1.8f, -0.5f),true);
+	
+	Bush hojas6(current_path,6);
+	hojas6.get_root()->traslate(Vector3(-2.0f, -1.8f, -0.5f),true);
+	
+	Bush hojas7(current_path,7);
+	hojas7.get_root()->traslate(Vector3(-2.0f, -2.8f, -0.5f),true);
+	
+	Bush hojas8(current_path,8);
+	hojas8.get_root()->traslate(Vector3(-1.0f, -2.8f, -0.5f),true);
+	
+	Bush pasto(current_path,0);
+	pasto.get_root()->traslate(Vector3(-1.0f, -0.8f, -0.5f),true);
 
 
+	Flower flor1(current_path,WHITE); 
+	flor1.get_root()->traslate(Vector3(-2.0f, -0.8f, -1.5f),true);
+	
+	Flower flor2(current_path,RED); 
+	flor2.get_root()->traslate(Vector3(-1.0f, -0.8f, -1.5f),true);
+	
+	Flower flor3(current_path,YELLOW); 
+	flor3.get_root()->traslate(Vector3(0.0f, -0.8f, -1.5f),true);
+	
+	Flower flor4(current_path,BLUE); 
+	flor4.get_root()->traslate(Vector3(1.0f, -0.8f, -1.5f),true);
+	
+	
+	Algae alga(current_path); 
+	alga.get_root()->traslate(Vector3(2.0f, -0.8f, -1.5f),true);
+
+
+	Nenufar lilypad(current_path,NENUFAR); 
+	lilypad.get_root()->traslate(Vector3(-1.0f, -0.8f, 1.5f),true);
+	
+	Nenufar lilypad_flor(current_path,NENUFAR_FLOWER); 
+	lilypad_flor.get_root()->traslate(Vector3(1.0f, -0.8f, 1.5f),true);
+	
+	Bottle botella(current_path); 
+	botella.get_root()->traslate(Vector3(0.0f, -0.8f, -3.5f),true);
+	
+	
+	
     /*
     root->add_children(cubito_node);
     root->add_children(piramide_node);
@@ -324,6 +421,43 @@ int main()
     root->add_children(tadpolin.get_root());
     root->add_children(mariposa.get_root());
 	root->add_children(shrimpy.get_root());
+	root->add_children(carabajito.get_root());
+	
+	root->add_children(hongo1.get_root());
+	root->add_children(honguito1.get_root());
+	
+	root->add_children(piedras1.get_root());
+	root->add_children(cueva1.get_root());
+	
+	root->add_children(tronco1.get_root());
+	
+	root->add_children(hojas1.get_root());
+	root->add_children(hojas2.get_root());
+	root->add_children(hojas3.get_root());
+	root->add_children(hojas3.get_root());
+	root->add_children(hojas4.get_root());
+	root->add_children(hojas5.get_root());
+	root->add_children(hojas6.get_root());
+	root->add_children(hojas7.get_root());
+	root->add_children(hojas8.get_root());
+	root->add_children(pasto.get_root());
+	
+	
+	root->add_children(flor1.get_root());
+	root->add_children(flor2.get_root());
+	root->add_children(flor3.get_root());
+	root->add_children(flor4.get_root());
+	
+	root->add_children(alga.get_root());
+	
+	root->add_children(lilypad.get_root());
+	root->add_children(lilypad_flor.get_root());
+	
+	root->add_children(botella.get_root());
+	
+
+	
+	
 
     // Bucle
 	glPointSize(10.0f);

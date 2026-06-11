@@ -11,72 +11,77 @@ class Gecko
 {
 public:
     Gecko(std::filesystem::path in_current_path):
-        green(84, 161, 69, true), black(0, 0, 0, false), material()
+        green(84, 161, 69, true), black(0, 0, 0, false), skin_material(), eye_material()
     {
-        /*
-        material.ambient = Vector3(0.1f, 0.3f, 0.05f);
-        material.diffuse = Vector3(0.2f, 0.7f, 0.1f);
-        material.specular = Vector3(0.1f, 0.1f, 0.1f);
-        material.shininess = 8.0f;
-        */
+        
+		skin_material.ambient = Vector3(0.08f, 0.10f, 0.05f);
+		skin_material.diffuse = Vector3(0.35f, 0.42f, 0.18f);
+		skin_material.specular = Vector3(0.20f, 0.22f, 0.15f);
+		skin_material.shininess = 30.0f;
+		
+		
+        eye_material.ambient = Vector3(0.05f, 0.05f, 0.05f);
+        eye_material.diffuse = Vector3(0.1f, 0.1f, 0.1f);
+        eye_material.specular = Vector3(0.9f, 0.9f, 0.9f);
+        eye_material.shininess = 80.0f;
 
         in_current_path = in_current_path / "models" / "gecko" ;
 
         Mesh3D* head_mesh = new Mesh3D(in_current_path, "cabeza_GECKO.obj");
         head_mesh->add_faces(&green);
-        head_mesh->set_material(&material);
+        head_mesh->set_material(&skin_material);
 
         Mesh3D* eyes_mesh = new Mesh3D(in_current_path, "ojos_GECKO.obj");
         eyes_mesh->add_faces(&black);
-        eyes_mesh->set_material(&material);
+        eyes_mesh->set_material(&eye_material);
 
         Mesh3D* tail_1_mesh = new Mesh3D(in_current_path, "cola_1_GECKO.obj");
         tail_1_mesh->add_faces(&green);
-        tail_1_mesh->set_material(&material);
+        tail_1_mesh->set_material(&skin_material);
 
         Mesh3D* tail_2_mesh = new Mesh3D(in_current_path, "cola_2_GECKO.obj");
         tail_2_mesh->add_faces(&green);
-        tail_2_mesh->set_material(&material);
+        tail_2_mesh->set_material(&skin_material);
 
         Mesh3D* tail_3_mesh = new Mesh3D(in_current_path, "cola_3_GECKO.obj");
         tail_3_mesh->add_faces(&green);
-        tail_3_mesh->set_material(&material);
+        tail_3_mesh->set_material(&skin_material);
 
         Mesh3D* torso_mesh = new Mesh3D(in_current_path, "torso_GECKO.obj");
         torso_mesh->add_faces(&green);
-        torso_mesh->set_material(&material);
+        torso_mesh->set_material(&skin_material);
 
         Mesh3D* pata_A_D_1_mesh = new Mesh3D(in_current_path, "pata_A_D_1_GECKO.obj");
         pata_A_D_1_mesh->add_faces(&green);
-        pata_A_D_1_mesh->set_material(&material);
+        pata_A_D_1_mesh->set_material(&skin_material);
 
         Mesh3D* pata_A_D_2_mesh = new Mesh3D(in_current_path, "pata_A_D_2_GECKO.obj");
         pata_A_D_2_mesh->add_faces(&green);
-        pata_A_D_2_mesh->set_material(&material);
+        pata_A_D_2_mesh->set_material(&skin_material);
 
         Mesh3D* pata_A_I_1_mesh = new Mesh3D(in_current_path, "pata_A_I_1_GECKO.obj");
         pata_A_I_1_mesh->add_faces(&green);
-        pata_A_I_1_mesh->set_material(&material);
+        pata_A_I_1_mesh->set_material(&skin_material);
 
         Mesh3D* pata_A_I_2_mesh = new Mesh3D(in_current_path, "pata_A_I_2_GECKO.obj");
         pata_A_I_2_mesh->add_faces(&green);
-        pata_A_I_2_mesh->set_material(&material);
+        pata_A_I_2_mesh->set_material(&skin_material);
 
         Mesh3D* pata_D_D_1_mesh = new Mesh3D(in_current_path, "pata_D_D_1_GECKO.obj");
         pata_D_D_1_mesh->add_faces(&green);
-        pata_D_D_1_mesh->set_material(&material);
+        pata_D_D_1_mesh->set_material(&skin_material);
 
         Mesh3D* pata_D_D_2_mesh = new Mesh3D(in_current_path, "pata_D_D_2_GECKO.obj");
         pata_D_D_2_mesh->add_faces(&green);
-        pata_D_D_2_mesh->set_material(&material);
+        pata_D_D_2_mesh->set_material(&skin_material);
 
         Mesh3D* pata_D_I_1_mesh = new Mesh3D(in_current_path, "pata_D_I_1_GECKO.obj");
         pata_D_I_1_mesh->add_faces(&green);
-        pata_D_I_1_mesh->set_material(&material);
+        pata_D_I_1_mesh->set_material(&skin_material);
 
         Mesh3D* pata_D_I_2_mesh = new Mesh3D(in_current_path, "pata_D_I_2_GECKO.obj");
         pata_D_I_2_mesh->add_faces(&green);
-        pata_D_I_2_mesh->set_material(&material);
+        pata_D_I_2_mesh->set_material(&skin_material);
 
 
         // --- Crear nodos ---
@@ -141,7 +146,6 @@ public:
 
         torso->add_children(leg_D_I_1);
         leg_D_I_1->add_children(leg_D_I_2);
-
     }
 
     void draw(ShaderList& in_shaders, TextureList& in_texturs, const Matrix_4& in_mat)
@@ -162,7 +166,7 @@ private:
                                  *tail_1, *tail_2, *tail_3;
 
     Color green, black;
-    Material material;
+    Material skin_material, eye_material;
 };
 
 
