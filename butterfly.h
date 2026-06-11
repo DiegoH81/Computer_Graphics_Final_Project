@@ -17,11 +17,10 @@ public:
         in_current_path = in_current_path / "models" / "butterfly" ;
 
         
-        material.ambient = Vector3(0.0f, 0.0f, 0.15f);
-        material.diffuse = Vector3(0.05f, 0.05f, 0.6f);
-        material.specular = Vector3(0.2f, 0.2f, 0.2f);
-        material.shininess = 16.0f;
-        
+        material.ambient = Vector3(0.18f, 0.08f, 0.01f);
+        material.diffuse = Vector3(0.75f, 0.35f, 0.02f);
+        material.specular = Vector3(0.15f, 0.10f, 0.05f);
+        material.shininess = 14.0f;
 
         Mesh3D* torso_mesh = new Mesh3D(in_current_path, "torso_BUTTERFLY.obj");
         torso_mesh->add_faces(&black);
