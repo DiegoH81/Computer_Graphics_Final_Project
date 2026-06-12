@@ -70,6 +70,7 @@ std::vector<SceneNode*> nodes;
 std::vector<LightPreset*> presets;
 
 SceneNode* root = new SceneNode(0);
+SceneNode* glass_root = new SceneNode(1);
 Gecko* ptr = nullptr;
 
 float offset = 0.1f;
@@ -132,6 +133,20 @@ void rotate_c_z(float angle)
 void frame_buffer_size_call_back(GLFWwindow* in_window, int in_w, int in_h)
 {
     glViewport(0, 0, in_w, in_h);
+
+    auto projection_matrix = get_perspective(45.0f, float(in_w)/float(in_h), 0.1f, 100.0f);
+
+    ShaderList* shaders = static_cast<ShaderList*>(glfwGetWindowUserPointer(in_window));
+
+    shaders->use_shader("UNIQUE");
+    shaders->set_mat4("UNIQUE", "projection", projection_matrix);
+
+    shaders->use_shader("LIGHT_SHADER");
+    shaders->set_mat4("LIGHT_SHADER", "projection", projection_matrix);
+
+    shaders->use_shader("GLASS_SHADER");
+    shaders->set_mat4("GLASS_SHADER", "projection", projection_matrix);
+
 }
 
 void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, int mods)
@@ -171,7 +186,7 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         else if ( key == GLFW_KEY_B)
             camera_animations.add_animation({AnimationInfo(0, 180, "ORBIT_X", "")}, 3.0);
         else if ( key == GLFW_KEY_F)
-			light_animations.add_animation({AnimationInfo(ALL_IDs, 180, "ROTATE_C_X", "PUBLIC")}, 2.0);
+			light_animations.add_animation({AnimationInfo(ALL_IDs, 180, "ROTATE_C_Z", "PUBLIC")}, 2.0);
         else if ( key == GLFW_KEY_G )
         {
             // Delete current nodes from root
@@ -198,29 +213,6 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
 
             std::cout << "Current light preset: " << preset_id << "\n";
         }
-
-        /*
-        else if ( key == GLFW_KEY_X)
-            scale(1.0f + offset);
-        else if ( key == GLFW_KEY_C)
-            scale(1.0f + -offset);
-        else if ( key == GLFW_KEY_LEFT )
-        {
-            current_id --;
-            if (current_id < 0)
-            current_id = nodes.size() -1;
-            
-            std::cout << "S_size: " << nodes.size() << " << current_id: " << current_id << "\n";
-        }
-        else if ( key == GLFW_KEY_RIGHT )
-        {
-            current_id ++;
-            if (current_id >= nodes.size())
-            current_id = 0;
-            
-            std::cout << "S_size: " << nodes.size() << " << current_id: " << current_id << "\n";
-        }
-        */
     }	
 }
 
@@ -234,6 +226,8 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    glfwWindowHint(GLFW_SAMPLES, 4);
 
     GLFWwindow* window = glfwCreateWindow(width, height, "Animation", nullptr, nullptr);
 
@@ -265,7 +259,10 @@ int main()
     shaders.create_shader("UNIQUE", "normal_shader.vs", "normal_fragment.fs");
     // Light Shader
     shaders.create_shader("LIGHT_SHADER", "light_shader.vs", "light_fragment.fs");
+    // Glass Shader
+    shaders.create_shader("GLASS_SHADER", "normal_shader.vs", "glass_fragment.fs");
     
+    glfwSetWindowUserPointer(window, &shaders);
 
     TextureList textures(current_path);
 	
@@ -274,7 +271,9 @@ int main()
     LightPreset night = get_night();
     LightPreset cyber_punk = get_cyberpunk();
     LightPreset desert = get_desert();
+    LightPreset day_cicle = get_day_cicle();
 
+    presets.push_back(&day_cicle);
     presets.push_back(&day);
     presets.push_back(&night);
     presets.push_back(&cyber_punk);
@@ -448,7 +447,7 @@ int main()
 	lilypad_flor.get_root()->traslate(Vector3(1.0f, -0.8f, 1.5f),true);
 	
 	Bottle botella(current_path); 
-	botella.get_root()->traslate(Vector3(0.0f, -0.8f, -3.5f),true);
+	botella.get_root()->traslate(Vector3(0.0f, -2.8f, -3.5f),true);
 	
 	
 	
@@ -499,16 +498,14 @@ int main()
 	root->add_children(lilypad.get_root());
 	root->add_children(lilypad_flor.get_root());
 	
-	root->add_children(botella.get_root());
+	glass_root->add_children(botella.get_root());	
 	
-
-	
-	
-
     // Bucle
 	glPointSize(10.0f);
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);  
+    //glEnable(GL_FRAMEBUFFER_SRGB); 
 
     float delta_time = 0.0f;
     float last_frame = 0.0f;
@@ -516,11 +513,13 @@ int main()
     auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 100.0f);
     shaders.use_shader("UNIQUE");
     shaders.set_mat4("UNIQUE", "projection", projection_matrix);
-    
-    
 
     shaders.use_shader("LIGHT_SHADER");
     shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
+
+    shaders.use_shader("GLASS_SHADER");
+    shaders.set_mat4("GLASS_SHADER", "projection", projection_matrix);
+
     PlaneSurface plane;
     WaveSurface wave;
     MountainSurface mountain;
@@ -541,6 +540,17 @@ int main()
 
         auto view_matrix = camera_world.get_look_at();
         auto camera_pos = camera_world.pos;
+
+        presets[preset_id]->apply(shaders, background_color);
+        if (presets[preset_id]->has_animation)
+            presets[preset_id]->update_cycle();
+
+        shaders.use_shader("LIGHT_SHADER");
+        shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);
+        
+        shaders.use_shader("GLASS_SHADER");
+        shaders.set_mat4("GLASS_SHADER", "view", view_matrix);
+        shaders.set_vec3("GLASS_SHADER", "view_pos", camera_pos.x, camera_pos.y, camera_pos.z);
 
         shaders.use_shader("UNIQUE");
         shaders.set_mat4("UNIQUE", "view", view_matrix);
@@ -572,6 +582,15 @@ int main()
 		root->draw(shaders, textures, Matrix_4());
 
         geckito.update(delta_time, plane);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDepthMask(GL_FALSE);
+
+        glass_root->draw(shaders, textures, Matrix_4());
+
+        glDepthMask(GL_TRUE);
+        glDisable(GL_BLEND);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

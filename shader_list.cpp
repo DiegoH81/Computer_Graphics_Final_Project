@@ -60,6 +60,7 @@ void ShaderList::delete_programs()
 void ShaderList::set_vec2(const std::string& shader_name, const std::string& uniform_name, float x, float y)
 {
     unsigned int current_program = shader_programs[shader_name];
+    glUseProgram(current_program);
     int uniform = glGetUniformLocation(current_program, uniform_name.c_str());
     glUniform2f(uniform, x, y);
 }
@@ -67,6 +68,7 @@ void ShaderList::set_vec2(const std::string& shader_name, const std::string& uni
 void ShaderList::set_vec3(const std::string& shader_name, const std::string& uniform_name, float x, float y, float z)
 {
     unsigned int current_program = shader_programs[shader_name];
+    glUseProgram(current_program);
     int uniform = glGetUniformLocation(current_program, uniform_name.c_str());
     glUniform3f(uniform, x, y, z);
 }
@@ -74,6 +76,7 @@ void ShaderList::set_vec3(const std::string& shader_name, const std::string& uni
 void ShaderList::set_mat4(const std::string& shader_name, const std::string& uniform_name, const Matrix_4& in_matrix)
 {
     unsigned int current_program = shader_programs[shader_name];
+    glUseProgram(current_program);
     int uniform = glGetUniformLocation(current_program, uniform_name.c_str());
     glUniformMatrix4fv(uniform, 1, GL_TRUE, in_matrix.matrix.data());
 }
@@ -86,14 +89,15 @@ unsigned int ShaderList::get_cur_prog(const std::string& shader_name)
 void ShaderList::set_float(const std::string& shader_name, const std::string& uniform_name, float val)
 {
     unsigned int current_program = shader_programs[shader_name];
+    glUseProgram(current_program);
     int uniform = glGetUniformLocation(current_program, uniform_name.c_str());
-
     glUniform1f(uniform, val);
 }
 
 void ShaderList::set_int(const std::string& shader_name, const std::string& uniform_name, int val)
 {
     unsigned int current_program = shader_programs[shader_name];
+    glUseProgram(current_program);
     int uniform = glGetUniformLocation(current_program, uniform_name.c_str());
 
     glUniform1i(uniform, val);
@@ -102,6 +106,7 @@ void ShaderList::set_int(const std::string& shader_name, const std::string& unif
 void ShaderList::set_texture(const std::string& shader_name, const std::string& uniform_name, int slot)
 {
     unsigned int current_program = shader_programs[shader_name];
+    glUseProgram(current_program);
     int uniform = glGetUniformLocation(current_program, uniform_name.c_str());
     glUniform1i(uniform, slot);
 }
@@ -109,6 +114,7 @@ void ShaderList::set_texture(const std::string& shader_name, const std::string& 
 void ShaderList::set_bool(const std::string& shader_name, const std::string& uniform_name, bool in_bool)
 {
     unsigned int current_program = shader_programs[shader_name];
+    glUseProgram(current_program);
     int uniform = glGetUniformLocation(current_program, uniform_name.c_str());
     glUniform1i(uniform, in_bool? 1 : 0);
 }
@@ -116,6 +122,7 @@ void ShaderList::set_bool(const std::string& shader_name, const std::string& uni
 void ShaderList::set_material(const std::string& shader_name, const std::string& uniform_name, Material* in_material)
 {
     unsigned int current_program = shader_programs[shader_name];
+    glUseProgram(current_program);
 
     int ambient = glGetUniformLocation(current_program, (uniform_name + ".ambient").c_str());
     int diffuse = glGetUniformLocation(current_program, (uniform_name + ".diffuse").c_str());
