@@ -132,6 +132,20 @@ void rotate_c_z(float angle)
 void frame_buffer_size_call_back(GLFWwindow* in_window, int in_w, int in_h)
 {
     glViewport(0, 0, in_w, in_h);
+
+    auto projection_matrix = get_perspective(45.0f, float(in_w)/float(in_h), 0.1f, 100.0f);
+
+    ShaderList* shaders = static_cast<ShaderList*>(glfwGetWindowUserPointer(in_window));
+
+    shaders->use_shader("UNIQUE");
+    shaders->set_mat4("UNIQUE", "projection", projection_matrix);
+
+    shaders->use_shader("LIGHT_SHADER");
+    shaders->set_mat4("LIGHT_SHADER", "projection", projection_matrix);
+
+    shaders->use_shader("GLASS_SHADER");
+    shaders->set_mat4("GLASS_SHADER", "projection", projection_matrix);
+
 }
 
 void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, int mods)
@@ -171,7 +185,7 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         else if ( key == GLFW_KEY_B)
             camera_animations.add_animation({AnimationInfo(0, 180, "ORBIT_X", "")}, 3.0);
         else if ( key == GLFW_KEY_F)
-			light_animations.add_animation({AnimationInfo(ALL_IDs, 180, "ROTATE_C_X", "PUBLIC")}, 2.0);
+			light_animations.add_animation({AnimationInfo(ALL_IDs, 180, "ROTATE_C_Z", "PUBLIC")}, 2.0);
         else if ( key == GLFW_KEY_G )
         {
             // Delete current nodes from root
@@ -198,29 +212,6 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
 
             std::cout << "Current light preset: " << preset_id << "\n";
         }
-
-        /*
-        else if ( key == GLFW_KEY_X)
-            scale(1.0f + offset);
-        else if ( key == GLFW_KEY_C)
-            scale(1.0f + -offset);
-        else if ( key == GLFW_KEY_LEFT )
-        {
-            current_id --;
-            if (current_id < 0)
-            current_id = nodes.size() -1;
-            
-            std::cout << "S_size: " << nodes.size() << " << current_id: " << current_id << "\n";
-        }
-        else if ( key == GLFW_KEY_RIGHT )
-        {
-            current_id ++;
-            if (current_id >= nodes.size())
-            current_id = 0;
-            
-            std::cout << "S_size: " << nodes.size() << " << current_id: " << current_id << "\n";
-        }
-        */
     }	
 }
 
@@ -270,6 +261,7 @@ int main()
     // Glass Shader
     shaders.create_shader("GLASS_SHADER", "normal_shader.vs", "glass_fragment.fs");
     
+    glfwSetWindowUserPointer(window, &shaders);
 
     TextureList textures(current_path);
 	
@@ -278,7 +270,9 @@ int main()
     LightPreset night = get_night();
     LightPreset cyber_punk = get_cyberpunk();
     LightPreset desert = get_desert();
+    LightPreset day_cicle = get_day_cicle();
 
+    presets.push_back(&day_cicle);
     presets.push_back(&day);
     presets.push_back(&night);
     presets.push_back(&cyber_punk);
@@ -542,6 +536,8 @@ int main()
         auto camera_pos = camera_world.pos;
 
         presets[preset_id]->apply(shaders, background_color);
+        if (presets[preset_id]->has_animation)
+            presets[preset_id]->update_cycle();
 
         shaders.use_shader("LIGHT_SHADER");
         shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);

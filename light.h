@@ -20,23 +20,15 @@
 class Light
 {
 public:
-    SceneNode* light_node;
     Vector3 ambient, diffuse, specular;
 
     Light():
         ambient(), diffuse(), specular()
     {
-        Cube* light_cube = new Cube(0.1f);
-        light_cube->add_faces();
-
-        light_cube->set_shader_name(LIGHT_SHADER_NAME);
-
-        light_node = new SceneNode(-1, light_cube);
-
         shader_names.push_back("UNIQUE");
         shader_names.push_back("GLASS_SHADER");
     }
-	
+    
 	virtual void apply(ShaderList& shaders, int index) = 0;
 
 protected:
@@ -66,8 +58,17 @@ class PointLight : public Light
 {
 public:
     float constant, linear, quadratic;
+    SceneNode* light_node;
 
-    PointLight() : Light(), constant(1.0f), linear(0.09f), quadratic(0.032f) {}
+    PointLight() : Light(), constant(1.0f), linear(0.09f), quadratic(0.032f)
+    {
+        Cube* light_cube = new Cube(0.1f);
+        light_cube->add_faces();
+
+        light_cube->set_shader_name(LIGHT_SHADER_NAME);
+
+        light_node = new SceneNode(-1, light_cube);
+    }
 
     void apply(ShaderList& shaders, int index) override
     {
@@ -93,8 +94,17 @@ class SpotLight : public Light
 public:
     Vector3 direction;
     float cut_off, outer_cut_off;
+    SceneNode* light_node;
 
-    SpotLight() : Light(), direction(), cut_off(0.0f), outer_cut_off(0.0f) {}
+    SpotLight() : Light(), direction(), cut_off(0.0f), outer_cut_off(0.0f)
+    {
+        Cube* light_cube = new Cube(0.1f);
+        light_cube->add_faces();
+
+        light_cube->set_shader_name(LIGHT_SHADER_NAME);
+
+        light_node = new SceneNode(-1, light_cube);
+    }
 
     void apply(ShaderList& shaders, int index) override
     {
