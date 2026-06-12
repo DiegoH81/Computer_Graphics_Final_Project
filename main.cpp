@@ -523,6 +523,8 @@ int main()
     shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
     PlaneSurface plane;
     WaveSurface wave;
+    MountainSurface mountain;
+
     while(!glfwWindowShouldClose(window))
     {
         float current_frame = glfwGetTime();
@@ -550,26 +552,26 @@ int main()
 
         shaders.use_shader("LIGHT_SHADER");
         shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);
-		        // En el game loop, antes de root->draw(...):
+
         float spd = 1.5f * delta_time;
         float rot  = 60.0f * delta_time;
 
-        if (glfwGetKey(window, GLFW_KEY_UP)    == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
             geckito.move(Vector3(0.0f, 0.0f, -spd));
-        if (glfwGetKey(window, GLFW_KEY_DOWN)  == GLFW_PRESS)
-            geckito.move(Vector3(0.0f, 0.0f,  spd));
-        if (glfwGetKey(window, GLFW_KEY_LEFT)  == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+            geckito.move(Vector3(0.0f, 0.0f, spd));
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
             geckito.move(Vector3(-spd, 0.0f, 0.0f));
         if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
             geckito.move(Vector3( spd, 0.0f, 0.0f));
-        if (glfwGetKey(window, GLFW_KEY_Q)     == GLFW_PRESS)
-            geckito.rotate( rot);
-        if (glfwGetKey(window, GLFW_KEY_E)     == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+            geckito.rotate(rot);
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
             geckito.rotate(-rot);
 
 		root->draw(shaders, textures, Matrix_4());
 
-        geckito.update(delta_time, wave);
+        geckito.update(delta_time, plane);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
