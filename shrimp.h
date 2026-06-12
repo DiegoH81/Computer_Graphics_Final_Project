@@ -87,9 +87,6 @@ public:
         root->add_children(body);
         body->add_children(eyes);
         body->add_children(tail);
-
-
-
     }
 
     void draw(ShaderList& in_shaders, TextureList& in_texturs, const Matrix_4& in_mat)

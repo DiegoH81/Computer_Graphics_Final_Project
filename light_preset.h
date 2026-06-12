@@ -42,6 +42,9 @@ public:
         shaders.set_int("UNIQUE", "num_point_lights", point_lights.size());
         shaders.set_int("UNIQUE", "num_spot_lights", spot_lights.size());
 
+        shaders.set_int("GLASS_SHADER", "num_point_lights", point_lights.size());
+        shaders.set_int("GLASS_SHADER", "num_spot_lights", spot_lights.size());
+
         directional.apply(shaders, 0);
 
         for (int i = 0; i < point_lights.size(); i++)

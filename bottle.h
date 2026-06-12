@@ -22,20 +22,17 @@ public:
         in_current_path = in_current_path / "models" ;
 
         Mesh3D* body_mesh = new Mesh3D(in_current_path, "bottle.obj");
+        body_mesh->shader_name = "GLASS_SHADER";
         body_mesh->add_faces(&white);
         body_mesh->set_material(&material_glass);
 
 
         root = new SceneNode(0);
         body = new SceneNode(1, body_mesh);
-        body->scale(Vector3(0.3f, 0.3f, 0.3f), true);
+        body->scale(Vector3(3.3f, 3.3f, 3.3f), true);
 
 
         root->add_children(body);
-    
-
-
-
     }
 
     void draw(ShaderList& in_shaders, TextureList& in_texturs, const Matrix_4& in_mat)

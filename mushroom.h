@@ -14,7 +14,8 @@ public:
         red(200, 20, 20, true), cream(210, 190, 140, true), white(255, 255, 255, true), material_hat(), material_body()
     {
 	
-		if(type){
+		if(type)
+        {
             material_hat.ambient = Vector3(0.18f, 0.03f, 0.03f);
             material_hat.diffuse = Vector3(0.55f, 0.10f, 0.10f);
             material_hat.specular = Vector3(0.25f, 0.20f, 0.20f);
@@ -24,7 +25,8 @@ public:
             material_body.specular = Vector3(0.08f, 0.08f, 0.08f);
             material_body.shininess = 10.0f;
         } 
-		else{
+		else
+        {
             material_hat.ambient = Vector3(0.18f, 0.15f, 0.08f);
             material_hat.diffuse = Vector3(0.72f, 0.62f, 0.35f);
             material_hat.specular = Vector3(0.12f, 0.10f, 0.06f);
@@ -42,11 +44,13 @@ public:
 		Mesh3D* body_mesh;
         Mesh3D* hat_mesh;
 
-        if(type) {
+        if(type)
+        {
             body_mesh = new Mesh3D(in_current_path, "hongo1.obj");
             hat_mesh  = new Mesh3D(in_current_path, "hongo2.obj");
         } 
-		else {
+		else
+        {
             body_mesh = new Mesh3D(in_current_path, "honguitos1.obj");
             hat_mesh  = new Mesh3D(in_current_path, "honguitos2.obj");
         }

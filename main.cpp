@@ -70,6 +70,7 @@ std::vector<SceneNode*> nodes;
 std::vector<LightPreset*> presets;
 
 SceneNode* root = new SceneNode(0);
+SceneNode* glass_root = new SceneNode(1);
 
 float offset = 0.1f;
 float angle = 10.0f;
@@ -234,6 +235,8 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    glfwWindowHint(GLFW_SAMPLES, 4);
+
     GLFWwindow* window = glfwCreateWindow(width, height, "Animation", nullptr, nullptr);
 
     glfwMakeContextCurrent(window);
@@ -264,6 +267,8 @@ int main()
     shaders.create_shader("UNIQUE", "normal_shader.vs", "normal_fragment.fs");
     // Light Shader
     shaders.create_shader("LIGHT_SHADER", "light_shader.vs", "light_fragment.fs");
+    // Glass Shader
+    shaders.create_shader("GLASS_SHADER", "normal_shader.vs", "glass_fragment.fs");
     
 
     TextureList textures(current_path);
@@ -446,7 +451,7 @@ int main()
 	lilypad_flor.get_root()->traslate(Vector3(1.0f, -0.8f, 1.5f),true);
 	
 	Bottle botella(current_path); 
-	botella.get_root()->traslate(Vector3(0.0f, -0.8f, -3.5f),true);
+	botella.get_root()->traslate(Vector3(0.0f, -2.8f, -3.5f),true);
 	
 	
 	
@@ -497,16 +502,14 @@ int main()
 	root->add_children(lilypad.get_root());
 	root->add_children(lilypad_flor.get_root());
 	
-	root->add_children(botella.get_root());
+	glass_root->add_children(botella.get_root());	
 	
-
-	
-	
-
     // Bucle
 	glPointSize(10.0f);
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);  
+    //glEnable(GL_FRAMEBUFFER_SRGB); 
 
     float delta_time = 0.0f;
     float last_frame = 0.0f;
@@ -514,11 +517,13 @@ int main()
     auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 100.0f);
     shaders.use_shader("UNIQUE");
     shaders.set_mat4("UNIQUE", "projection", projection_matrix);
-    
-    
 
     shaders.use_shader("LIGHT_SHADER");
     shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
+
+    shaders.use_shader("GLASS_SHADER");
+    shaders.set_mat4("GLASS_SHADER", "projection", projection_matrix);
+
     while(!glfwWindowShouldClose(window))
     {
         float current_frame = glfwGetTime();
@@ -536,18 +541,29 @@ int main()
         auto view_matrix = camera_world.get_look_at();
         auto camera_pos = camera_world.pos;
 
+        presets[preset_id]->apply(shaders, background_color);
+
+        shaders.use_shader("LIGHT_SHADER");
+        shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);
+        
+        shaders.use_shader("GLASS_SHADER");
+        shaders.set_mat4("GLASS_SHADER", "view", view_matrix);
+        shaders.set_vec3("GLASS_SHADER", "view_pos", camera_pos.x, camera_pos.y, camera_pos.z);
+
         shaders.use_shader("UNIQUE");
         shaders.set_mat4("UNIQUE", "view", view_matrix);
         shaders.set_vec3("UNIQUE", "view_pos", camera_pos.x, camera_pos.y, camera_pos.z);
         
-		presets[preset_id]->apply(shaders, background_color);
-		
-
-
-        shaders.use_shader("LIGHT_SHADER");
-        shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);
-		
 		root->draw(shaders, textures, Matrix_4());
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDepthMask(GL_FALSE);
+
+        glass_root->draw(shaders, textures, Matrix_4());
+
+        glDepthMask(GL_TRUE);
+        glDisable(GL_BLEND);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
