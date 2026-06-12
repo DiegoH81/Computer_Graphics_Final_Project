@@ -153,25 +153,6 @@ void main()
 			result += get_spotlight(norm, spot_lights[i], material);
 
 
-        // 2. CALCULAR EL EFECTO FRESNEL
-        vec3 view_dir = normalize(view_pos - PixelPosition);
-        // Elevamos la potencia a 4.0 para que el centro de la botella sea más limpio
-        float fresnel = pow(1.0 - max(dot(norm, view_dir), 0.0), 4.0);
-        
-        // Aplicamos un rango de transparencia sutil:
-        // 0.05 en el centro (casi invisible) y 0.65 en los bordes (silueta marcada)
-        float alpha = mix(0.05, 0.65, fresnel);
-
-        // 3. DARLE COLOR DE VIDRIO LIMPIO
-        // Definimos un tinte base blanco/celeste cristalino muy suave
-        vec3 glass_base_color = vec3(0.92, 0.96, 1.0);
-        
-        // Mezclamos un 25% de las luces de la escena (para heredar los brillos especulares)
-        // con el color base del vidrio limpio, eliminando el exceso de sombras oscuras.
-        vec3 final_rgb = mix(glass_base_color, result, 0.25);
-
-        // 4. ASIGNAR EL COLOR Y TRANSPARENCIA FINAL
-        FragColor = vec4(final_rgb, alpha);
-        //FragColor = vec4(result, 1.0f);
+        FragColor = vec4(result, 0.1f);
     }
 }
