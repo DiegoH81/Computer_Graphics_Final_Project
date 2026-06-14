@@ -435,6 +435,7 @@ int main()
 
 
     root->add_children(hongo1.get_root());
+
     root->add_children(tadpolin.get_root());
 	root->add_children(shrimpy.get_root());
 	root->add_children(flor1.get_root());

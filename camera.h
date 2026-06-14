@@ -31,6 +31,8 @@ public:
 
     void orbit_z(float in_angle);
 
+    void zoom(float distance);
+
     Matrix_4 get_look_at();
 
 private:

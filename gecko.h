@@ -14,10 +14,10 @@ public:
         green(84, 161, 69, true), black(0, 0, 0, false), skin_material(), eye_material()
     {
         
-		skin_material.ambient = Vector3(0.08f, 0.10f, 0.05f);
-		skin_material.diffuse = Vector3(0.35f, 0.42f, 0.18f);
-		skin_material.specular = Vector3(0.20f, 0.22f, 0.15f);
-		skin_material.shininess = 30.0f;
+        skin_material.ambient = Vector3(0.08f, 0.10f, 0.05f);
+        skin_material.diffuse = Vector3(0.35f, 0.42f, 0.18f);
+        skin_material.specular = Vector3(0.20f, 0.22f, 0.15f);
+        skin_material.shininess = 30.0f;
 		
 		
         eye_material.ambient = Vector3(0.05f, 0.05f, 0.05f);
