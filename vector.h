@@ -23,6 +23,11 @@ public:
 
     Vector3& operator = (const Vector3& other);
 
+    Vector3 operator * (const float& s) const
+    {
+        return Vector3(x * s, y * s, z * s);
+    }
+
 };
 
 class Vector2

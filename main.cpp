@@ -78,6 +78,7 @@ std::vector<LightPreset*> presets;
 SceneNode* root = new SceneNode(0);
 SceneNode* movable_root = new SceneNode(0);
 SceneNode* glass_root = new SceneNode(1);
+Gecko* ptr = nullptr;
 
 float offset = 1.0f;
 float angle = 10.0f;
@@ -368,7 +369,16 @@ int main()
     sphere_node->traslate(Vector3(0.0f, 0.5f, 0.0f), true);
  
     Gecko geckito(current_path);
-    geckito.get_root()->traslate(Vector3(0.0f, 15.0f, -2.0f), true);
+
+    //geckito.get_root()->traslate(Vector3(0.0f, 15.0f, -2.0f), true);
+    geckito.get_root()->traslate(Vector3(0.0f, 0.0f, -2.0f), true);
+    ptr = &geckito;
+
+    Spider aranita(current_path);
+    aranita.get_root()->traslate(Vector3(0.7f, 0.0f, 0.0f), true);
+
+    Tadpole tadpolin(current_path);
+    tadpolin.get_root()->traslate(Vector3(-0.8f, 0.0f, 0.0f), true);
     
     Spider aranita(current_path);
     aranita.get_root()->traslate(Vector3(0.7f, 15.0f, 0.0f), true);
@@ -470,6 +480,10 @@ int main()
     shaders.use_shader("GLASS_SHADER");
     shaders.set_mat4("GLASS_SHADER", "projection", projection_matrix);
 
+    PlaneSurface plane;
+    WaveSurface wave;
+    MountainSurface mountain;
+
     while(!glfwWindowShouldClose(window))
     {
         float current_frame = glfwGetTime();
@@ -502,8 +516,33 @@ int main()
         shaders.set_mat4("UNIQUE", "view", view_matrix);
         shaders.set_vec3("UNIQUE", "view_pos", camera_pos.x, camera_pos.y, camera_pos.z);
         
+		presets[preset_id]->apply(shaders, background_color);
+		
+
+
+        shaders.use_shader("LIGHT_SHADER");
+        shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);
+
+        float spd = 1.5f * delta_time;
+        float rot  = 60.0f * delta_time;
+
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+            geckito.move(Vector3(0.0f, 0.0f, -spd));
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+            geckito.move(Vector3(0.0f, 0.0f, spd));
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+            geckito.move(Vector3(-spd, 0.0f, 0.0f));
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+            geckito.move(Vector3( spd, 0.0f, 0.0f));
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+            geckito.rotate(rot);
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+            geckito.rotate(-rot);
+
 		root->draw(shaders, textures, Matrix_4());
         movable_root->draw(shaders, textures, Matrix_4());
+
+        geckito.update(delta_time, plane);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
