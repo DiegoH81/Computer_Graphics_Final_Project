@@ -39,55 +39,61 @@ public:
         in_current_path = in_current_path / "models" / "shrimp" ;
 
         Mesh3D* chair_bottom_mesh = new Mesh3D(in_current_path, "shrimp_chair1.obj");
-        chair_bottom_mesh->add_faces(&gray);
-        chair_bottom_mesh->set_material(&metal_material);
-
-
         Mesh3D* chair_top_mesh = new Mesh3D(in_current_path, "shrimp_chair2.obj");
+		Mesh3D* eyes_mesh = new Mesh3D(in_current_path, "shrimp_chair3.obj");
+		Mesh3D* body_mesh = new Mesh3D(in_current_path, "shrimp_chair4.obj");
+		
+		Mesh3D* lil_eyes_mesh = new Mesh3D(in_current_path, "lil_shrimp_eyes.obj");
+		Mesh3D* lil_body_mesh = new Mesh3D(in_current_path, "lil_shrimp.obj");
+		
+		
         chair_top_mesh->add_faces(&blue);
-        chair_top_mesh->set_material(&chair_material);
-
-        Mesh3D* eyes_mesh = new Mesh3D(in_current_path, "shrimp_chair3.obj");
-        eyes_mesh->add_faces(&black);
-        eyes_mesh->set_material(&eye_material);
-
-        Mesh3D* body_mesh = new Mesh3D(in_current_path, "shrimp_chair4.obj");
-        body_mesh->add_faces(&orange);
+        chair_bottom_mesh->add_faces(&gray);
+		eyes_mesh->add_faces(&black);
+		body_mesh->add_faces(&orange);
+		
+		lil_eyes_mesh->add_faces(&black);
+		lil_body_mesh->add_faces(&orange);
+		
+        chair_bottom_mesh->set_material(&metal_material);
+		chair_top_mesh->set_material(&chair_material);
+        eyes_mesh->set_material(&eye_material);    
         body_mesh->set_material(&skin_material);
 
-        Mesh3D* tail_mesh = new Mesh3D(in_current_path, "shrimp_chair5.obj");
-        tail_mesh->add_faces(&orange);
-        tail_mesh->set_material(&skin_material);
+		lil_eyes_mesh->set_material(&eye_material);  
+		lil_body_mesh->set_material(&skin_material);
 
 
         root = new SceneNode(0);
         chair_bottom = new SceneNode(1, chair_bottom_mesh);
-		chair_bottom->scale(Vector3(0.1f,0.1f,0.1f),true);
-		chair_bottom->traslate(Vector3(-0.023f, 0.0f, 0.0f), true);
+		//chair_bottom->scale(Vector3(0.1f,0.1f,0.1f),true);
+		//chair_bottom->traslate(Vector3(-0.023f, 0.0f, 0.0f), true);
 		
 		
         chair_top = new SceneNode(2, chair_top_mesh);
-		chair_top->scale(Vector3(0.1f,0.1f,0.1f),true);
+		//chair_top->scale(Vector3(0.1f,0.1f,0.1f),true);
 
         eyes = new SceneNode(3, eyes_mesh);
-        eyes->traslate(Vector3(1.8f, 2.35f, -0.005f), true);
+        //eyes->traslate(Vector3(1.8f, 2.35f, -0.005f), true);
 
 
         body = new SceneNode(4, body_mesh);
-		body->scale(Vector3(0.1f,0.1f,0.1f),true);
-        body->traslate(Vector3(-0.06f, 0.12f, 0.0f), false);
-		body->traslate(Vector3(-0.026f, 0.0f, 0.0f), true);
-
-        tail = new SceneNode(5, tail_mesh);
-        tail->traslate(Vector3(-0.6f, 1.25f, 0.0f), true);
-
-        
+		//body->scale(Vector3(0.1f,0.1f,0.1f),true);
+        //body->traslate(Vector3(-0.06f, 0.12f, 0.0f), false);
+		//body->traslate(Vector3(-0.026f, 0.0f, 0.0f), true);
+		
+		lil_eyes = new SceneNode(5, lil_eyes_mesh);
+		lil_body = new SceneNode(6, lil_body_mesh);
+    
+    
+		root->add_children(lil_body);
+		lil_body->add_children(lil_eyes);
+		
+    
         root->add_children(chair_bottom);
         root->add_children(chair_top);
         root->add_children(body);
         body->add_children(eyes);
-        body->add_children(tail);
-
 
 
     }
@@ -104,7 +110,7 @@ public:
 
 
 private:
-    SceneNode *root, *chair_bottom, *chair_top, *eyes, *body, *tail;
+    SceneNode *root, *chair_bottom, *chair_top, *eyes, *body, *lil_eyes, *lil_body;
 
     Color black, orange, blue, gray;
     Material metal_material, chair_material, skin_material, eye_material;

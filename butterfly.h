@@ -12,7 +12,7 @@ class Butterfly
 {
 public:
     Butterfly(std::filesystem::path in_current_path):
-        sky_blue(60, 168, 232, true), black(0, 0, 0, false), material()
+        orange(255, 120, 20,true), black(0, 0, 0, false), material()
     {
         in_current_path = in_current_path / "models" / "butterfly" ;
 
@@ -31,11 +31,11 @@ public:
         antenitas_mesh->set_material(&material);
 
         Mesh3D* ala_izq_mesh = new Mesh3D(in_current_path, "ala_izq_BUTTERFLY.obj");
-        ala_izq_mesh->add_faces(&sky_blue);
+        ala_izq_mesh->add_faces(&orange);
         ala_izq_mesh->set_material(&material);
 
         Mesh3D* ala_der_mesh = new Mesh3D(in_current_path, "ala_der_BUTTERFLY.obj");
-        ala_der_mesh->add_faces(&sky_blue);
+        ala_der_mesh->add_faces(&orange);
         ala_der_mesh->set_material(&material);
 
 
@@ -65,7 +65,7 @@ public:
 private:
     SceneNode *root, *torso, *antenitas, *ala_right, *ala_left;
 
-    Color sky_blue, black;
+    Color orange, black;
     Material material;
 };
 

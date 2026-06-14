@@ -10,7 +10,7 @@
 class Stump
 {
 public:
-    Stump(std::filesystem::path in_current_path):
+    Stump(std::filesystem::path in_current_path, bool mode):
         brown(101, 67, 33, true), material_trunk()
     {
 		material_trunk.ambient = Vector3(0.10f, 0.06f, 0.02f);
@@ -19,9 +19,15 @@ public:
 		material_trunk.shininess = 4.0f;
 
 
-        in_current_path = in_current_path / "models" / "plants" / "dead_stuff";
+        std::filesystem::path base = in_current_path / "models" / "plants" / "dead_stuff";
 
-        Mesh3D* body_mesh = new Mesh3D(in_current_path, "tronco.obj");
+		Mesh3D* body_mesh;
+		
+        if (mode)
+            body_mesh = new Mesh3D(base / "UNIDO", "stump.obj");
+        else
+            body_mesh = new Mesh3D(base / "SEPARADO", "tronco.obj");
+
         body_mesh->add_faces(&brown);
         body_mesh->set_material(&material_trunk);
     

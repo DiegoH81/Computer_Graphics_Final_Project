@@ -28,7 +28,7 @@ public:
 
         root = new SceneNode(0);
         body = new SceneNode(1, body_mesh);
-        body->scale(Vector3(0.3f, 0.3f, 0.3f), true);
+
 
 
         root->add_children(body);
