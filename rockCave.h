@@ -10,7 +10,7 @@
 class RockCave
 {
 public:
-    RockCave(std::filesystem::path in_current_path):
+    RockCave(std::filesystem::path in_current_path, bool mode):
         gray(128, 128, 128, true), material_stone()
     {
 		material_stone.ambient = Vector3(0.10f, 0.11f, 0.08f);
@@ -19,16 +19,18 @@ public:
 		material_stone.shininess = 30.0f;
 
 
-        in_current_path = in_current_path / "models" / "plants" / "dead_stuff";
+        std::filesystem::path base = in_current_path / "models" / "plants" / "dead_stuff";
 
-        Mesh3D* body_mesh = new Mesh3D(in_current_path, "rocas_cueva.obj");
+		Mesh3D* body_mesh;
+		
+        if (mode)
+            body_mesh = new Mesh3D(base / "UNIDO", "rock_cave.obj");
+        else
+            body_mesh = new Mesh3D(base / "SEPARADO", "rocas_cueva.obj");
+
+
         body_mesh->add_faces(&gray);
         body_mesh->set_material(&material_stone);
-
-
-  
-
-    
 
         root = new SceneNode(0);
         body = new SceneNode(1, body_mesh);

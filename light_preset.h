@@ -141,7 +141,7 @@ LightPreset get_night()
     lantern.constant = 1.0f;
     lantern.linear = 0.22f;
     lantern.quadratic = 0.2f;
-    lantern.light_node->traslate(Vector3(0.0f, 0.0f, 2.0f), true);
+    lantern.light_node->traslate(Vector3(0.0f, 15.0f, 0.0f), true);
     to_return.point_lights.push_back(lantern);
 
     return to_return;
@@ -178,6 +178,7 @@ LightPreset get_cyberpunk()
     neon_cyan.constant  = 1.0f;
     neon_cyan.linear = 0.22f;
     neon_cyan.quadratic = 0.2f;
+    neon_cyan.light_node->traslate(Vector3(0.0f, 0.0f, 15.0f), true);
 
     // Luz de piso naranja/amarillo
     PointLight ground_reflect;
@@ -192,7 +193,7 @@ LightPreset get_cyberpunk()
     to_return.point_lights.push_back(neon_magenta);
     to_return.point_lights.push_back(neon_cyan);
     to_return.point_lights.push_back(ground_reflect);
-
+    ground_reflect.light_node->traslate(Vector3(0.0f, 15.0f, 0.0f), true);
     return to_return;
 }
 
@@ -212,7 +213,7 @@ LightPreset get_desert()
     world_sun.ambient = Vector3(0.3f, 0.3f, 0.3f);
     world_sun.diffuse = Vector3(1.0f, 0.9f, 0.9f);
     world_sun.specular = Vector3(1.0f, 1.0f, 1.0f);
-	world_sun.light_node->traslate(Vector3(0.0f, 0.0f, 2.0f), true);
+	world_sun.light_node->traslate(Vector3(0.0f, 15.0f, 15.0f), true);
 
     to_return.point_lights.push_back(world_sun);
 
@@ -221,7 +222,7 @@ LightPreset get_desert()
 
 LightPreset get_day_cicle()
 {
-    float max_height = 2.0f;
+    float max_height = 17.0f;
 
     LightPreset to_return;
     to_return.background_color = Color(191, 133, 76, true);

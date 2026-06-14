@@ -44,6 +44,8 @@ Integrantes:
 #include "algae.h"
 #include "nenufar.h"
 #include "bottle.h"
+#include "terrain.h"
+#include "table.h"
 
 
 
@@ -59,6 +61,10 @@ Integrantes:
 #define YELLOW 2
 #define BLUE 3
 
+#define UNIDO 1
+#define SEPARADO 0
+
+
 
 
 Color background_color(191, 133, 76, true);
@@ -70,10 +76,11 @@ std::vector<SceneNode*> nodes;
 std::vector<LightPreset*> presets;
 
 SceneNode* root = new SceneNode(0);
+SceneNode* movable_root = new SceneNode(0);
 SceneNode* glass_root = new SceneNode(1);
 Gecko* ptr = nullptr;
 
-float offset = 0.1f;
+float offset = 1.0f;
 float angle = 10.0f;
 bool is_moving = true;
 int current_id = 0, preset_id = 0;
@@ -296,8 +303,8 @@ int main()
     Color white(255.0f, 255.0f, 255.0f, true);
 
     // Camera
-    camera_world.set_pos(Point3(0.0f, 0.0f, 5.0f));
-    camera_world.set_objective(Point3(0.0f, 0.0f, 0.0f));
+    camera_world.set_pos(Point3(0.0f, 10.0f, 20.0f));
+    camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
 
 
     // Figuras
@@ -360,8 +367,10 @@ int main()
 
     SceneNode* sphere_node = new SceneNode(3, &esferita);
     sphere_node->traslate(Vector3(0.0f, 0.5f, 0.0f), true);
-    
+ 
     Gecko geckito(current_path);
+
+    //geckito.get_root()->traslate(Vector3(0.0f, 15.0f, -2.0f), true);
     geckito.get_root()->traslate(Vector3(0.0f, 0.0f, -2.0f), true);
     ptr = &geckito;
 
@@ -371,135 +380,86 @@ int main()
     Tadpole tadpolin(current_path);
     tadpolin.get_root()->traslate(Vector3(-0.8f, 0.0f, 0.0f), true);
     
-    Butterfly mariposa(current_path);
-    mariposa.get_root()->traslate(Vector3(0.0f, 0.4f, 0.0f), true);
+    Spider aranita(current_path);
+    aranita.get_root()->traslate(Vector3(0.7f, 15.0f, 0.0f), true);
 	
-	Shrimp shrimpy(current_path);
-	shrimpy.get_root()->traslate(Vector3(0.0f,0.0f,0.8f),true);
+	Butterfly mariposa(current_path);
+    mariposa.get_root()->traslate(Vector3(0.0f, 15.0f, 0.0f), true);
 	
 	Bettle carabajito(current_path);
-	carabajito.get_root()->traslate(Vector3(0.0f,-0.8f,0.0f),true);
-
-	Mushroom hongo1(current_path,BIG_MUSHROOM);
-	hongo1.get_root()->traslate(Vector3(-0.7f,-0.8f,0.0f),true);
+	carabajito.get_root()->traslate(Vector3(0.0f, 15.0f, 0.0f),true);
+  
 	
-	Mushroom honguito1(current_path,LIL_MUSHROOM);
-	honguito1.get_root()->traslate(Vector3(0.7f,-0.8f,0.0f),true);
-	
-	Rock piedras1(current_path);
-	piedras1.get_root()->traslate(Vector3(0.0f, -0.8f, -0.5f),true);
-	
-	RockCave cueva1(current_path);
-	cueva1.get_root()->traslate(Vector3(-2.0f, -0.8f, -0.5f),true);
-
-	Stump tronco1(current_path);
-	tronco1.get_root()->traslate(Vector3(2.0f, -0.8f, -0.5f),true);
-	
-	Bush hojas1(current_path,1);
-	hojas1.get_root()->traslate(Vector3(2.0f, -2.8f, -0.5f),true);
-	
-	Bush hojas2(current_path,2);
-	hojas2.get_root()->traslate(Vector3(2.0f, -1.8f, -0.5f),true);
-	
-	Bush hojas3(current_path,3);
-	hojas3.get_root()->traslate(Vector3(1.0f, -1.8f, -0.5f),true);
-	
-	Bush hojas4(current_path,4);
-	hojas4.get_root()->traslate(Vector3(0.0f, -1.8f, -0.5f),true);
-	
-	Bush hojas5(current_path,5);
-	hojas5.get_root()->traslate(Vector3(-1.0f, -1.8f, -0.5f),true);
-	
-	Bush hojas6(current_path,6);
-	hojas6.get_root()->traslate(Vector3(-2.0f, -1.8f, -0.5f),true);
-	
-	Bush hojas7(current_path,7);
-	hojas7.get_root()->traslate(Vector3(-2.0f, -2.8f, -0.5f),true);
-	
-	Bush hojas8(current_path,8);
-	hojas8.get_root()->traslate(Vector3(-1.0f, -2.8f, -0.5f),true);
-	
-	Bush pasto(current_path,0);
-	pasto.get_root()->traslate(Vector3(-1.0f, -0.8f, -0.5f),true);
+    Tadpole tadpolin(current_path, UNIDO);
+	Shrimp shrimpy(current_path);	
+	Terrain terreno(current_path);
+	Table mesa(current_path);
 
 
-	Flower flor1(current_path,WHITE); 
-	flor1.get_root()->traslate(Vector3(-2.0f, -0.8f, -1.5f),true);
 	
-	Flower flor2(current_path,RED); 
-	flor2.get_root()->traslate(Vector3(-1.0f, -0.8f, -1.5f),true);
+//	Mushroom honguito1(current_path,LIL_MUSHROOM);
 	
-	Flower flor3(current_path,YELLOW); 
-	flor3.get_root()->traslate(Vector3(0.0f, -0.8f, -1.5f),true);
-	
-	Flower flor4(current_path,BLUE); 
-	flor4.get_root()->traslate(Vector3(1.0f, -0.8f, -1.5f),true);
-	
-	
-	Algae alga(current_path); 
-	alga.get_root()->traslate(Vector3(2.0f, -0.8f, -1.5f),true);
+	Rock piedras1(current_path,UNIDO);
+	RockCave cueva1(current_path,UNIDO);
+	Stump tronco1(current_path,UNIDO);
+	Algae alga(current_path,UNIDO); 
 
 
-	Nenufar lilypad(current_path,NENUFAR); 
-	lilypad.get_root()->traslate(Vector3(-1.0f, -0.8f, 1.5f),true);
+	Nenufar lilypad(current_path,NENUFAR,UNIDO); 
 	
-	Nenufar lilypad_flor(current_path,NENUFAR_FLOWER); 
-	lilypad_flor.get_root()->traslate(Vector3(1.0f, -0.8f, 1.5f),true);
+//	Nenufar lilypad_flor(current_path,NENUFAR_FLOWER); 
+//	lilypad_flor.get_root()->traslate(Vector3(1.0f, -0.8f, 1.5f),true);
+
+
+
+
+	Mushroom hongo1(current_path,BIG_MUSHROOM, UNIDO);
+	Bush hojas0 (current_path, 1,UNIDO);
+	Bush pasto(current_path, 0, UNIDO);
+	Flower flor1(current_path,WHITE,UNIDO); 
 	
+
 	Bottle botella(current_path); 
-	botella.get_root()->traslate(Vector3(0.0f, -2.8f, -3.5f),true);
+    //botella.get_root()->scale(Vector3(0.85f, 0.85f, 0.85f), true);
 	
-	
-	
-    /*
+
+	/*
     root->add_children(cubito_node);
     root->add_children(piramide_node);
     root->add_children(conito_node);
     root->add_children(sphere_node);
     */
 
+
     for (auto ptr: presets[current_id]->get_point_lights_ptr())
         root->add_children(ptr);
-    
-    root->add_children(geckito.get_root());
-    root->add_children(aranita.get_root());
+	
+	
+    movable_root->add_children(geckito.get_root());
+    movable_root->add_children(aranita.get_root());
+	movable_root->add_children(mariposa.get_root());
+	movable_root->add_children(carabajito.get_root());
+
+
+    root->add_children(hongo1.get_root());
+
     root->add_children(tadpolin.get_root());
-    root->add_children(mariposa.get_root());
 	root->add_children(shrimpy.get_root());
-	root->add_children(carabajito.get_root());
-	
-	root->add_children(hongo1.get_root());
-	root->add_children(honguito1.get_root());
-	
-	root->add_children(piedras1.get_root());
-	root->add_children(cueva1.get_root());
-	
-	root->add_children(tronco1.get_root());
-	
-	root->add_children(hojas1.get_root());
-	root->add_children(hojas2.get_root());
-	root->add_children(hojas3.get_root());
-	root->add_children(hojas3.get_root());
-	root->add_children(hojas4.get_root());
-	root->add_children(hojas5.get_root());
-	root->add_children(hojas6.get_root());
-	root->add_children(hojas7.get_root());
-	root->add_children(hojas8.get_root());
-	root->add_children(pasto.get_root());
-	
-	
 	root->add_children(flor1.get_root());
-	root->add_children(flor2.get_root());
-	root->add_children(flor3.get_root());
-	root->add_children(flor4.get_root());
-	
+	root->add_children(hojas0.get_root());
+	root->add_children(pasto.get_root());	
+	root->add_children(piedras1.get_root());
+	root->add_children(cueva1.get_root());	
+	root->add_children(tronco1.get_root());	
 	root->add_children(alga.get_root());
-	
 	root->add_children(lilypad.get_root());
-	root->add_children(lilypad_flor.get_root());
+	root->add_children(terreno.get_root());
+	root->add_children(mesa.get_root());
 	
 	glass_root->add_children(botella.get_root());	
 	
+
+    //root->scale(Vector3(0.85f, 0.85f, 0.85f), true);
     // Bucle
 	glPointSize(10.0f);
 
@@ -580,6 +540,7 @@ int main()
             geckito.rotate(-rot);
 
 		root->draw(shaders, textures, Matrix_4());
+        movable_root->draw(shaders, textures, Matrix_4());
 
         geckito.update(delta_time, plane);
 
