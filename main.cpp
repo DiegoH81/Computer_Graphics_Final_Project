@@ -76,9 +76,10 @@ std::vector<SceneNode*> nodes;
 std::vector<LightPreset*> presets;
 
 SceneNode* root = new SceneNode(0);
+SceneNode* movable_root = new SceneNode(0);
 SceneNode* glass_root = new SceneNode(1);
 
-float offset = 0.1f;
+float offset = 1.0f;
 float angle = 10.0f;
 bool is_moving = true;
 int current_id = 0, preset_id = 0;
@@ -301,8 +302,8 @@ int main()
     Color white(255.0f, 255.0f, 255.0f, true);
 
     // Camera
-    camera_world.set_pos(Point3(0.0f, 0.0f, 5.0f));
-    camera_world.set_objective(Point3(0.0f, 0.0f, 0.0f));
+    camera_world.set_pos(Point3(0.0f, 10.0f, 20.0f));
+    camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
 
 
     // Figuras
@@ -366,22 +367,18 @@ int main()
     SceneNode* sphere_node = new SceneNode(3, &esferita);
     sphere_node->traslate(Vector3(0.0f, 0.5f, 0.0f), true);
  
- /*   
     Gecko geckito(current_path);
-    geckito.get_root()->traslate(Vector3(0.0f, 0.0f, -2.0f), true);
-
+    geckito.get_root()->traslate(Vector3(0.0f, 15.0f, -2.0f), true);
+    
     Spider aranita(current_path);
-    aranita.get_root()->traslate(Vector3(0.7f, 0.0f, 0.0f), true);
+    aranita.get_root()->traslate(Vector3(0.7f, 15.0f, 0.0f), true);
 	
 	Butterfly mariposa(current_path);
-    mariposa.get_root()->traslate(Vector3(0.0f, 1.0f, 0.0f), true);
+    mariposa.get_root()->traslate(Vector3(0.0f, 15.0f, 0.0f), true);
 	
 	Bettle carabajito(current_path);
-	carabajito.get_root()->traslate(Vector3(0.0f,0.0f,0.0f),true);
-	carabajito.get_root()->scale(Vector3(0.6f,0.6f,0.6f),true);
-	
-*/
-
+	carabajito.get_root()->traslate(Vector3(0.0f, 15.0f, 0.0f),true);
+  
 	
     Tadpole tadpolin(current_path, UNIDO);
 	Shrimp shrimpy(current_path);	
@@ -413,6 +410,7 @@ int main()
 	
 
 	Bottle botella(current_path); 
+    //botella.get_root()->scale(Vector3(0.85f, 0.85f, 0.85f), true);
 	
 
 	/*
@@ -427,10 +425,10 @@ int main()
         root->add_children(ptr);
 	
 	
-    //root->add_children(geckito.get_root());
-    //root->add_children(aranita.get_root());
-	//root->add_children(mariposa.get_root());
-	//root->add_children(carabajito.get_root());
+    movable_root->add_children(geckito.get_root());
+    movable_root->add_children(aranita.get_root());
+	movable_root->add_children(mariposa.get_root());
+	movable_root->add_children(carabajito.get_root());
 
 
     root->add_children(hongo1.get_root());
@@ -450,6 +448,8 @@ int main()
 	
 	glass_root->add_children(botella.get_root());	
 	
+
+    //root->scale(Vector3(0.85f, 0.85f, 0.85f), true);
     // Bucle
 	glPointSize(10.0f);
 
@@ -503,6 +503,7 @@ int main()
         shaders.set_vec3("UNIQUE", "view_pos", camera_pos.x, camera_pos.y, camera_pos.z);
         
 		root->draw(shaders, textures, Matrix_4());
+        movable_root->draw(shaders, textures, Matrix_4());
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
