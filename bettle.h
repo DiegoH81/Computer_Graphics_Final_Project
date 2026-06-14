@@ -11,7 +11,7 @@ class Bettle
 {
 public:
     Bettle(std::filesystem::path in_current_path):
-        gray(128, 128, 128, true), material_skin()
+        gold(255, 200, 50, true), material_skin()
     {
         in_current_path = in_current_path / "models" / "bettle" ;
 
@@ -23,49 +23,49 @@ public:
         
 
         Mesh3D* head_mesh = new Mesh3D(in_current_path, "bettle_head.obj");
-        head_mesh->add_faces(&gray);
+        head_mesh->add_faces(&gold);
         head_mesh->set_material(&material_skin);
         
         Mesh3D* body_mesh = new Mesh3D(in_current_path, "bettle_body.obj");
-        body_mesh->add_faces(&gray);
+        body_mesh->add_faces(&gold);
         body_mesh->set_material(&material_skin);
 		
 		
 
         // Pata IZQ 1 (original)
         Mesh3D* leg_1_mesh = new Mesh3D(in_current_path, "bettle_leg_front1.obj");
-        leg_1_mesh->add_faces(&gray);
+        leg_1_mesh->add_faces(&gold);
         leg_1_mesh->set_material(&material_skin);
 		
         Mesh3D* leg_2_mesh = new Mesh3D(in_current_path, "bettle_leg_front2.obj");
-        leg_2_mesh->add_faces(&gray);
+        leg_2_mesh->add_faces(&gold);
         leg_2_mesh->set_material(&material_skin);
 		
         Mesh3D* leg_3_mesh = new Mesh3D(in_current_path, "bettle_leg_front3.obj");
-        leg_3_mesh->add_faces(&gray);
+        leg_3_mesh->add_faces(&gold);
         leg_3_mesh->set_material(&material_skin);
 		
 		
         // Pata IZQ 2
         Mesh3D* leg_1_m_i2 = new Mesh3D(in_current_path, "bettle_leg_middle1.obj");
-        leg_1_m_i2->add_faces(&gray);
+        leg_1_m_i2->add_faces(&gold);
         leg_1_m_i2->set_material(&material_skin);
         Mesh3D* leg_2_m_i2 = new Mesh3D(in_current_path, "bettle_leg_middle2.obj");
-        leg_2_m_i2->add_faces(&gray);
+        leg_2_m_i2->add_faces(&gold);
         leg_2_m_i2->set_material(&material_skin);
         Mesh3D* leg_3_m_i2 = new Mesh3D(in_current_path, "bettle_leg_middle3.obj");
-        leg_3_m_i2->add_faces(&gray);
+        leg_3_m_i2->add_faces(&gold);
         leg_3_m_i2->set_material(&material_skin);
 		
         // Pata IZQ 3
         Mesh3D* leg_1_m_i3 = new Mesh3D(in_current_path, "bettle_leg_behind1.obj");
-        leg_1_m_i3->add_faces(&gray);
+        leg_1_m_i3->add_faces(&gold);
         leg_1_m_i3->set_material(&material_skin);
         Mesh3D* leg_2_m_i3 = new Mesh3D(in_current_path, "bettle_leg_behind2.obj");
-        leg_2_m_i3->add_faces(&gray);
+        leg_2_m_i3->add_faces(&gold);
         leg_2_m_i3->set_material(&material_skin);
         Mesh3D* leg_3_m_i3 = new Mesh3D(in_current_path, "bettle_leg_behind3.obj");
-        leg_3_m_i3->add_faces(&gray);
+        leg_3_m_i3->add_faces(&gold);
         leg_3_m_i3->set_material(&material_skin);
 		
 
@@ -75,37 +75,37 @@ public:
 			
         // Pata DER 1
         Mesh3D* leg_1_m_d1 = new Mesh3D(in_current_path, "bettle_leg_front1_L.obj");
-        leg_1_m_d1->add_faces(&gray);
+        leg_1_m_d1->add_faces(&gold);
         leg_1_m_d1->set_material(&material_skin);
         Mesh3D* leg_2_m_d1 = new Mesh3D(in_current_path, "bettle_leg_front2_L.obj");
-        leg_2_m_d1->add_faces(&gray);
+        leg_2_m_d1->add_faces(&gold);
         leg_2_m_d1->set_material(&material_skin);
         Mesh3D* leg_3_m_d1 = new Mesh3D(in_current_path, "bettle_leg_front3_L.obj");
-        leg_3_m_d1->add_faces(&gray);
+        leg_3_m_d1->add_faces(&gold);
         leg_3_m_d1->set_material(&material_skin);
 		
 	
         // Pata DER 2
         Mesh3D* leg_1_m_d2 = new Mesh3D(in_current_path, "bettle_leg_middle1_L.obj");
-        leg_1_m_d2->add_faces(&gray);
+        leg_1_m_d2->add_faces(&gold);
         leg_1_m_d2->set_material(&material_skin);
         Mesh3D* leg_2_m_d2 = new Mesh3D(in_current_path, "bettle_leg_middle2_L.obj");
-        leg_2_m_d2->add_faces(&gray);
+        leg_2_m_d2->add_faces(&gold);
         leg_2_m_d2->set_material(&material_skin);
         Mesh3D* leg_3_m_d2 = new Mesh3D(in_current_path, "bettle_leg_middle3_L.obj");
-        leg_3_m_d2->add_faces(&gray);
+        leg_3_m_d2->add_faces(&gold);
         leg_3_m_d2->set_material(&material_skin);
 		
 			
         // Pata DER 3
         Mesh3D* leg_1_m_d3 = new Mesh3D(in_current_path, "bettle_leg_behind1_L.obj");
-        leg_1_m_d3->add_faces(&gray);
+        leg_1_m_d3->add_faces(&gold);
         leg_1_m_d3->set_material(&material_skin);
         Mesh3D* leg_2_m_d3 = new Mesh3D(in_current_path, "bettle_leg_behind2_L.obj");
-        leg_2_m_d3->add_faces(&gray);
+        leg_2_m_d3->add_faces(&gold);
         leg_2_m_d3->set_material(&material_skin);
         Mesh3D* leg_3_m_d3 = new Mesh3D(in_current_path, "bettle_leg_behind3_L.obj");
-        leg_3_m_d3->add_faces(&gray);
+        leg_3_m_d3->add_faces(&gold);
         leg_3_m_d3->set_material(&material_skin);
 		
 		
@@ -242,7 +242,7 @@ private:
                                    *leg_d3_1, *leg_d3_2, *leg_d3_3
 									;
 
-    Color gray;
+    Color gold;
     Material material_skin;
 };
 
