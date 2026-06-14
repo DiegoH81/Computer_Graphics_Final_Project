@@ -13,7 +13,6 @@ public:
     Gecko(std::filesystem::path in_current_path):
         green(84, 161, 69, true), black(0, 0, 0, false), skin_material(), eye_material()
     {
-        
         skin_material.ambient = Vector3(0.08f, 0.10f, 0.05f);
         skin_material.diffuse = Vector3(0.35f, 0.42f, 0.18f);
         skin_material.specular = Vector3(0.20f, 0.22f, 0.15f);
