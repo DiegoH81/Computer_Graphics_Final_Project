@@ -10,53 +10,75 @@
 class Nenufar
 {
 public:
-    Nenufar(std::filesystem::path in_current_path, bool type):
-        pink(260, 140, 190, true), green(40, 120, 50, true), material_leaf(), material_flower()
+    Nenufar(std::filesystem::path in_current_path, bool type, bool mode):
+        pink(260, 140, 190, true), purple(180, 80, 200, true), 
+		green(40, 120, 50, true), material_leaf(), material_flower1(), material_flower2()
     {
 	
 		material_leaf.ambient = Vector3(0.05f, 0.12f, 0.05f);
         material_leaf.diffuse = Vector3(0.10f, 0.45f, 0.15f);
         material_leaf.specular = Vector3(0.10f, 0.20f, 0.10f);
         material_leaf.shininess = 30.0f;
+      
+        material_flower1.ambient = Vector3(0.40f, 0.35f, 0.40f);
+        material_flower1.diffuse = Vector3(0.90f, 0.40f, 0.60f);
+        material_flower1.specular = Vector3(0.30f, 0.10f, 0.20f);
+        material_flower1.shininess = 45.0f;
 
-        material_flower.ambient = Vector3(0.40f, 0.35f, 0.40f);
-        material_flower.diffuse = Vector3(0.90f, 0.40f, 0.60f);
-        material_flower.specular = Vector3(0.30f, 0.10f, 0.20f);
-        material_flower.shininess = 45.0f;
+        material_flower2.ambient = Vector3(0.30f, 0.20f, 0.40f);
+        material_flower2.diffuse = Vector3(0.60f, 0.20f, 0.80f);
+        material_flower2.specular = Vector3(0.20f, 0.10f, 0.30f);
+        material_flower2.shininess = 45.0f;
+
 		
 
-        in_current_path = in_current_path / "models" / "in_water" / "nenufars";
+        std::filesystem::path base = in_current_path / "models" / "in_water" / "nenufars";
 		
 		
 		Mesh3D* nenufar_mesh;
-        Mesh3D* flower_mesh = nullptr;
+		Mesh3D* flower1_mesh;
+		Mesh3D* flower2_mesh = nullptr;
 
-        if(type) {
-            nenufar_mesh = new Mesh3D(in_current_path, "nenufar_flor1.obj");
-            flower_mesh  = new Mesh3D(in_current_path, "nenufar_flor2.obj");
-        } 
-		else {
-			 nenufar_mesh = new Mesh3D(in_current_path, "nenufar.obj");
-        }
-		
-
-   
+		if (mode)
+		{
+			nenufar_mesh = new Mesh3D(base / "UNIDO", "nenufares.obj");
+			flower1_mesh = new Mesh3D(base / "UNIDO", "n_flor1.obj");
+			flower2_mesh = new Mesh3D(base / "UNIDO", "n_flor2.obj");
+		}
+		else
+		{
+			if (type){
+				nenufar_mesh = new Mesh3D(base / "SEPARADO", "nenufar_flor1.obj");
+				flower1_mesh = new Mesh3D(base / "SEPARADO", "nenufar_flor2.obj");
+			}
+			else
+				nenufar_mesh = new Mesh3D(base / "SEPARADO", "nenufar.obj");
+		}
+      
+	   
         nenufar_mesh->add_faces(&green);
         nenufar_mesh->set_material(&material_leaf);
-
+		
 		root = new SceneNode(0);
         nenufar = new SceneNode(1, nenufar_mesh);
         root->add_children(nenufar);	
 		
 		
-        if(type){
-            flower_mesh->add_faces(&pink);
-			flower_mesh->set_material(&material_flower);
-			flower = new SceneNode(2, flower_mesh);
-            nenufar->add_children(flower);
-		}
-    
+		if (flower1_mesh) 
+		{
+            flower1_mesh->add_faces(&pink);
+            flower1_mesh->set_material(&material_flower1);
+			flower = new SceneNode(2, flower1_mesh);
+			nenufar->add_children(flower);
 
+        }
+        if (flower2_mesh) 
+		{
+            flower2_mesh->add_faces(&purple);
+            flower2_mesh->set_material(&material_flower2);        
+			flower2 = new SceneNode(3, flower2_mesh);
+			nenufar->add_children(flower2);
+        }
 
     }
 
@@ -71,10 +93,10 @@ public:
     }
 
 private:
-    SceneNode *root, *nenufar, *flower;
+    SceneNode *root, *nenufar, *flower, *flower2;
 
-    Color pink, green;
-    Material material_leaf, material_flower;
+    Color pink, purple, green;
+    Material material_leaf, material_flower1, material_flower2;
 };
 
 

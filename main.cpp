@@ -44,6 +44,8 @@ Integrantes:
 #include "algae.h"
 #include "nenufar.h"
 #include "bottle.h"
+#include "terrain.h"
+#include "table.h"
 
 
 
@@ -59,23 +61,51 @@ Integrantes:
 #define YELLOW 2
 #define BLUE 3
 
+#define UNIDO 1
+#define SEPARADO 0
 
+#define BLOCK_1_DURATION 32.5f
+#define BLOCK_2_DURATION 7.0f
+#define BLOCK_3_DURATION 6.0f
+#define BLOCK_4_DURATION 6.0f
+#define BLOCK_5_DURATION 10.0f
+#define BLOCK_6_DURATION 15.0f
+
+// Path
+std::filesystem::path current_path = std::filesystem::current_path().parent_path() / "ownProjects" / "COMPUTER_GRAPHICS_FINAL_PROJECT";
+//current_path = current_path.parent_path();
+//current_path = current_path / "ownProjects" / "COMPUTER_GRAPHICS_FINAL_PROJECT";
 
 Color background_color(191, 133, 76, true);
 Camera camera_world;
+ShaderList shaders(current_path);
 
 AnimationList camera_animations;
 AnimationList light_animations;
+AnimationList shrimp_animation;
+
 std::vector<SceneNode*> nodes;
 std::vector<LightPreset*> presets;
 
 SceneNode* root = new SceneNode(0);
+SceneNode* movable_root = new SceneNode(0);
 SceneNode* glass_root = new SceneNode(1);
+SceneNode* water_root = new SceneNode(2);
+Gecko* ptr = nullptr;
 
-float offset = 0.1f;
+Shrimp* shrimpy = nullptr;
+
+float offset = 1.0f;
 float angle = 10.0f;
+float sequence_timer = 0.0f;
+
 bool is_moving = true;
+bool sequence_running = false;
+int width = 1920, height = 1080;
+
+int  sequence_block   = 0;
 int current_id = 0, preset_id = 0;
+
 
 void traslate(const Vector3& in_m)
 {
@@ -129,22 +159,140 @@ void rotate_c_z(float angle)
     }
 }
 
+void update_current_light(int in_id)
+{
+    // Delete current nodes from root
+    for (auto ptr: presets[preset_id]->get_point_lights_ptr())
+    {
+        for (auto it = root->children.begin(); it != root->children.end(); it++)
+        {
+            if (*it == ptr)
+            {
+                root->children.erase(it);
+                break;
+            }
+        }
+    }
+
+    preset_id = in_id;
+    if (preset_id >= presets.size())
+        preset_id = 0;
+
+
+    // Add new light nodes from root
+    for (auto ptr: presets[preset_id]->get_point_lights_ptr())
+        root->add_children(ptr);
+}
+
+void block_1()
+{
+    update_current_light(0);
+
+    // Light
+    light_animations.add_animation({AnimationInfo(ALL_IDs, 360, "NONE", "PUBLIC")}, 17.5);
+    light_animations.add_animation({AnimationInfo(ALL_IDs, 360, "ROTATE_C_Z", "PUBLIC")}, 3.5);
+
+    // From camaroncin
+    camera_world.set_pos(Point3(-10.0f, 15.5f, 0.0f));
+    camera_world.set_objective(Point3(0.0f, 11.5f, 0.0f));
+
+    camera_animations.add_animation({AnimationInfo(0, 0.0f, "NONE", "")}, 1.0);
+    // To pecera
+    camera_animations.add_animation({AnimationInfo(0, 10.0f, "ZOOM", "")}, 5.0);
+
+    // De vuelta miramos al camaroncin
+    camera_animations.add_animation({AnimationInfo(0, 180.0f, "ROTATE_Y", "")}, 3.0);
+    camera_animations.add_animation({AnimationInfo(0, -25.0f, "ROTATE_Z", "")}, 1.5);
+    camera_animations.add_animation({AnimationInfo(0, -8.0f, "ZOOM", "")}, 3.5);
+    camera_animations.add_animation({AnimationInfo(0, 8.0f, "ROTATE_Z", "")}, 3.5);
+
+    
+    camera_animations.add_animation({AnimationInfo(0, 0.0f, "NONE", "")}, 3.5);
+
+    // Zoom OUT
+    camera_animations.add_animation({AnimationInfo(0, -20.0f, "ZOOM", ""),
+                                     AnimationInfo(0, 15.0f, "ROTATE_Z", "")}, 4.5);
+    
+    // Orbita
+    camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", "")}, 7.0);
+}
+
+void block_2()
+{
+    update_current_light(4);
+    camera_world.set_pos(Point3(0.0f, 15.0f, 30.0f));
+    camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
+
+    camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", ""),
+                                     AnimationInfo(0, 10.0f, "ZOOM", "")}, 7.0);
+}
+
+void block_3()
+{
+    update_current_light(3);
+    camera_world.set_pos(Point3(0.0f, 15.0f, 30.0f));
+    camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
+
+    camera_animations.add_animation({AnimationInfo(0, 360, "ORBIT_Y_NO_SET", ""),
+                                     AnimationInfo(0, 10.0f, "ZOOM", "")}, 6.0);
+}
+
+void block_4()
+{
+    auto projection_matrix = get_perspective(60.0f, float(width)/float(height), 0.1f, 100.0f);
+
+    shaders.use_shader("UNIQUE");
+    shaders.set_mat4("UNIQUE", "projection", projection_matrix);
+
+    shaders.use_shader("LIGHT_SHADER");
+    shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
+
+    update_current_light(5);
+    camera_world.set_pos(Point3(3.9f, 11.0f, 0.0f));
+    camera_world.set_objective(Point3(0.0f, 11.0f, 0.0f));
+
+    camera_animations.add_animation({AnimationInfo(0, 360, "ORBIT_Y_NO_SET", "")}, 6.0);
+}
+
+void block_5()
+{
+    auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 100.0f);
+
+
+    shaders.use_shader("UNIQUE");
+    shaders.set_mat4("UNIQUE", "projection", projection_matrix);
+
+    shaders.use_shader("LIGHT_SHADER");
+    shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
+
+    update_current_light(1);
+    camera_world.set_pos(Point3(3.9f, 11.0f, 0.0f));
+    camera_world.set_objective(Point3(0.0f, 11.0f, 0.0f));
+    camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", "")}, 10.0);
+}
+
+void block_6()
+{
+    update_current_light(2);
+    shrimp_animation.add_animation({AnimationInfo(ALL_IDs, 1080, "ROTATE_Y", "PUBLIC")}, 15.0);
+    camera_animations.add_animation({AnimationInfo(0, -7.0f, "ZOOM", "")}, 5.0);
+}
+
+
 void frame_buffer_size_call_back(GLFWwindow* in_window, int in_w, int in_h)
 {
     glViewport(0, 0, in_w, in_h);
 
+    width = in_w;
+    height = in_h;
+
     auto projection_matrix = get_perspective(45.0f, float(in_w)/float(in_h), 0.1f, 100.0f);
 
-    ShaderList* shaders = static_cast<ShaderList*>(glfwGetWindowUserPointer(in_window));
+    shaders.use_shader("UNIQUE");
+    shaders.set_mat4("UNIQUE", "projection", projection_matrix);
 
-    shaders->use_shader("UNIQUE");
-    shaders->set_mat4("UNIQUE", "projection", projection_matrix);
-
-    shaders->use_shader("LIGHT_SHADER");
-    shaders->set_mat4("LIGHT_SHADER", "projection", projection_matrix);
-
-    shaders->use_shader("GLASS_SHADER");
-    shaders->set_mat4("GLASS_SHADER", "projection", projection_matrix);
+    shaders.use_shader("LIGHT_SHADER");
+    shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
 
 }
 
@@ -180,36 +328,81 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
             camera_world.zoom(-offset);
         else if ( key == GLFW_KEY_T)
             is_moving = !is_moving;
-        else if ( key == GLFW_KEY_V )
-            camera_animations.add_animation({AnimationInfo(0, 180, "ORBIT_Y", "")}, 3.0);
-        else if ( key == GLFW_KEY_B)
-            camera_animations.add_animation({AnimationInfo(0, 180, "ORBIT_X", "")}, 3.0);
-        else if ( key == GLFW_KEY_F)
-			light_animations.add_animation({AnimationInfo(ALL_IDs, 180, "ROTATE_C_Z", "PUBLIC")}, 2.0);
+        else if ( key == GLFW_KEY_1 )
+        {
+            block_1();
+            sequence_timer  = 0.0f;
+            sequence_block  = 0;
+            sequence_running = true;
+        }
+        else if ( key  == GLFW_KEY_2 )
+        {
+            if (sequence_running)
+                return;
+
+            camera_world.set_pos(Point3(0.0f, 15.0f, 30.0f));
+            camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
+        }
+        else if ( key == GLFW_KEY_5 )
+            shrimp_animation.add_animation({AnimationInfo(ALL_IDs, 1080, "ROTATE_Y", "PUBLIC")}, 15.0);
+        else if ( key == GLFW_KEY_6 )
+        {
+            if (sequence_running)
+                return;
+            camera_world.set_pos(Point3(0.0f, 15.0f, 30.0f));
+            camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
+
+            camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", ""),
+                                             AnimationInfo(0, 10.0f, "ZOOM", "")}, 7.0);
+        }
+        else if ( key == GLFW_KEY_7 )
+        {
+            if (sequence_running)
+                return;
+            camera_world.set_pos(Point3(3.9f, 11.0f, 0.0f));
+            camera_world.set_objective(Point3(0.0f, 11.0f, 0.0f));
+
+            camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", "")}, 10.0);
+        }
+        else if ( key == GLFW_KEY_8 )
+        {
+            if (sequence_running)
+                return;
+            camera_world.set_pos(Point3(2.0f, 14.0f, 0.0f));
+            camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
+
+            camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", "")}, 10.0);
+        }
+        else if ( key == GLFW_KEY_9 )
+        {
+            if (sequence_running)
+                return;
+            camera_world.set_pos(Point3(-10.0f, 15.5f, 0.0f));
+            camera_world.set_objective(Point3(0.0f, 11.5f, 0.0f));
+
+            camera_animations.add_animation({AnimationInfo(0, 10.0f, "ZOOM", "")}, 5.0);
+
+            camera_animations.add_animation({AnimationInfo(0, 180.0f, "ROTATE_Y", "")}, 3.0);
+            camera_animations.add_animation({AnimationInfo(0, -25.0f, "ROTATE_Z", "")}, 1.5);
+            camera_animations.add_animation({AnimationInfo(0, -8.0f, "ZOOM", "")}, 3.5);
+            camera_animations.add_animation({AnimationInfo(0, 8.0f, "ROTATE_Z", "")}, 3.5);
+
+            camera_animations.add_animation({AnimationInfo(0, 0.0f, "NONE", "")}, 3.5);
+
+            camera_animations.add_animation({AnimationInfo(0, -20.0f, "ZOOM", ""),
+                                             AnimationInfo(0, 15.0f, "ROTATE_Z", "")}, 4.5);
+                                
+            camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", "")}, 7.0);
+        }
+        else if ( key == GLFW_KEY_0 )
+        {
+            if (sequence_running)
+                return;
+            light_animations.add_animation({AnimationInfo(ALL_IDs, 360, "ROTATE_C_Z", "PUBLIC")}, 6.0);
+        }
         else if ( key == GLFW_KEY_G )
         {
-            // Delete current nodes from root
-            for (auto ptr: presets[preset_id]->get_point_lights_ptr())
-            {
-                for (auto it = root->children.begin(); it != root->children.end(); it++)
-                {
-                    if (*it == ptr)
-                    {
-                        root->children.erase(it);
-                        break;
-                    }
-                }
-            }
-
-            preset_id++;
-            if (preset_id >= presets.size())
-                preset_id = 0;
-            
-
-            // Add new light nodes from root
-            for (auto ptr: presets[preset_id]->get_point_lights_ptr())
-                root->add_children(ptr);
-
+            update_current_light(preset_id + 1);
             std::cout << "Current light preset: " << preset_id << "\n";
         }
     }	
@@ -217,9 +410,6 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
 
 int main()
 {
-    const int width = 900;
-    const int height = 900;
-
     // Initialize
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -242,26 +432,15 @@ int main()
         return -1;
     }
 
-    // Path
-    std::filesystem::path current_path = std::filesystem::current_path();
-	current_path = current_path.parent_path();
-    current_path = current_path / "ownProjects" / "COMPUTER_GRAPHICS_FINAL_PROJECT";
-
-
     // ***********************
     // SHADERS
     // ***********************
     
-    ShaderList shaders(current_path);
-
     // Normal Shader
     shaders.create_shader("UNIQUE", "normal_shader.vs", "normal_fragment.fs");
     // Light Shader
     shaders.create_shader("LIGHT_SHADER", "light_shader.vs", "light_fragment.fs");
-    // Glass Shader
-    shaders.create_shader("GLASS_SHADER", "normal_shader.vs", "glass_fragment.fs");
     
-    glfwSetWindowUserPointer(window, &shaders);
 
     TextureList textures(current_path);
 	
@@ -271,12 +450,17 @@ int main()
     LightPreset cyber_punk = get_cyberpunk();
     LightPreset desert = get_desert();
     LightPreset day_cicle = get_day_cicle();
+    LightPreset bioluminiscente = get_bioluminiscente();
+    LightPreset deep_sea = get_deep_sea();
+    LightPreset candle_light = get_candlelight();
 
     presets.push_back(&day_cicle);
     presets.push_back(&day);
     presets.push_back(&night);
     presets.push_back(&cyber_punk);
-    presets.push_back(&desert);
+    presets.push_back(&bioluminiscente);
+    presets.push_back(&deep_sea);
+    presets.push_back(&candle_light);
     
     
     
@@ -295,8 +479,8 @@ int main()
     Color white(255.0f, 255.0f, 255.0f, true);
 
     // Camera
-    camera_world.set_pos(Point3(0.0f, 0.0f, 5.0f));
-    camera_world.set_objective(Point3(0.0f, 0.0f, 0.0f));
+    camera_world.set_pos(Point3(0.0f, 15.0f, 30.0f));
+    camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
 
 
     // Figuras
@@ -361,149 +545,95 @@ int main()
     sphere_node->traslate(Vector3(0.0f, 0.5f, 0.0f), true);
     
     Gecko geckito(current_path);
+
+    //geckito.get_root()->traslate(Vector3(0.0f, 15.0f, -2.0f), true);
     geckito.get_root()->traslate(Vector3(0.0f, 0.0f, -2.0f), true);
+    ptr = &geckito;
 
-    Spider aranita(current_path);
-    aranita.get_root()->traslate(Vector3(0.7f, 0.0f, 0.0f), true);
 
-    Tadpole tadpolin(current_path);
-    tadpolin.get_root()->traslate(Vector3(-0.8f, 0.0f, 0.0f), true);
     
-    Butterfly mariposa(current_path);
-    mariposa.get_root()->traslate(Vector3(0.0f, 0.4f, 0.0f), true);
+    Spider aranita(current_path);
+    aranita.get_root()->traslate(Vector3(0.7f, 15.0f, 0.0f), true);
 	
-	Shrimp shrimpy(current_path);
-	shrimpy.get_root()->traslate(Vector3(0.0f,0.0f,0.8f),true);
+	Butterfly mariposa(current_path);
+    mariposa.get_root()->traslate(Vector3(0.0f, 15.0f, 0.0f), true);
 	
 	Bettle carabajito(current_path);
-	carabajito.get_root()->traslate(Vector3(0.0f,-0.8f,0.0f),true);
-
-	Mushroom hongo1(current_path,BIG_MUSHROOM);
-	hongo1.get_root()->traslate(Vector3(-0.7f,-0.8f,0.0f),true);
+	carabajito.get_root()->traslate(Vector3(0.0f, 15.0f, 0.0f),true);
+  
 	
-	Mushroom honguito1(current_path,LIL_MUSHROOM);
-	honguito1.get_root()->traslate(Vector3(0.7f,-0.8f,0.0f),true);
-	
-	Rock piedras1(current_path);
-	piedras1.get_root()->traslate(Vector3(0.0f, -0.8f, -0.5f),true);
-	
-	RockCave cueva1(current_path);
-	cueva1.get_root()->traslate(Vector3(-2.0f, -0.8f, -0.5f),true);
-
-	Stump tronco1(current_path);
-	tronco1.get_root()->traslate(Vector3(2.0f, -0.8f, -0.5f),true);
-	
-	Bush hojas1(current_path,1);
-	hojas1.get_root()->traslate(Vector3(2.0f, -2.8f, -0.5f),true);
-	
-	Bush hojas2(current_path,2);
-	hojas2.get_root()->traslate(Vector3(2.0f, -1.8f, -0.5f),true);
-	
-	Bush hojas3(current_path,3);
-	hojas3.get_root()->traslate(Vector3(1.0f, -1.8f, -0.5f),true);
-	
-	Bush hojas4(current_path,4);
-	hojas4.get_root()->traslate(Vector3(0.0f, -1.8f, -0.5f),true);
-	
-	Bush hojas5(current_path,5);
-	hojas5.get_root()->traslate(Vector3(-1.0f, -1.8f, -0.5f),true);
-	
-	Bush hojas6(current_path,6);
-	hojas6.get_root()->traslate(Vector3(-2.0f, -1.8f, -0.5f),true);
-	
-	Bush hojas7(current_path,7);
-	hojas7.get_root()->traslate(Vector3(-2.0f, -2.8f, -0.5f),true);
-	
-	Bush hojas8(current_path,8);
-	hojas8.get_root()->traslate(Vector3(-1.0f, -2.8f, -0.5f),true);
-	
-	Bush pasto(current_path,0);
-	pasto.get_root()->traslate(Vector3(-1.0f, -0.8f, -0.5f),true);
+    Tadpole tadpolin(current_path, UNIDO);
+	Terrain terreno(current_path);
+	Table mesa(current_path);
 
 
-	Flower flor1(current_path,WHITE); 
-	flor1.get_root()->traslate(Vector3(-2.0f, -0.8f, -1.5f),true);
 	
-	Flower flor2(current_path,RED); 
-	flor2.get_root()->traslate(Vector3(-1.0f, -0.8f, -1.5f),true);
+//	Mushroom honguito1(current_path,LIL_MUSHROOM);
 	
-	Flower flor3(current_path,YELLOW); 
-	flor3.get_root()->traslate(Vector3(0.0f, -0.8f, -1.5f),true);
-	
-	Flower flor4(current_path,BLUE); 
-	flor4.get_root()->traslate(Vector3(1.0f, -0.8f, -1.5f),true);
-	
-	
-	Algae alga(current_path); 
-	alga.get_root()->traslate(Vector3(2.0f, -0.8f, -1.5f),true);
+	Rock piedras1(current_path,UNIDO);
+	RockCave cueva1(current_path,UNIDO);
+	Stump tronco1(current_path,UNIDO);
+	Algae alga(current_path,UNIDO); 
 
 
-	Nenufar lilypad(current_path,NENUFAR); 
-	lilypad.get_root()->traslate(Vector3(-1.0f, -0.8f, 1.5f),true);
+	Nenufar lilypad(current_path,NENUFAR,UNIDO); 
 	
-	Nenufar lilypad_flor(current_path,NENUFAR_FLOWER); 
-	lilypad_flor.get_root()->traslate(Vector3(1.0f, -0.8f, 1.5f),true);
-	
+    //Nenufar lilypad_flor(current_path,NENUFAR_FLOWER); 
+    //lilypad_flor.get_root()->traslate(Vector3(1.0f, -0.8f, 1.5f),true);
+
+
+
+
+	Mushroom hongo1(current_path,BIG_MUSHROOM, UNIDO);
+	Bush hojas0 (current_path, 1,UNIDO);
+	Bush pasto(current_path, 0, UNIDO);
+	Flower flor1(current_path,WHITE,UNIDO); 
+    shrimpy = new Shrimp(current_path);
+
 	Bottle botella(current_path); 
-	botella.get_root()->traslate(Vector3(0.0f, -2.8f, -3.5f),true);
+    //botella.get_root()->scale(Vector3(0.85f, 0.85f, 0.85f), true);
 	
-	
-	
-    /*
+
+	/*
     root->add_children(cubito_node);
     root->add_children(piramide_node);
     root->add_children(conito_node);
     root->add_children(sphere_node);
     */
 
+
     for (auto ptr: presets[current_id]->get_point_lights_ptr())
         root->add_children(ptr);
-    
-    root->add_children(geckito.get_root());
-    root->add_children(aranita.get_root());
+	
+	
+    movable_root->add_children(geckito.get_root());
+    movable_root->add_children(aranita.get_root());
+	movable_root->add_children(mariposa.get_root());
+	movable_root->add_children(carabajito.get_root());
+
+
+    root->add_children(hongo1.get_root());
+
     root->add_children(tadpolin.get_root());
-    root->add_children(mariposa.get_root());
-	root->add_children(shrimpy.get_root());
-	root->add_children(carabajito.get_root());
-	
-	root->add_children(hongo1.get_root());
-	root->add_children(honguito1.get_root());
-	
-	root->add_children(piedras1.get_root());
-	root->add_children(cueva1.get_root());
-	
-	root->add_children(tronco1.get_root());
-	
-	root->add_children(hojas1.get_root());
-	root->add_children(hojas2.get_root());
-	root->add_children(hojas3.get_root());
-	root->add_children(hojas3.get_root());
-	root->add_children(hojas4.get_root());
-	root->add_children(hojas5.get_root());
-	root->add_children(hojas6.get_root());
-	root->add_children(hojas7.get_root());
-	root->add_children(hojas8.get_root());
-	root->add_children(pasto.get_root());
-	
-	
+	root->add_children(shrimpy->get_root());
 	root->add_children(flor1.get_root());
-	root->add_children(flor2.get_root());
-	root->add_children(flor3.get_root());
-	root->add_children(flor4.get_root());
-	
+	root->add_children(hojas0.get_root());
+	root->add_children(pasto.get_root());	
+	root->add_children(piedras1.get_root());
+	root->add_children(cueva1.get_root());	
+	root->add_children(tronco1.get_root());	
 	root->add_children(alga.get_root());
-	
 	root->add_children(lilypad.get_root());
-	root->add_children(lilypad_flor.get_root());
+	root->add_children(terreno.get_root());
+	root->add_children(mesa.get_root());
 	
 	glass_root->add_children(botella.get_root());	
-	
+	water_root->add_children(terreno.get_water());
+    
     // Bucle
 	glPointSize(10.0f);
-
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);  
-    //glEnable(GL_FRAMEBUFFER_SRGB); 
 
     float delta_time = 0.0f;
     float last_frame = 0.0f;
@@ -515,8 +645,10 @@ int main()
     shaders.use_shader("LIGHT_SHADER");
     shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
 
-    shaders.use_shader("GLASS_SHADER");
-    shaders.set_mat4("GLASS_SHADER", "projection", projection_matrix);
+
+    PlaneSurface plane;
+    WaveSurface wave;
+    MountainSurface mountain;
 
     while(!glfwWindowShouldClose(window))
     {
@@ -524,9 +656,42 @@ int main()
         delta_time = std::min(current_frame - last_frame, 0.05f);
         last_frame = current_frame;
 
+        if (sequence_running)
+        {
+            sequence_timer += delta_time;
+
+            if (sequence_block == 0 && sequence_timer >= BLOCK_1_DURATION)
+            {
+                block_2();
+                sequence_block = 1;
+            }
+            else if (sequence_block == 1 && sequence_timer >= BLOCK_1_DURATION + BLOCK_2_DURATION)
+            {
+                block_3();
+                sequence_block = 2;
+            }
+            else if (sequence_block == 2 && sequence_timer >= BLOCK_1_DURATION + BLOCK_2_DURATION + BLOCK_3_DURATION)
+            {
+                block_4();
+                sequence_block = 3;
+            }
+            else if (sequence_block == 3 && sequence_timer >= BLOCK_1_DURATION + BLOCK_2_DURATION + BLOCK_3_DURATION + BLOCK_4_DURATION)
+            {
+                block_5();
+                sequence_block = 4;
+            }
+            else if (sequence_block == 4 && sequence_timer >= BLOCK_1_DURATION + BLOCK_2_DURATION + BLOCK_3_DURATION + BLOCK_4_DURATION + BLOCK_5_DURATION)
+            {
+                block_6();
+                sequence_block = 5;
+                sequence_running = false;
+                sequence_timer = 0.0f;
+            }
+        }
 
         camera_animations.process_animations_camera(camera_world, nodes, delta_time);
         light_animations.process_animations(presets[preset_id]->get_point_lights_ptr(), delta_time);
+        shrimp_animation.process_animations({shrimpy->get_upper_root()}, delta_time);
 
 
         glClearColor(background_color.r, background_color.g, background_color.b, 1.0f);
@@ -541,25 +706,54 @@ int main()
 
         shaders.use_shader("LIGHT_SHADER");
         shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);
-        
-        shaders.use_shader("GLASS_SHADER");
-        shaders.set_mat4("GLASS_SHADER", "view", view_matrix);
-        shaders.set_vec3("GLASS_SHADER", "view_pos", camera_pos.x, camera_pos.y, camera_pos.z);
 
         shaders.use_shader("UNIQUE");
         shaders.set_mat4("UNIQUE", "view", view_matrix);
         shaders.set_vec3("UNIQUE", "view_pos", camera_pos.x, camera_pos.y, camera_pos.z);
         
+		presets[preset_id]->apply(shaders, background_color);
+		
+
+
+        shaders.use_shader("LIGHT_SHADER");
+        shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);
+
+        float spd = 1.5f * delta_time;
+        float rot  = 60.0f * delta_time;
+
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+            geckito.move(Vector3(0.0f, 0.0f, -spd));
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+            geckito.move(Vector3(0.0f, 0.0f, spd));
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+            geckito.move(Vector3(-spd, 0.0f, 0.0f));
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+            geckito.move(Vector3( spd, 0.0f, 0.0f));
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+            geckito.rotate(rot);
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+            geckito.rotate(-rot);
+
 		root->draw(shaders, textures, Matrix_4());
+        movable_root->draw(shaders, textures, Matrix_4());
+
+        geckito.update(delta_time, plane);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDepthMask(GL_FALSE);
 
-        glass_root->draw(shaders, textures, Matrix_4());
+        
+        water_root->draw(shaders, textures, Matrix_4());
+        
 
+        glass_root->draw(shaders, textures, Matrix_4());
         glDepthMask(GL_TRUE);
         glDisable(GL_BLEND);
+
+
+        //shrimpy.get_upper_root()->rotate_y_local(90.0f * delta_time, true);
+        //shrimpy.get_root()->rotate_y_global(90.0f * delta_time, true);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

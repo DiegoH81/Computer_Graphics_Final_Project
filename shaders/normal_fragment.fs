@@ -13,6 +13,7 @@ struct Material
     vec3 diffuse;
     vec3 specular;
     float shininess;
+    float alpha_value;
 };
 
 struct DirectionalLight
@@ -152,6 +153,6 @@ void main()
 		for (int i = 0; i < num_spot_lights; i++)
 			result += get_spotlight(norm, spot_lights[i], material);
 
-        FragColor = vec4(result, 1.0f);
+        FragColor = vec4(result, material.alpha_value);
     }
 }

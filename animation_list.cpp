@@ -101,6 +101,8 @@ void AnimationList::process_animations_camera(Camera& in_camera, std::vector<Sce
             in_camera.rotate_y(move);
         else if (type == "ROTATE_Z")
             in_camera.rotate_z(move);
+        else if (type == "ZOOM")
+            in_camera.zoom(move);
 
         if (t.id == ALL_IDs)
             continue;
@@ -127,6 +129,12 @@ void AnimationList::process_animations_camera(Camera& in_camera, std::vector<Sce
                 in_camera.set_objective(node->get_center());
                 in_camera.orbit_z(move);
             }
+            else if (type == "ORBIT_X_NO_SET")
+                in_camera.orbit_x(move);
+            else if (type == "ORBIT_Y_NO_SET")
+                in_camera.orbit_y(move);
+            else if (type == "ORBIT_Z_NO_SET")
+                in_camera.orbit_z(move);
 
             break;
         }

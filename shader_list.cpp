@@ -128,11 +128,13 @@ void ShaderList::set_material(const std::string& shader_name, const std::string&
     int diffuse = glGetUniformLocation(current_program, (uniform_name + ".diffuse").c_str());
     int specular = glGetUniformLocation(current_program, (uniform_name + ".specular").c_str());
     int shiny = glGetUniformLocation(current_program, (uniform_name + ".shininess").c_str());
+    int alpha_value = glGetUniformLocation(current_program, (uniform_name + ".alpha_value").c_str());
 
     glUniform3f(ambient, in_material->ambient.x, in_material->ambient.y, in_material->ambient.z);
     glUniform3f(diffuse, in_material->diffuse.x, in_material->diffuse.y, in_material->diffuse.z);
     glUniform3f(specular, in_material->specular.x, in_material->specular.y, in_material->specular.z);
     glUniform1f(shiny, in_material->shininess);
+    glUniform1f(alpha_value, in_material->alpha_value);
 }
 
 std::string ShaderList::read_shader_source(const std::string& source_path)
