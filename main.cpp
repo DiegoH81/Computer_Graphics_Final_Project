@@ -374,11 +374,7 @@ int main()
     geckito.get_root()->traslate(Vector3(0.0f, 0.0f, -2.0f), true);
     ptr = &geckito;
 
-    Spider aranita(current_path);
-    aranita.get_root()->traslate(Vector3(0.7f, 0.0f, 0.0f), true);
 
-    Tadpole tadpolin(current_path);
-    tadpolin.get_root()->traslate(Vector3(-0.8f, 0.0f, 0.0f), true);
     
     Spider aranita(current_path);
     aranita.get_root()->traslate(Vector3(0.7f, 15.0f, 0.0f), true);
