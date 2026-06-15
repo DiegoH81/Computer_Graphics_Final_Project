@@ -110,12 +110,14 @@ LightPreset get_day()
 
     // Point
     PointLight fill;
+    fill.draw_sphere();
     fill.ambient = Vector3(0.05f, 0.05f, 0.1f);
     fill.diffuse = Vector3(0.2f, 0.2f, 0.35f);
     fill.specular = Vector3(0.0f, 0.0f, 0.0f);
     fill.constant = 1.0f;
     fill.linear = 0.09f;
     fill.quadratic = 0.032f;
+    fill.light_node->traslate(Vector3(20.0f, 20.0f, 0.0f), true);
     to_return.point_lights.push_back(fill);
 
     return to_return;
@@ -127,21 +129,23 @@ LightPreset get_night()
 
     to_return.background_color = Color(0.02f, 0.02f, 0.08f, false);
 
-    // Directional
-    to_return.directional.ambient = Vector3(0.05f, 0.05f, 0.1f);
-    to_return.directional.diffuse = Vector3(0.1f, 0.1f, 0.2f);
-    to_return.directional.specular = Vector3(0.2f, 0.2f, 0.3f);
+    
+    to_return.directional.ambient = Vector3(0.15f, 0.15f, 0.25f);
+    to_return.directional.diffuse = Vector3(0.4f, 0.4f, 0.6f);
+    to_return.directional.specular = Vector3(0.5f, 0.5f, 0.7f);
     to_return.directional.direction = Vector3(-0.3f, -1.0f, -0.3f);
 
-    // Point
+    
     PointLight lantern;
-    lantern.ambient = Vector3(0.1f, 0.05f, 0.0f);
-    lantern.diffuse = Vector3(1.0f, 0.5f, 0.1f);
-    lantern.specular = Vector3(0.8f, 0.4f, 0.1f);
+    lantern.ambient = Vector3(0.2f, 0.1f, 0.0f);
+    lantern.diffuse = Vector3(1.5f, 0.8f, 0.2f);
+    lantern.specular = Vector3(1.0f, 0.6f, 0.2f);
     lantern.constant = 1.0f;
-    lantern.linear = 0.22f;
-    lantern.quadratic = 0.2f;
-    lantern.light_node->traslate(Vector3(0.0f, 15.0f, 0.0f), true);
+    lantern.linear = 0.09f;
+    lantern.quadratic = 0.032f;
+    lantern.draw_sphere();
+
+    lantern.light_node->traslate(Vector3(0.0f, 20.0f, 0.0f), true);
     to_return.point_lights.push_back(lantern);
 
     return to_return;
@@ -154,46 +158,56 @@ LightPreset get_cyberpunk()
     to_return.background_color = Color(0.02f, 0.0f, 0.05f, false);
 
     // Directional
-    to_return.directional.ambient   = Vector3(0.02f, 0.0f, 0.05f);
-    to_return.directional.diffuse   = Vector3(0.05f, 0.0f, 0.08f);
-    to_return.directional.specular  = Vector3(0.0f, 0.0f, 0.0f);
+    to_return.directional.ambient   = Vector3(0.08f, 0.0f, 0.12f);
+    to_return.directional.diffuse   = Vector3(0.15f, 0.0f, 0.25f);
+    to_return.directional.specular  = Vector3(0.1f, 0.0f, 0.2f);
     to_return.directional.direction = Vector3(0.0f, -1.0f, 0.0f);
 
     // Neon magenta
     PointLight neon_magenta;
-    neon_magenta.ambient   = Vector3(0.05f, 0.0f, 0.05f);
-    neon_magenta.diffuse   = Vector3(0.9f, 0.0f, 0.6f);
-    neon_magenta.specular  = Vector3(1.0f, 0.0f, 0.8f);
+    neon_magenta.ambient   = Vector3(0.08f, 0.0f, 0.08f);
+    neon_magenta.diffuse   = Vector3(1.2f, 0.0f, 0.8f);
+    neon_magenta.specular  = Vector3(1.5f, 0.0f, 1.0f);
     neon_magenta.constant  = 1.0f;
-    neon_magenta.linear = 0.22f;
-    neon_magenta.quadratic = 0.2f;
-    
+    neon_magenta.linear    = 0.045f;
+    neon_magenta.quadratic = 0.0075f;
+    neon_magenta.light_node->traslate(Vector3(-10.0f, 20.0f, 0.0f), true);
 
-    // Neón cyan — lado derecho
+    // Neon cyan
     PointLight neon_cyan;
-    neon_cyan.ambient   = Vector3(0.0f, 0.05f, 0.05f);
-    neon_cyan.diffuse   = Vector3(0.0f, 0.8f, 0.9f);
-    neon_cyan.specular  = Vector3(0.0f, 1.0f, 1.0f);
-
+    neon_cyan.ambient   = Vector3(0.0f, 0.05f, 0.08f);
+    neon_cyan.diffuse   = Vector3(0.0f, 0.9f, 1.2f);
+    neon_cyan.specular  = Vector3(0.0f, 1.0f, 1.5f);
     neon_cyan.constant  = 1.0f;
-    neon_cyan.linear = 0.22f;
-    neon_cyan.quadratic = 0.2f;
-    neon_cyan.light_node->traslate(Vector3(0.0f, 0.0f, 15.0f), true);
+    neon_cyan.linear    = 0.045f;
+    neon_cyan.quadratic = 0.0075f;
+    neon_cyan.light_node->traslate(Vector3(10.0f, 15.0f, 15.0f), true);
 
-    // Luz de piso naranja/amarillo
-    PointLight ground_reflect;
-    ground_reflect.ambient   = Vector3(0.02f, 0.01f, 0.0f);
-    ground_reflect.diffuse   = Vector3(0.4f, 0.25f, 0.0f);
-    ground_reflect.specular  = Vector3(0.6f, 0.4f, 0.0f);
+    // Neon violeta
+    PointLight neon_purple;
+    neon_purple.ambient   = Vector3(0.05f, 0.0f, 0.1f);
+    neon_purple.diffuse   = Vector3(0.6f, 0.0f, 1.2f);
+    neon_purple.specular  = Vector3(0.8f, 0.0f, 1.5f);
+    neon_purple.constant  = 1.0f;
+    neon_purple.linear    = 0.09f;
+    neon_purple.quadratic = 0.02f;
+    neon_purple.light_node->traslate(Vector3(0.0f, 2.0f, 8.0f), true);
 
-    ground_reflect.constant  = 1.0f;
-    ground_reflect.linear = 0.35f;
-    ground_reflect.quadratic = 0.44f;
+    // Naranja/ambar
+    PointLight ground_orange;
+    ground_orange.ambient   = Vector3(0.05f, 0.02f, 0.0f);
+    ground_orange.diffuse   = Vector3(0.8f, 0.4f, 0.0f);
+    ground_orange.specular  = Vector3(1.0f, 0.6f, 0.0f);
+    ground_orange.constant  = 1.0f;
+    ground_orange.linear    = 0.09f;
+    ground_orange.quadratic = 0.032f;
+    ground_orange.light_node->traslate(Vector3(5.0f, 1.0f, 0.0f), true);
 
     to_return.point_lights.push_back(neon_magenta);
     to_return.point_lights.push_back(neon_cyan);
-    to_return.point_lights.push_back(ground_reflect);
-    ground_reflect.light_node->traslate(Vector3(0.0f, 15.0f, 0.0f), true);
+    to_return.point_lights.push_back(neon_purple);
+    to_return.point_lights.push_back(ground_orange);
+
     return to_return;
 }
 
@@ -210,6 +224,7 @@ LightPreset get_desert()
 	
     // Sun
     PointLight world_sun;
+    world_sun.draw_sphere();
     world_sun.ambient = Vector3(0.3f, 0.3f, 0.3f);
     world_sun.diffuse = Vector3(1.0f, 0.9f, 0.9f);
     world_sun.specular = Vector3(1.0f, 1.0f, 1.0f);
@@ -247,6 +262,7 @@ LightPreset get_day_cicle()
 	
     // Sun
     PointLight world_sun;
+    world_sun.draw_sphere();
     world_sun.ambient = Vector3(0.3f, 0.3f, 0.3f);
     world_sun.diffuse = Vector3(1.0f, 0.9f, 0.9f);
     world_sun.specular = Vector3(1.0f, 1.0f, 1.0f);
@@ -254,6 +270,140 @@ LightPreset get_day_cicle()
     
 
     to_return.point_lights.push_back(world_sun);
+
+    return to_return;
+}
+
+LightPreset get_bioluminiscente()
+{
+    LightPreset to_return;
+
+    to_return.background_color = Color(0.0f, 0.02f, 0.02f, false);
+
+    
+    to_return.directional.ambient = Vector3(0.0f, 0.05f, 0.04f);
+    to_return.directional.diffuse = Vector3(0.0f, 0.08f, 0.06f);
+    to_return.directional.specular = Vector3(0.0f, 0.1f, 0.08f);
+    to_return.directional.direction = Vector3(0.0f, -1.0f, 0.0f);
+
+    PointLight bio_main;
+    bio_main.ambient = Vector3(0.0f, 0.08f, 0.06f);
+    bio_main.diffuse = Vector3(0.0f, 1.2f, 0.8f);
+    bio_main.specular = Vector3(0.0f, 1.5f, 1.0f);
+    bio_main.constant = 1.0f;
+    bio_main.linear = 0.045f;
+    bio_main.quadratic = 0.0075f;
+    //bio_main.draw_sphere();
+    bio_main.light_node->traslate(Vector3(0.0f, 20.0f, 0.0f), true);
+
+    PointLight bio_blue;
+    bio_blue.ambient = Vector3(0.02f, 0.0f, 0.08f);
+    bio_blue.diffuse = Vector3(0.3f, 0.0f, 1.2f);
+    bio_blue.specular = Vector3(0.4f, 0.0f, 1.5f);
+    bio_blue.constant = 1.0f;
+    bio_blue.linear = 0.09f;
+    bio_blue.quadratic = 0.02f;
+    //bio_blue.draw_sphere();
+    bio_blue.light_node->traslate(Vector3(-8.0f, 10.0f, 5.0f), true);
+
+    PointLight bio_ground;
+    bio_ground.ambient = Vector3(0.0f, 0.05f, 0.05f);
+    bio_ground.diffuse = Vector3(0.0f, 0.8f, 0.9f);
+    bio_ground.specular = Vector3(0.0f, 1.0f, 1.2f);
+    bio_ground.constant = 1.0f;
+    bio_ground.linear = 0.14f;
+    bio_ground.quadratic = 0.07f;
+    //bio_ground.draw_sphere();
+    bio_ground.light_node->traslate(Vector3(5.0f, 1.0f, 3.0f), true);
+
+    to_return.point_lights.push_back(bio_main);
+    to_return.point_lights.push_back(bio_blue);
+    to_return.point_lights.push_back(bio_ground);
+
+    return to_return;
+}
+
+LightPreset get_deep_sea()
+{
+    LightPreset to_return;
+
+    to_return.background_color = Color(0.0f, 0.02f, 0.05f, false);
+
+    to_return.directional.ambient = Vector3(0.0f, 0.06f, 0.1f);
+    to_return.directional.diffuse = Vector3(0.0f, 0.15f, 0.25f);
+    to_return.directional.specular = Vector3(0.0f, 0.2f, 0.3f);
+    to_return.directional.direction = Vector3(0.0f, -1.0f, 0.2f);
+
+    PointLight surface_light;
+    surface_light.ambient = Vector3(0.0f, 0.05f, 0.08f);
+    surface_light.diffuse = Vector3(0.0f, 0.6f, 1.0f);
+    surface_light.specular = Vector3(0.0f, 0.8f, 1.2f);
+    surface_light.constant = 1.0f;
+    surface_light.linear = 0.045f;
+    surface_light.quadratic = 0.0075f;
+    //surface_light.draw_sphere();
+    surface_light.light_node->traslate(Vector3(0.0f, 25.0f, 0.0f), true);
+
+    PointLight algae_glow;
+    algae_glow.ambient = Vector3(0.0f, 0.04f, 0.02f);
+    algae_glow.diffuse = Vector3(0.0f, 0.5f, 0.2f);
+    algae_glow.specular = Vector3(0.0f, 0.6f, 0.3f);
+    algae_glow.constant = 1.0f;
+    algae_glow.linear = 0.14f;
+    algae_glow.quadratic = 0.07f;
+    //algae_glow.draw_sphere();
+    algae_glow.light_node->traslate(Vector3(-5.0f, 1.0f, 5.0f), true);
+
+    PointLight cold_fill;
+    cold_fill.ambient = Vector3(0.0f, 0.03f, 0.06f);
+    cold_fill.diffuse = Vector3(0.0f, 0.4f, 0.7f);
+    cold_fill.specular = Vector3(0.0f, 0.5f, 0.9f);
+    cold_fill.constant = 1.0f;
+    cold_fill.linear = 0.045f;
+    cold_fill.quadratic = 0.0075f;
+    //cold_fill.draw_sphere();
+    cold_fill.light_node->traslate(Vector3(8.0f, 12.0f, -5.0f), true);
+
+    to_return.point_lights.push_back(surface_light);
+    to_return.point_lights.push_back(algae_glow);
+    to_return.point_lights.push_back(cold_fill);
+
+    return to_return;
+}
+
+LightPreset get_candlelight()
+{
+    LightPreset to_return;
+
+    to_return.background_color = Color(0.01f, 0.005f, 0.0f, false);
+
+    to_return.directional.ambient = Vector3(0.06f, 0.03f, 0.0f);
+    to_return.directional.diffuse = Vector3(0.1f, 0.05f, 0.0f);
+    to_return.directional.specular = Vector3(0.0f, 0.0f, 0.0f);
+    to_return.directional.direction = Vector3(0.0f, -1.0f, 0.0f);
+
+    PointLight candle_main;
+    candle_main.ambient = Vector3(0.1f, 0.04f, 0.0f);
+    candle_main.diffuse = Vector3(1.4f, 0.6f, 0.1f);
+    candle_main.specular = Vector3(1.2f, 0.5f, 0.05f);
+    candle_main.constant = 1.0f;
+    candle_main.linear = 0.09f;
+    candle_main.quadratic = 0.032f;
+    //candle_main.draw_sphere();
+    candle_main.light_node->traslate(Vector3(0.0f, 20.0f, 0.0f), true);
+
+    PointLight warm_bounce;
+    warm_bounce.ambient = Vector3(0.04f, 0.01f, 0.0f);
+    warm_bounce.diffuse = Vector3(0.5f, 0.2f, 0.02f);
+    warm_bounce.specular = Vector3(0.3f, 0.1f, 0.0f);
+    warm_bounce.constant = 1.0f;
+    warm_bounce.linear = 0.14f;
+    warm_bounce.quadratic = 0.07f;
+    //warm_bounce.draw_sphere();
+    warm_bounce.light_node->traslate(Vector3(-6.0f, 15.0f, 4.0f), true);
+
+    to_return.point_lights.push_back(candle_main);
+    to_return.point_lights.push_back(warm_bounce);
 
     return to_return;
 }

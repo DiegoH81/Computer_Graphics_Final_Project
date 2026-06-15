@@ -62,12 +62,16 @@ public:
 
     PointLight() : Light(), constant(1.0f), linear(0.09f), quadratic(0.032f)
     {
-        Cube* light_cube = new Cube(1.0f);
-        light_cube->add_faces();
+        Sphere* light_cube = new Sphere(30, 1.0f);
 
         light_cube->set_shader_name(LIGHT_SHADER_NAME);
 
         light_node = new SceneNode(-1, light_cube);
+    }
+
+    void draw_sphere()
+    {
+        light_node->shape->add_faces();
     }
 
     void apply(ShaderList& shaders, int index) override
