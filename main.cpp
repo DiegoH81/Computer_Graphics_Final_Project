@@ -78,6 +78,7 @@ std::vector<LightPreset*> presets;
 SceneNode* root = new SceneNode(0);
 SceneNode* movable_root = new SceneNode(0);
 SceneNode* glass_root = new SceneNode(1);
+SceneNode* water_root = new SceneNode(2);
 Gecko* ptr = nullptr;
 
 float offset = 1.0f;
@@ -151,9 +152,6 @@ void frame_buffer_size_call_back(GLFWwindow* in_window, int in_w, int in_h)
     shaders->use_shader("LIGHT_SHADER");
     shaders->set_mat4("LIGHT_SHADER", "projection", projection_matrix);
 
-    shaders->use_shader("GLASS_SHADER");
-    shaders->set_mat4("GLASS_SHADER", "projection", projection_matrix);
-
 }
 
 void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, int mods)
@@ -225,8 +223,8 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
 
 int main()
 {
-    const int width = 900;
-    const int height = 900;
+    const int width = 1920;
+    const int height = 1080;
 
     // Initialize
     glfwInit();
@@ -266,8 +264,6 @@ int main()
     shaders.create_shader("UNIQUE", "normal_shader.vs", "normal_fragment.fs");
     // Light Shader
     shaders.create_shader("LIGHT_SHADER", "light_shader.vs", "light_fragment.fs");
-    // Glass Shader
-    shaders.create_shader("GLASS_SHADER", "normal_shader.vs", "glass_fragment.fs");
     
     glfwSetWindowUserPointer(window, &shaders);
 
@@ -387,7 +383,7 @@ int main()
   
 	
     Tadpole tadpolin(current_path, UNIDO);
-	Shrimp shrimpy(current_path);	
+	Shrimp shrimpy(current_path);
 	Terrain terreno(current_path);
 	Table mesa(current_path);
 
@@ -453,7 +449,7 @@ int main()
 	root->add_children(mesa.get_root());
 	
 	glass_root->add_children(botella.get_root());	
-	
+	water_root->add_children(terreno.get_water());
 
     //root->scale(Vector3(0.85f, 0.85f, 0.85f), true);
     // Bucle
@@ -473,8 +469,6 @@ int main()
     shaders.use_shader("LIGHT_SHADER");
     shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
 
-    shaders.use_shader("GLASS_SHADER");
-    shaders.set_mat4("GLASS_SHADER", "projection", projection_matrix);
 
     PlaneSurface plane;
     WaveSurface wave;
@@ -503,10 +497,6 @@ int main()
 
         shaders.use_shader("LIGHT_SHADER");
         shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);
-        
-        shaders.use_shader("GLASS_SHADER");
-        shaders.set_mat4("GLASS_SHADER", "view", view_matrix);
-        shaders.set_vec3("GLASS_SHADER", "view_pos", camera_pos.x, camera_pos.y, camera_pos.z);
 
         shaders.use_shader("UNIQUE");
         shaders.set_mat4("UNIQUE", "view", view_matrix);
@@ -544,10 +534,16 @@ int main()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDepthMask(GL_FALSE);
 
-        glass_root->draw(shaders, textures, Matrix_4());
+        
+        water_root->draw(shaders, textures, Matrix_4());
+        
 
+        glass_root->draw(shaders, textures, Matrix_4());
         glDepthMask(GL_TRUE);
         glDisable(GL_BLEND);
+
+
+        shrimpy.get_root()->rotate_y_local(90.0f * delta_time, true);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

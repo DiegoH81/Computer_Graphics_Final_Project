@@ -28,6 +28,7 @@ public:
 		material_water.diffuse = Vector3(0.35f, 0.58f, 0.75f);
 		material_water.specular = Vector3(0.60f, 0.70f, 0.80f);
 		material_water.shininess = 180.0f;
+        material_water.alpha_value = 0.3f;
 
 
         in_current_path = in_current_path / "models";
@@ -63,8 +64,7 @@ public:
 
         root->add_children(terrain);
         terrain->add_children(dirt);
-		
-        root->add_children(water);
+        //root->add_children(water);
 
     }
 
@@ -76,6 +76,11 @@ public:
     SceneNode* get_root()
     {
         return root;
+    }
+
+    SceneNode* get_water()
+    {
+        return water;
     }
 
 private:
