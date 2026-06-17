@@ -46,6 +46,7 @@ Integrantes:
 #include "bottle.h"
 #include "terrain.h"
 #include "table.h"
+#include "creature_base.h"
 
 
 
@@ -91,7 +92,6 @@ SceneNode* root = new SceneNode(0);
 SceneNode* movable_root = new SceneNode(0);
 SceneNode* glass_root = new SceneNode(1);
 SceneNode* water_root = new SceneNode(2);
-Gecko* ptr = nullptr;
 
 Shrimp* shrimpy = nullptr;
 
@@ -548,9 +548,6 @@ int main()
 
     //geckito.get_root()->traslate(Vector3(0.0f, 15.0f, -2.0f), true);
     geckito.get_root()->traslate(Vector3(0.0f, 0.0f, -2.0f), true);
-    ptr = &geckito;
-
-
     
     Spider aranita(current_path);
     aranita.get_root()->traslate(Vector3(0.7f, 15.0f, 0.0f), true);
@@ -646,8 +643,8 @@ int main()
     shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
 
 
-    PlaneSurface plane;
-    WaveSurface wave;
+    PlaneSurface plane(11);
+    WaveSurface wave(10.5);
     MountainSurface mountain;
 
     while(!glfwWindowShouldClose(window))
@@ -722,22 +719,24 @@ int main()
         float rot  = 60.0f * delta_time;
 
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-            geckito.move(Vector3(0.0f, 0.0f, -spd));
+            carabajito.move(Vector3(0.0f, 0.0f, -spd));
         if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-            geckito.move(Vector3(0.0f, 0.0f, spd));
+            carabajito.move(Vector3(0.0f, 0.0f, spd));
         if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-            geckito.move(Vector3(-spd, 0.0f, 0.0f));
+            carabajito.move(Vector3(-spd, 0.0f, 0.0f));
         if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-            geckito.move(Vector3( spd, 0.0f, 0.0f));
+            carabajito.move(Vector3( spd, 0.0f, 0.0f));
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-            geckito.rotate(rot);
+            carabajito.rotate(rot);
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-            geckito.rotate(-rot);
+            carabajito.rotate(-rot);
 
 		root->draw(shaders, textures, Matrix_4());
         movable_root->draw(shaders, textures, Matrix_4());
 
-        geckito.update(delta_time, plane);
+        geckito.update(delta_time, wave);
+        carabajito.update(delta_time, wave);
+        aranita.update(delta_time, wave);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

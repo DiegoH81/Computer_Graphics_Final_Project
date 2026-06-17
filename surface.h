@@ -39,13 +39,14 @@ public:
 };
 
 class WaveSurface : public SurfaceFunction {
+    float height;
     float amplitude, freq_x, freq_z;
 public:
-    WaveSurface(float a = 0.2f, float fx = 2.0f, float fz = 2.0f): amplitude(a), freq_x(fx), freq_z(fz) {}
+    WaveSurface(float base_heigh = 0, float a = 0.2f, float fx = 2.0f, float fz = 2.0f): height(base_heigh), amplitude(a), freq_x(fx), freq_z(fz) {}
 
     SurfaceHit project(float x, float z) const override {
         float y  = amplitude * std::sin(freq_x * x) * std::cos(freq_z * z);
-
+        y += height;
         float dx = -amplitude * freq_x * std::cos(freq_x * x) * std::cos(freq_z * z);
         float dz =  amplitude * freq_z * std::sin(freq_x * x) * std::sin(freq_z * z);
         Vector3 normal = normalize(Vector3(-dx, 1.0f, -dz));

@@ -2,292 +2,295 @@
 #define SPIDER_H
 
 #include <filesystem>
-
 #include "scene.h"
 #include "shape.h"
 #include "material.h"
+#include "creature_base.h"
 
-class Spider
+class Spider : public CreatureBase<8>
 {
 public:
-    Spider(std::filesystem::path in_current_path):
-        gray(128, 128, 128, true), material_skin()
+    Spider(std::filesystem::path in_current_path)
+        : gray(128, 128, 128, true)
+        , material_skin()
     {
-        in_current_path = in_current_path / "models" / "spider" ;
-
-        
-        material_skin.ambient = Vector3(0.10f, 0.0f,  0.15f);
+        material_skin.ambient = Vector3(0.10f, 0.0f, 0.15f);
         material_skin.diffuse = Vector3(0.45f, 0.20f, 0.14f);
         material_skin.specular = Vector3(0.7f, 0.4f, 0.3f);
         material_skin.shininess = 80.0f;
-        
 
-        Mesh3D* torso_mesh = new Mesh3D(in_current_path, "spider_torso.obj");
-        torso_mesh->add_faces(&gray);
-        torso_mesh->set_material(&material_skin);
-        
-        Mesh3D* back_mesh = new Mesh3D(in_current_path, "spider_back.obj");
-        back_mesh->add_faces(&gray);
-        back_mesh->set_material(&material_skin);
+        in_current_path = in_current_path / "models" / "spider";
 
-        // Pata IZQ 1 (original)
-        Mesh3D* leg_1_mesh = new Mesh3D(in_current_path, "spider_leg1_L.obj");
-        leg_1_mesh->add_faces(&gray);
-        leg_1_mesh->set_material(&material_skin);
-		
-        Mesh3D* leg_2_mesh = new Mesh3D(in_current_path, "spider_leg2_L.obj");
-        leg_2_mesh->add_faces(&gray);
-        leg_2_mesh->set_material(&material_skin);
-		
-        Mesh3D* leg_3_mesh = new Mesh3D(in_current_path, "spider_leg3_L.obj");
-        leg_3_mesh->add_faces(&gray);
-        leg_3_mesh->set_material(&material_skin);
-		
-		
-	
-        // Pata IZQ 2
-        Mesh3D* leg_1_m_i2 = new Mesh3D(in_current_path, "spider_leg1_L.obj");
-        leg_1_m_i2->add_faces(&gray);
-        leg_1_m_i2->set_material(&material_skin);
-        Mesh3D* leg_2_m_i2 = new Mesh3D(in_current_path, "spider_leg2_L.obj");
-        leg_2_m_i2->add_faces(&gray);
-        leg_2_m_i2->set_material(&material_skin);
-        Mesh3D* leg_3_m_i2 = new Mesh3D(in_current_path, "spider_leg3_L.obj");
-        leg_3_m_i2->add_faces(&gray);
-        leg_3_m_i2->set_material(&material_skin);
-		
-			
-		
-		
-		
-        // Pata IZQ 3
-        Mesh3D* leg_1_m_i3 = new Mesh3D(in_current_path, "spider_leg1_L.obj");
-        leg_1_m_i3->add_faces(&gray);
-        leg_1_m_i3->set_material(&material_skin);
-        Mesh3D* leg_2_m_i3 = new Mesh3D(in_current_path, "spider_leg2_L.obj");
-        leg_2_m_i3->add_faces(&gray);
-        leg_2_m_i3->set_material(&material_skin);
-        Mesh3D* leg_3_m_i3 = new Mesh3D(in_current_path, "spider_leg3_L.obj");
-        leg_3_m_i3->add_faces(&gray);
-        leg_3_m_i3->set_material(&material_skin);
-		
+        auto makeL = [&](const char* file) -> Mesh3D* {
+            Mesh3D* m = new Mesh3D(in_current_path, file);
+            m->add_faces(&gray);
+            m->set_material(&material_skin);
+            return m;
+        };
+        auto makeR = makeL;
 
-		
-        // Pata IZQ 4
-        Mesh3D* leg_1_m_i4 = new Mesh3D(in_current_path, "spider_leg1_L.obj");
-        leg_1_m_i4->add_faces(&gray);
-        leg_1_m_i4->set_material(&material_skin);
-        Mesh3D* leg_2_m_i4 = new Mesh3D(in_current_path, "spider_leg2_L.obj");
-        leg_2_m_i4->add_faces(&gray);
-        leg_2_m_i4->set_material(&material_skin);
-        Mesh3D* leg_3_m_i4 = new Mesh3D(in_current_path, "spider_leg3_L.obj");
-        leg_3_m_i4->add_faces(&gray);
-        leg_3_m_i4->set_material(&material_skin);
-		
-				
-        // Pata DER 1
-        Mesh3D* leg_1_m_d1 = new Mesh3D(in_current_path, "spider_leg1_R.obj");
-        leg_1_m_d1->add_faces(&gray);
-        leg_1_m_d1->set_material(&material_skin);
-        Mesh3D* leg_2_m_d1 = new Mesh3D(in_current_path, "spider_leg2_R.obj");
-        leg_2_m_d1->add_faces(&gray);
-        leg_2_m_d1->set_material(&material_skin);
-        Mesh3D* leg_3_m_d1 = new Mesh3D(in_current_path, "spider_leg3_R.obj");
-        leg_3_m_d1->add_faces(&gray);
-        leg_3_m_d1->set_material(&material_skin);
-		
-		
-        // Pata DER 2
-        Mesh3D* leg_1_m_d2 = new Mesh3D(in_current_path, "spider_leg1_R.obj");
-        leg_1_m_d2->add_faces(&gray);
-        leg_1_m_d2->set_material(&material_skin);
-        Mesh3D* leg_2_m_d2 = new Mesh3D(in_current_path, "spider_leg2_R.obj");
-        leg_2_m_d2->add_faces(&gray);
-        leg_2_m_d2->set_material(&material_skin);
-        Mesh3D* leg_3_m_d2 = new Mesh3D(in_current_path, "spider_leg3_R.obj");
-        leg_3_m_d2->add_faces(&gray);
-        leg_3_m_d2->set_material(&material_skin);
-		
-		
-        // Pata DER 3
-        Mesh3D* leg_1_m_d3 = new Mesh3D(in_current_path, "spider_leg1_R.obj");
-        leg_1_m_d3->add_faces(&gray);
-        leg_1_m_d3->set_material(&material_skin);
-        Mesh3D* leg_2_m_d3 = new Mesh3D(in_current_path, "spider_leg2_R.obj");
-        leg_2_m_d3->add_faces(&gray);
-        leg_2_m_d3->set_material(&material_skin);
-        Mesh3D* leg_3_m_d3 = new Mesh3D(in_current_path, "spider_leg3_R.obj");
-        leg_3_m_d3->add_faces(&gray);
-        leg_3_m_d3->set_material(&material_skin);
-		
-		
-       // Pata DER 4
-        Mesh3D* leg_1_m_d4 = new Mesh3D(in_current_path, "spider_leg1_R.obj");
-        leg_1_m_d4->add_faces(&gray);
-        leg_1_m_d4->set_material(&material_skin);
-        Mesh3D* leg_2_m_d4 = new Mesh3D(in_current_path, "spider_leg2_R.obj"); 
-        leg_2_m_d4->add_faces(&gray);
-        leg_2_m_d4->set_material(&material_skin);
-        Mesh3D* leg_3_m_d4 = new Mesh3D(in_current_path, "spider_leg3_R.obj");
-        leg_3_m_d4->add_faces(&gray);
-		leg_3_m_d4->set_material(&material_skin);	
+        Mesh3D* torso_mesh = makeL("spider_torso.obj");
+        Mesh3D* back_mesh = makeL("spider_back.obj");
 
-        // Torso y back
-        root  = new SceneNode(0);
-        torso = new SceneNode(1, torso_mesh);
-        back  = new SceneNode(2, back_mesh);
+        Mesh3D* li1_1 = makeL("spider_leg1_L.obj");
+        Mesh3D* li1_2 = makeL("spider_leg2_L.obj");
+        Mesh3D* li1_3 = makeL("spider_leg3_L.obj");
+        Mesh3D* li2_1 = makeL("spider_leg1_L.obj");
+        Mesh3D* li2_2 = makeL("spider_leg2_L.obj");
+        Mesh3D* li2_3 = makeL("spider_leg3_L.obj");
+        Mesh3D* li3_1 = makeL("spider_leg1_L.obj");
+        Mesh3D* li3_2 = makeL("spider_leg2_L.obj");
+        Mesh3D* li3_3 = makeL("spider_leg3_L.obj");
+        Mesh3D* li4_1 = makeL("spider_leg1_L.obj");
+        Mesh3D* li4_2 = makeL("spider_leg2_L.obj");
+        Mesh3D* li4_3 = makeL("spider_leg3_L.obj");
 
-        // ---- NODOS IZQ 1 (original) ----
-        leg_1 = new SceneNode(3, leg_1_mesh);
-        leg_1->traslate(Vector3(0.08f, 0.01f, 0.1f), true);	
-		
-        leg_2 = new SceneNode(4, leg_2_mesh);
-        leg_2->traslate(Vector3(0.087f, 0.2f,  0.145f), true);
-		
-        leg_3 = new SceneNode(5, leg_3_mesh);
-        leg_3->traslate(Vector3(0.079f, -0.07f, 0.21f), true);
+        Mesh3D* ld1_1 = makeR("spider_leg1_R.obj");
+        Mesh3D* ld1_2 = makeR("spider_leg2_R.obj");
+        Mesh3D* ld1_3 = makeR("spider_leg3_R.obj");
+        Mesh3D* ld2_1 = makeR("spider_leg1_R.obj");
+        Mesh3D* ld2_2 = makeR("spider_leg2_R.obj");
+        Mesh3D* ld2_3 = makeR("spider_leg3_R.obj");
+        Mesh3D* ld3_1 = makeR("spider_leg1_R.obj");
+        Mesh3D* ld3_2 = makeR("spider_leg2_R.obj");
+        Mesh3D* ld3_3 = makeR("spider_leg3_R.obj");
+        Mesh3D* ld4_1 = makeR("spider_leg1_R.obj");
+        Mesh3D* ld4_2 = makeR("spider_leg2_R.obj");
+        Mesh3D* ld4_3 = makeR("spider_leg3_R.obj");
 
-        // ---- NODOS IZQ 2 ----
-        leg_i2_1 = new SceneNode(6, leg_1_m_i2);
-        leg_i2_1->traslate(Vector3(0.08f, 0.01f, 0.065f), true);
-		leg_i2_1->rotate_y_local(40.0f, true);
-		
-        leg_i2_2 = new SceneNode(7, leg_2_m_i2);
-        leg_i2_2->traslate(Vector3(0.087f, 0.2f,  0.145f), true);
-        leg_i2_3 = new SceneNode(8, leg_3_m_i2);
-        leg_i2_3->traslate(Vector3(0.079f, -0.07f, 0.21f), true);
+        m_root = new SceneNode(0);
+        m_torso = new SceneNode(1, torso_mesh);
+        m_back = new SceneNode(2, back_mesh);
 
-        // ---- NODOS IZQ 3 ----
-        leg_i3_1 = new SceneNode(9, leg_1_m_i3);
-		leg_i3_1->traslate(Vector3(0.08f, 0.01f, 0.030f), true);
-		leg_i3_1->rotate_y_local(80.0f, true);
-		
-		
-        leg_i3_2 = new SceneNode(10, leg_2_m_i3);
-        leg_i3_2->traslate(Vector3(0.087f, 0.2f,  0.145f), true);
-        leg_i3_3 = new SceneNode(11, leg_3_m_i3);
-        leg_i3_3->traslate(Vector3(0.079f, -0.07f, 0.21f), true);
+        ni1_1 = new SceneNode(3, li1_1);
+        ni1_1->traslate(Vector3(0.08f, 0.01f, 0.10f), true);
+        ni1_2 = new SceneNode(4, li1_2);
+        ni1_2->traslate(Vector3(0.087f, 0.2f, 0.145f), true);
+        ni1_3 = new SceneNode(5, li1_3);
+        ni1_3->traslate(Vector3(0.079f, -0.07f, 0.21f), true);
 
-       // ---- NODOS IZQ 4 ----
-        leg_i4_1 = new SceneNode(12, leg_1_m_i4);
-        leg_i4_1->traslate(Vector3(0.08f, 0.01f, -0.005f), true);
-		leg_i4_1->rotate_y_local(120.0f, true);
-		
-        leg_i4_2 = new SceneNode(13, leg_2_m_i4);
-        leg_i4_2->traslate(Vector3(0.087f, 0.2f,  0.145f), true);
-        leg_i4_3 = new SceneNode(14, leg_3_m_i4);
-        leg_i4_3->traslate(Vector3(0.079f, -0.07f, 0.21f), true);
+        ni2_1 = new SceneNode(6, li2_1);
+        ni2_1->traslate(Vector3(0.08f, 0.01f, 0.065f), true);
+        ni2_1->rotate_y_local(40.0f, true);
+        ni2_2 = new SceneNode(7, li2_2);
+        ni2_2->traslate(Vector3(0.087f, 0.2f, 0.145f), true);
+        ni2_3 = new SceneNode(8, li2_3);
+        ni2_3->traslate(Vector3(0.079f, -0.07f, 0.21f), true);
 
+        ni3_1 = new SceneNode(9, li3_1);
+        ni3_1->traslate(Vector3(0.08f, 0.01f, 0.030f), true);
+        ni3_1->rotate_y_local(80.0f, true);
+        ni3_2 = new SceneNode(10, li3_2);
+        ni3_2->traslate(Vector3(0.087f, 0.2f, 0.145f), true);
+        ni3_3 = new SceneNode(11, li3_3);
+        ni3_3->traslate(Vector3(0.079f, -0.07f, 0.21f), true);
 
+        ni4_1 = new SceneNode(12, li4_1);
+        ni4_1->traslate(Vector3(0.08f, 0.01f, -0.005f), true);
+        ni4_1->rotate_y_local(120.0f, true);
+        ni4_2 = new SceneNode(13, li4_2);
+        ni4_2->traslate(Vector3(0.087f, 0.2f, 0.145f), true);
+        ni4_3 = new SceneNode(14, li4_3);
+        ni4_3->traslate(Vector3(0.079f, -0.07f, 0.21f), true);
 
+        nd1_1 = new SceneNode(15, ld1_1);
+        nd1_1->traslate(Vector3(-0.082f, 0.01f, 0.10f), true);
+        nd1_2 = new SceneNode(16, ld1_2);
+        nd1_2->traslate(Vector3(-0.067f, 0.2f, 0.135f), true);
+        nd1_3 = new SceneNode(17, ld1_3);
+        nd1_3->traslate(Vector3(-0.092f, -0.075f, 0.205f), true);
 
+        nd2_1 = new SceneNode(18, ld2_1);
+        nd2_1->traslate(Vector3(-0.082f, 0.01f, 0.065f), true);
+        nd2_1->rotate_y_local(-40.0f, true);
+        nd2_2 = new SceneNode(19, ld2_2);
+        nd2_2->traslate(Vector3(-0.067f, 0.2f, 0.135f), true);
+        nd2_3 = new SceneNode(20, ld2_3);
+        nd2_3->traslate(Vector3(-0.092f, -0.075f, 0.205f), true);
 
+        nd3_1 = new SceneNode(21, ld3_1);
+        nd3_1->traslate(Vector3(-0.082f, 0.01f, 0.030f), true);
+        nd3_1->rotate_y_local(-80.0f, true);
+        nd3_2 = new SceneNode(22, ld3_2);
+        nd3_2->traslate(Vector3(-0.067f, 0.2f, 0.135f), true);
+        nd3_3 = new SceneNode(23, ld3_3);
+        nd3_3->traslate(Vector3(-0.092f, -0.075f, 0.205f), true);
 
+        nd4_1 = new SceneNode(24, ld4_1);
+        nd4_1->traslate(Vector3(-0.082f, 0.01f, -0.005f), true);
+        nd4_1->rotate_y_local(-120.0f, true);
+        nd4_2 = new SceneNode(25, ld4_2);
+        nd4_2->traslate(Vector3(-0.067f, 0.2f, 0.135f), true);
+        nd4_3 = new SceneNode(26, ld4_3);
+        nd4_3->traslate(Vector3(-0.092f, -0.075f, 0.205f), true);
 
+        m_root->add_children(m_torso);
+        m_torso->add_children(m_back);
 
+        m_torso->add_children(ni1_1);
+        ni1_1->add_children(ni1_2);
+        ni1_2->add_children(ni1_3);
 
-         // ---- NODOS DER 1 ----
-        leg_d1_1 = new SceneNode(15, leg_1_m_d1);
-        leg_d1_1->traslate(Vector3(-0.082f, 0.01f, 0.1f), true);	
-      
-        leg_d1_2 = new SceneNode(16, leg_2_m_d1);
-        leg_d1_2->traslate(Vector3(-0.067f, 0.2f,  0.135f), true);
-        leg_d1_3 = new SceneNode(17, leg_3_m_d1);
-        leg_d1_3->traslate(Vector3(-0.092f, -0.075f, 0.205f), true);
+        m_torso->add_children(ni2_1);
+        ni2_1->add_children(ni2_2);
+        ni2_2->add_children(ni2_3);
 
-        // ---- NODOS DER 2 ----
-        leg_d2_1 = new SceneNode(18, leg_1_m_d2);
-        leg_d2_1->traslate(Vector3(-0.082f, 0.01f, 0.065f), true);	
-        leg_d2_1->rotate_y_local(-40.0f, true);
-		
-        leg_d2_2 = new SceneNode(19, leg_2_m_d2);
-        leg_d2_2->traslate(Vector3(-0.067f, 0.2f,  0.135f), true);
-        leg_d2_3 = new SceneNode(20, leg_3_m_d2);
-        leg_d2_3->traslate(Vector3(-0.092f, -0.075f, 0.205f), true);
+        m_torso->add_children(ni3_1);
+        ni3_1->add_children(ni3_2);
+        ni3_2->add_children(ni3_3);
 
-        // ---- NODOS DER 3 ----
-        leg_d3_1 = new SceneNode(21, leg_1_m_d3);
-        leg_d3_1->traslate(Vector3(-0.082f, 0.01f, 0.030f), true);	
-		leg_d3_1->rotate_y_local(-80.0f, true);
-		
-        leg_d3_2 = new SceneNode(22, leg_2_m_d3);
-        leg_d3_2->traslate(Vector3(-0.067f, 0.2f,  0.135f), true);
-        leg_d3_3 = new SceneNode(23, leg_3_m_d3);
-        leg_d3_3->traslate(Vector3(-0.092f, -0.075f, 0.205f), true);
+        m_torso->add_children(ni4_1);
+        ni4_1->add_children(ni4_2);
+        ni4_2->add_children(ni4_3);
 
-        // ---- NODOS DER 4 ----
-        leg_d4_1 = new SceneNode(24, leg_1_m_d4);
-        leg_d4_1->traslate(Vector3(-0.082f, 0.01f, -0.005f), true);	
-        leg_d4_1->rotate_y_local(-120.0f, true);
-		
-        leg_d4_2 = new SceneNode(25, leg_2_m_d4);
-        leg_d4_2->traslate(Vector3(-0.067f, 0.2f,  0.135f), true);
-        leg_d4_3 = new SceneNode(26, leg_3_m_d4);
-        leg_d4_3->traslate(Vector3(-0.092f, -0.075f, 0.205f), true);
+        m_torso->add_children(nd1_1);
+        nd1_1->add_children(nd1_2);
+        nd1_2->add_children(nd1_3);
 
-        // ---- JERARQUÍA ----
-        root->add_children(torso);
-        torso->add_children(back);
-        
+        m_torso->add_children(nd2_1);
+        nd2_1->add_children(nd2_2);
+        nd2_2->add_children(nd2_3);
 
-        torso->add_children(leg_1);
-        leg_1->add_children(leg_2);
-        leg_2->add_children(leg_3);
+        m_torso->add_children(nd3_1);
+        nd3_1->add_children(nd3_2);
+        nd3_2->add_children(nd3_3);
 
-        torso->add_children(leg_i2_1);
-        leg_i2_1->add_children(leg_i2_2);
-        leg_i2_2->add_children(leg_i2_3);
+        m_torso->add_children(nd4_1);
+        nd4_1->add_children(nd4_2);
+        nd4_2->add_children(nd4_3);
 
-        torso->add_children(leg_i3_1);
-        leg_i3_1->add_children(leg_i3_2);
-        leg_i3_2->add_children(leg_i3_3);
+        const std::vector<float> lens = { 0.185f, 0.207f, 0.110f };
 
-       torso->add_children(leg_i4_1);
-        leg_i4_1->add_children(leg_i4_2);
-        leg_i4_2->add_children(leg_i4_3);
+        const float anchor_x_izq = 0.090f;
+        const float anchor_x_der = -0.090f;
+        const float anchor_y_sp = -0.015f;
+        const float rest_x_izq = -0.95f;
+        const float rest_x_der = 0.95f;
+        const float rest_y_sp = -0.060f;
+        const float step_r = 0.1f;
 
-        torso->add_children(leg_d1_1);
-        leg_d1_1->add_children(leg_d1_2);
-        leg_d1_2->add_children(leg_d1_3);
+        const float anchor_zs[4] = { 0.155f, 0.110f, 0.065f, 0.020f };
 
-        torso->add_children(leg_d2_1);
-        leg_d2_1->add_children(leg_d2_2);
-        leg_d2_2->add_children(leg_d2_3);
+        const float yaw_base = 1.051f;
+        const float yaw_step = 0.698f;
+        const float yaw_izq[4] = {
+            yaw_base,
+            yaw_base + yaw_step,
+            yaw_base + yaw_step * 2.0f,
+            yaw_base + yaw_step * 3.0f
+        };
+        const float yaw_der[4] = {
+            -yaw_base,
+            -(yaw_base + yaw_step),
+            -(yaw_base + yaw_step * 2.0f),
+            -(yaw_base + yaw_step * 3.0f)
+        };
 
-        torso->add_children(leg_d3_1);
-        leg_d3_1->add_children(leg_d3_2);
-        leg_d3_2->add_children(leg_d3_3);
+        SceneNode* izq_nodes[4][3] = {
+            { ni1_1, ni1_2, ni1_3 },
+            { ni2_1, ni2_2, ni2_3 },
+            { ni3_1, ni3_2, ni3_3 },
+            { ni4_1, ni4_2, ni4_3 },
+        };
+        SceneNode* der_nodes[4][3] = {
+            { nd1_1, nd1_2, nd1_3 },
+            { nd2_1, nd2_2, nd2_3 },
+            { nd3_1, nd3_2, nd3_3 },
+            { nd4_1, nd4_2, nd4_3 },
+        };
 
-        torso->add_children(leg_d4_1);
-        leg_d4_1->add_children(leg_d4_2);
-        leg_d4_2->add_children(leg_d4_3);
+        for (int i = 0; i < 4; i++)
+        {
+            float az = anchor_zs[i];
 
+            legs[i].init(
+                { izq_nodes[i][0], izq_nodes[i][1], izq_nodes[i][2] }, lens,
+                Vector3(rest_x_izq, rest_y_sp, az),
+                Vector3(anchor_x_izq, anchor_y_sp, az));
+            legs[i].yaw_offset = yaw_izq[i];
+            legs[i].step_range = step_r;
 
+            legs[4 + i].init(
+                { der_nodes[i][0], der_nodes[i][1], der_nodes[i][2] }, lens,
+                Vector3(rest_x_der, rest_y_sp, az),
+                Vector3(anchor_x_der, anchor_y_sp, az));
+            legs[4 + i].yaw_offset = yaw_der[i];
+            legs[4 + i].step_range = step_r;
+        }
+
+        gait_group_A.members = { &legs[0], &legs[2], &legs[5], &legs[7] };
+        gait_group_B.members = { &legs[1], &legs[3], &legs[4], &legs[6] };
+
+        for (auto* l : gait_group_A.members)
+        {
+            l->gait_group = &gait_group_A;
+        }
+        for (auto* l : gait_group_B.members)
+        {
+            l->gait_group = &gait_group_B;
+        }
+
+        gait_group_A.current_turn = 0;
+        gait_group_B.current_turn = 0;
+
+        for (int i : {0, 2, 5, 7})
+        {
+            legs[i].current_foot = legs[i].rest_offset + Vector3(0.0f, 0.0f, -0.04f);
+        }
     }
 
-    void draw(ShaderList& in_shaders, TextureList& in_texturs, const Matrix_4& in_mat)
-    {
-        root->draw(in_shaders, in_texturs, in_mat);
+    SceneNode* get_root() override 
+    { 
+        return m_root; 
+    }
+    SceneNode* get_torso() override 
+    { 
+        return m_torso; 
+    }
+    float get_body_height() const override 
+    { 
+        return 0.060f; 
     }
 
-    SceneNode* get_root()
+    void draw(ShaderList& shaders, TextureList& textures, const Matrix_4& mat) override
     {
-        return root;
+        m_root->draw(shaders, textures, mat);
     }
 
 private:
-    SceneNode *root, *torso, *back, *leg_1, *leg_2, *leg_3,
-                                  *leg_i2_1, *leg_i2_2, *leg_i2_3,
-                                      *leg_i3_1, *leg_i3_2, *leg_i3_3,
-                                    *leg_i4_1, *leg_i4_2, *leg_i4_3,
-                                    *leg_d1_1, *leg_d1_2, *leg_d1_3,
-                                    *leg_d2_1, *leg_d2_2, *leg_d2_3,
-                                    *leg_d3_1, *leg_d3_2, *leg_d3_3,
-                                    *leg_d4_1, *leg_d4_2, *leg_d4_3;
+    SceneNode *m_root;
+    SceneNode *m_torso;
+    SceneNode *m_back;
+    SceneNode *ni1_1;
+    SceneNode *ni1_2;
+    SceneNode *ni1_3;
+    SceneNode *ni2_1;
+    SceneNode *ni2_2;
+    SceneNode *ni2_3;
+    SceneNode *ni3_1;
+    SceneNode *ni3_2;
+    SceneNode *ni3_3;
+    SceneNode *ni4_1;
+    SceneNode *ni4_2;
+    SceneNode *ni4_3;
+    SceneNode *nd1_1;
+    SceneNode *nd1_2;
+    SceneNode *nd1_3;
+    SceneNode *nd2_1;
+    SceneNode *nd2_2;
+    SceneNode *nd2_3;
+    SceneNode *nd3_1;
+    SceneNode *nd3_2;
+    SceneNode *nd3_3;
+    SceneNode *nd4_1;
+    SceneNode *nd4_2;
+    SceneNode *nd4_3;
 
     Color gray;
     Material material_skin;
-};
 
+    LegController::GaitGroup gait_group_A;
+    LegController::GaitGroup gait_group_B;
+};
 
 #endif
