@@ -694,7 +694,7 @@ int main()
 
         geckito.wander(delta_time, wave, 0.75f, 30, 0, 2, 3, 10 );
         carabajito.wander(delta_time, wave, 0.75f, 30, 0, 2, 3, 10);
-        aranita.wander(delta_time, wave, 0.75, 30, 0, 2, 3, 10);
+        aranita.wander(delta_time, wave, 0.75, 30, 0, 2, 3, 12);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

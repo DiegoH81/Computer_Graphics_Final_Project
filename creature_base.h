@@ -78,11 +78,6 @@ template <int N> class CreatureBase
 
         if (outside)
         {
-            std::cout
-            << "x = " << pos.x
-            << " y = " << pos.y
-            << " z = " << pos.z
-            << '\n';
             Vector3 forward =
                 get_root()->public_transform.transform_normal(Vector3(0.0f, 0.0f, 1.0f));
 
