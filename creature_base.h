@@ -63,92 +63,79 @@ template <int N> class CreatureBase
         }
     }
 
-void wander(float dt,
-            const SurfaceFunction& surface,
-            float speed = 0.75f,
-            float rotation_speed = 20.0f,
-            float min_x = -10.0f,
-            float max_x = 10.0f,
-            float min_z = -10.0f,
-            float max_z = 10.0f)
-{
-    static float timer = 0.0f;
-
-    Vector3 pos = get_root()->private_transform.get_translation();
-
-    float center_x = (min_x + max_x) * 0.5f;
-    float center_z = (min_z + max_z) * 0.5f;
-
-    bool outside =
-        pos.x < min_x || pos.x > max_x ||
-        pos.z < min_z || pos.z > max_z;
-
-    if (outside)
+    void wander(float dt, const SurfaceFunction& surface, float speed = 0.75f,
+                float rotation_speed = 20.0f, float min_x = -10.0f, float max_x = 10.0f,
+                float min_z = -10.0f, float max_z = 10.0f)
     {
-        std::cout << "x=" << pos.x
-          << " z=" << pos.z
-          << " min_x=" << min_x
-          << " max_x=" << max_x
-          << " min_z=" << min_z
-          << " max_z=" << max_z
-          << '\n';
+        static float timer = 0.0f;
 
-        std::cout << "Salio" << std::endl;
-        Vector3 forward =
-            get_root()->public_transform.transform_normal(
-                Vector3(0, 0, 1));
+        Vector3 pos = get_root()->public_transform.get_translation();
 
-        Vector3 to_center(
-            center_x - pos.x,
-            0,
-            center_z - pos.z);
+        float center_x = (min_x + max_x) * 0.5f;
+        float center_z = (min_z + max_z) * 0.5f;
 
-        float len =
-            sqrt(to_center.x * to_center.x +
-                 to_center.z * to_center.z);
+        bool outside = pos.x < min_x || pos.x > max_x || pos.z < min_z || pos.z > max_z;
 
-        if (len > 0.0001f)
+        if (outside)
         {
-            to_center.x /= len;
-            to_center.z /= len;
+            std::cout
+            << "x = " << pos.x
+            << " y = " << pos.y
+            << " z = " << pos.z
+            << '\n';
+            Vector3 forward =
+                get_root()->public_transform.transform_normal(Vector3(0.0f, 0.0f, 1.0f));
+
+            Vector3 to_center(center_x - pos.x, 0.0f, center_z - pos.z);
+
+            float len = sqrt(to_center.x * to_center.x + to_center.z * to_center.z);
+
+            if (len > 0.0001f)
+            {
+                to_center.x /= len;
+                to_center.z /= len;
+            }
+
+            float current_angle = atan2(forward.x, forward.z);
+
+            float target_angle = atan2(to_center.x, to_center.z);
+
+            float delta_angle = target_angle - current_angle;
+
+            while (delta_angle > M_PI)
+                delta_angle -= 2.0f * M_PI;
+
+            while (delta_angle < -M_PI)
+                delta_angle += 2.0f * M_PI;
+
+            rotate(utils::rad_to_ang(delta_angle));
+        }
+        else
+        {
+            timer -= dt;
+
+            if (timer <= 0.0f)
+            {
+                float random_angle;
+
+                if (rand() % 10 == 0)
+                {
+                    random_angle = (((float)rand() / RAND_MAX) * 2.0f - 1.0f) * 90.0f;
+                }
+                else
+                {
+                    random_angle = (((float)rand() / RAND_MAX) * 2.0f - 1.0f) * rotation_speed;
+                }
+
+                rotate(random_angle);
+
+                timer = 0.2f + ((float)rand() / RAND_MAX) * 1.3f;
+            }
         }
 
-        float current_angle =
-            atan2(forward.x, forward.z);
-
-        float target_angle =
-            atan2(to_center.x, to_center.z);
-
-        float delta_angle =
-            target_angle - current_angle;
-
-        while (delta_angle > M_PI)
-            delta_angle -= 2 * M_PI;
-
-        while (delta_angle < -M_PI)
-            delta_angle += 2 * M_PI;
-
-        rotate(utils::rad_to_ang(delta_angle));
+        move(Vector3(0.0f, 0.0f, dt * speed), &surface);
+        update(dt, surface);
     }
-    else
-    {
-        timer -= dt;
-
-        if (timer <= 0)
-        {
-            float random_angle =
-                (((float)rand() / RAND_MAX) * 2.0f - 1.0f)
-                * rotation_speed;
-
-            rotate(random_angle);
-
-            timer = 1.0f;
-        }
-    }
-
-    move(Vector3(0, 0, dt * speed), &surface);
-    update(dt, surface);
-}
 
     void rotate(float angle_deg)
     {
