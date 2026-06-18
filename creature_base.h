@@ -41,31 +41,23 @@ public:
         align_torso_to_surface(surface);
     }
 
-    void move(const Vector3& local_delta)
+    void move(const Vector3& local_delta, const SurfaceFunction* surface = nullptr)
     {
         SceneNode* root = get_root();
-
         Matrix_4& M = root->public_transform;
 
         Vector3 world_delta(
-            M.matrix[0] * local_delta.x +
-            M.matrix[1] * local_delta.y +
-            M.matrix[2] * local_delta.z,
-
-            M.matrix[4] * local_delta.x +
-            M.matrix[5] * local_delta.y +
-            M.matrix[6] * local_delta.z,
-
-            M.matrix[8] * local_delta.x +
-            M.matrix[9] * local_delta.y +
-            M.matrix[10] * local_delta.z
+            M.matrix[0] * local_delta.x + M.matrix[1] * local_delta.y + M.matrix[2] * local_delta.z,
+            M.matrix[4] * local_delta.x + M.matrix[5] * local_delta.y + M.matrix[6] * local_delta.z,
+            M.matrix[8] * local_delta.x + M.matrix[9] * local_delta.y + M.matrix[10] * local_delta.z
         );
 
         root->traslate(world_delta, true);
+
     }
 
     void wander(float dt, const SurfaceFunction& surface, float speed = 0.75f, float rotation_speed = 60.0f){
-        move(Vector3(0.0f,0.0f,dt * speed));
+        move(Vector3(0.0f, 0.0f, dt * speed), &surface);
         update(dt,surface);
     }
 

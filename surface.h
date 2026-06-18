@@ -30,7 +30,7 @@ class SphereSurface : public SurfaceFunction {
     Point3 center;
     float  radius;
 public:
-    SphereSurface(Point3 c, float r) : center(c), radius(r) {}
+    SphereSurface(Point3 c = Point3(0,0,0), float r = 1.0f) : center(c), radius(r) {}
     SurfaceHit project(float x, float z) const override {
         Vector3 dir = normalize(Vector3(x - center.x, radius, z - center.z));
         Point3  pos = Point3(center.x + dir.x * radius, center.y + dir.y * radius, center.z + dir.z * radius);
@@ -77,5 +77,4 @@ public:
         return { Point3(x, y, z), normal };
     }
 };
-
 #endif

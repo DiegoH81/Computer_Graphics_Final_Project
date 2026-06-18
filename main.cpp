@@ -643,6 +643,8 @@ int main()
     PlaneSurface plane(11);
     WaveSurface wave(10.5);
     MountainSurface mountain;
+    SphereSurface vase(Point3(0,10,0),1);
+
 
     while(!glfwWindowShouldClose(window))
     {
@@ -715,7 +717,7 @@ int main()
 		root->draw(shaders, textures, Matrix_4());
         movable_root->draw(shaders, textures, Matrix_4());
 
-        geckito.wander(delta_time, wave, 1.5f);
+        geckito.wander(delta_time, vase, 1.5f);
         carabajito.wander(delta_time, wave, 0.75f);
         aranita.wander(delta_time, wave, 0.75);
 
