@@ -526,17 +526,16 @@ int main()
     Gecko geckito(current_path);
 
     //geckito.get_root()->traslate(Vector3(0.0f, 15.0f, -2.0f), true);
-    geckito.get_root()->traslate(Vector3(0.0f, 0.0f, -2.0f), true);
+    geckito.get_root()->traslate(Vector3(2.0f, 27.95, 5.0f), true);
     
     Spider aranita(current_path);
-    aranita.get_root()->traslate(Vector3(0.7f, 15.0f, 0.0f), true);
-	
+    aranita.get_root()->traslate(Vector3(2.0f, 27.95, 5.0f), true);
+
+	Bettle carabajito(current_path);
+	carabajito.get_root()->traslate(Vector3(2.0f, 27.95, 5.0f),true);
+
 	Butterfly mariposa(current_path);
     mariposa.get_root()->traslate(Vector3(0.0f, 15.0f, 0.0f), true);
-	
-	Bettle carabajito(current_path);
-	carabajito.get_root()->traslate(Vector3(0.0f, 15.0f, 0.0f),true);
-  
 	
     Tadpole tadpolin(current_path, UNIDO);
 	Terrain terreno(current_path);
@@ -627,7 +626,7 @@ int main()
 
 
     PlaneSurface plane(11);
-    WaveSurface wave(10.5);
+    WaveSurface wave(27.95);
 
 
     print_menu();
@@ -702,9 +701,9 @@ int main()
 		root->draw(shaders, textures, Matrix_4());
         movable_root->draw(shaders, textures, Matrix_4());
 
-        geckito.wander(delta_time, wave, 0.75f);
-        carabajito.wander(delta_time, wave, 0.75f);
-        aranita.wander(delta_time, wave, 0.75);
+        geckito.wander(delta_time, wave, 0.75f, 0, 0, 2, 3, 10 );
+        carabajito.wander(delta_time, wave, 0.75f, 0, 0, 2, 3, 10);
+        aranita.wander(delta_time, wave, 0.75, 0, 0, 2, 3, 10);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
