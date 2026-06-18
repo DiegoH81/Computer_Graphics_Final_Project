@@ -193,8 +193,8 @@ void block_1()
     light_animations.add_animation({AnimationInfo(ALL_IDs, 360, "ROTATE_C_Z", "PUBLIC")}, 3.5);
 
     // From camaroncin
-    camera_world.set_pos(Point3(-10.0f, 15.5f, 0.0f));
-    camera_world.set_objective(Point3(0.0f, 11.5f, 0.0f));
+    camera_world.set_pos(Point3(-10.0f, 25.5f, 0.0f));
+    camera_world.set_objective(Point3(0.0f, 21.5f, 0.0f));
 
     camera_animations.add_animation({AnimationInfo(0, 0.0f, "NONE", "")}, 1.0);
     // To pecera
@@ -304,14 +304,15 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         std::cout << "Current light preset: " << preset_id << "\n";
     }
 
+    if (key ==GLFW_KEY_ESCAPE && (action == GLFW_PRESS || action == GLFW_REPEAT))
+        glfwSetWindowShouldClose(in_window, true);
+
     if (sequence_running)
         return;
 
     if (action == GLFW_PRESS || action == GLFW_REPEAT)
     {
-        if (key ==GLFW_KEY_ESCAPE)
-            glfwSetWindowShouldClose(in_window, true);
-        else if ( key == GLFW_KEY_A )
+        if ( key == GLFW_KEY_A )
             camera_world.traslate(Vector3(-offset, 0.0f, 0.0f));
         else if ( key == GLFW_KEY_D)
             camera_world.traslate(Vector3(offset, 0.0f, 0.0f));
@@ -513,8 +514,8 @@ int main()
     Color brown(130.0f, 77.0f, 44.0f, true);
 
     // Camera
-    camera_world.set_pos(Point3(0.0f, 15.0f, 40.0f));
-    camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
+    camera_world.set_pos(Point3(0.0f, 30.0f, 90.0f));
+    camera_world.set_objective(Point3(0.0f, 25.0f, 0.0f));
 
 
     // Figuras
@@ -604,6 +605,11 @@ int main()
 	glass_root->add_children(botella.get_root());	
 	water_root->add_children(terreno.get_water());
     
+    // Scale
+    root->scale(Vector3(2.75f, 2.75f, 2.75f), true);
+    water_root->scale(Vector3(2.75f, 2.75f, 2.75f), true);
+    glass_root->scale(Vector3(2.75f, 2.75f, 2.75f), true);
+
     // Bucle
 	glPointSize(10.0f);
     glEnable(GL_DEPTH_TEST);
