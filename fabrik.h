@@ -1,11 +1,11 @@
-#ifndef FABRIK_SOLVER_H
-#define FABRIK_SOLVER_H
+#ifndef FABRIK_H
+#define FABRIK_H
 
 #include "vector.h"
 #include <vector>
 #include <cmath>
 
-class FABRIKSolver
+class Fabrik
 {
 public:
     float tolerance = 0.001f;

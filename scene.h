@@ -31,7 +31,6 @@ public:
 	Point3 get_center_local();
     Vector3 get_normal(int in_face_id);
 
-
     void add_children(SceneNode* in_children);
 
     void traslate(const Vector3& in_m, bool is_public);
@@ -43,6 +42,7 @@ public:
     void rotate_y_local(float in_angle, bool is_public);
     void rotate_z_local(float in_angle, bool is_public);
     void scale(const Vector3& in_s, bool is_public);
+    void set_full_transform(const Matrix_4& m);
 };
 
 
