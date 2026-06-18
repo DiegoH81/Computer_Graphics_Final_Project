@@ -117,7 +117,7 @@ LightPreset get_day()
     fill.constant = 1.0f;
     fill.linear = 0.09f;
     fill.quadratic = 0.032f;
-    fill.light_node->traslate(Vector3(20.0f, 20.0f, 0.0f), true);
+    fill.light_node->traslate(Vector3(23.0f, 23.0f, 0.0f), true);
     to_return.point_lights.push_back(fill);
 
     return to_return;
@@ -145,7 +145,7 @@ LightPreset get_night()
     lantern.quadratic = 0.032f;
     lantern.draw_sphere();
 
-    lantern.light_node->traslate(Vector3(0.0f, 20.0f, 0.0f), true);
+    lantern.light_node->traslate(Vector3(0.0f, 23.0f, 0.0f), true);
     to_return.point_lights.push_back(lantern);
 
     return to_return;
@@ -171,7 +171,7 @@ LightPreset get_cyberpunk()
     neon_magenta.constant  = 1.0f;
     neon_magenta.linear    = 0.045f;
     neon_magenta.quadratic = 0.0075f;
-    neon_magenta.light_node->traslate(Vector3(-10.0f, 20.0f, 0.0f), true);
+    neon_magenta.light_node->traslate(Vector3(-10.0f, 23.0f, 0.0f), true);
 
     // Neon cyan
     PointLight neon_cyan;
@@ -181,7 +181,7 @@ LightPreset get_cyberpunk()
     neon_cyan.constant  = 1.0f;
     neon_cyan.linear    = 0.045f;
     neon_cyan.quadratic = 0.0075f;
-    neon_cyan.light_node->traslate(Vector3(10.0f, 15.0f, 15.0f), true);
+    neon_cyan.light_node->traslate(Vector3(10.0f, 13.0f, 13.0f), true);
 
     // Neon violeta
     PointLight neon_purple;
@@ -191,7 +191,7 @@ LightPreset get_cyberpunk()
     neon_purple.constant  = 1.0f;
     neon_purple.linear    = 0.09f;
     neon_purple.quadratic = 0.02f;
-    neon_purple.light_node->traslate(Vector3(0.0f, 2.0f, 8.0f), true);
+    neon_purple.light_node->traslate(Vector3(0.0f, 13.0f, 8.0f), true);
 
     // Naranja/ambar
     PointLight ground_orange;
@@ -201,7 +201,7 @@ LightPreset get_cyberpunk()
     ground_orange.constant  = 1.0f;
     ground_orange.linear    = 0.09f;
     ground_orange.quadratic = 0.032f;
-    ground_orange.light_node->traslate(Vector3(5.0f, 1.0f, 0.0f), true);
+    ground_orange.light_node->traslate(Vector3(5.0f, 13.0f, 0.0f), true);
 
     to_return.point_lights.push_back(neon_magenta);
     to_return.point_lights.push_back(neon_cyan);
@@ -237,7 +237,7 @@ LightPreset get_desert()
 
 LightPreset get_day_cicle()
 {
-    float max_height = 17.0f;
+    float max_height = 23.0f;
 
     LightPreset to_return;
     to_return.background_color = Color(191, 133, 76, true);
@@ -294,7 +294,7 @@ LightPreset get_bioluminiscente()
     bio_main.linear = 0.045f;
     bio_main.quadratic = 0.0075f;
     //bio_main.draw_sphere();
-    bio_main.light_node->traslate(Vector3(0.0f, 20.0f, 0.0f), true);
+    bio_main.light_node->traslate(Vector3(0.0f, 23.0f, 0.0f), true);
 
     PointLight bio_blue;
     bio_blue.ambient = Vector3(0.02f, 0.0f, 0.08f);
@@ -304,7 +304,7 @@ LightPreset get_bioluminiscente()
     bio_blue.linear = 0.09f;
     bio_blue.quadratic = 0.02f;
     //bio_blue.draw_sphere();
-    bio_blue.light_node->traslate(Vector3(-8.0f, 10.0f, 5.0f), true);
+    bio_blue.light_node->traslate(Vector3(-8.0f, 15.0f, 5.0f), true);
 
     PointLight bio_ground;
     bio_ground.ambient = Vector3(0.0f, 0.05f, 0.05f);
@@ -314,7 +314,7 @@ LightPreset get_bioluminiscente()
     bio_ground.linear = 0.14f;
     bio_ground.quadratic = 0.07f;
     //bio_ground.draw_sphere();
-    bio_ground.light_node->traslate(Vector3(5.0f, 1.0f, 3.0f), true);
+    bio_ground.light_node->traslate(Vector3(5.0f, 13.0f, 3.0f), true);
 
     to_return.point_lights.push_back(bio_main);
     to_return.point_lights.push_back(bio_blue);
@@ -342,7 +342,7 @@ LightPreset get_deep_sea()
     surface_light.linear = 0.045f;
     surface_light.quadratic = 0.0075f;
     //surface_light.draw_sphere();
-    surface_light.light_node->traslate(Vector3(0.0f, 25.0f, 0.0f), true);
+    surface_light.light_node->traslate(Vector3(0.0f, 23.0f, 0.0f), true);
 
     PointLight algae_glow;
     algae_glow.ambient = Vector3(0.0f, 0.04f, 0.02f);
@@ -352,7 +352,7 @@ LightPreset get_deep_sea()
     algae_glow.linear = 0.14f;
     algae_glow.quadratic = 0.07f;
     //algae_glow.draw_sphere();
-    algae_glow.light_node->traslate(Vector3(-5.0f, 1.0f, 5.0f), true);
+    algae_glow.light_node->traslate(Vector3(-5.0f, 13.0f, 5.0f), true);
 
     PointLight cold_fill;
     cold_fill.ambient = Vector3(0.0f, 0.03f, 0.06f);

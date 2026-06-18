@@ -62,7 +62,7 @@ public:
 
     PointLight() : Light(), constant(1.0f), linear(0.09f), quadratic(0.032f)
     {
-        Sphere* light_cube = new Sphere(30, 1.0f);
+        Sphere* light_cube = new Sphere(30, 2.0f);
 
         light_cube->set_shader_name(LIGHT_SHADER_NAME);
 
