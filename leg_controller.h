@@ -319,12 +319,9 @@ private:
             return;
         }
 
-        // Calcular el vector de dirección frontal en el plano XZ basado en el yaw
         float forward_x = std::sin(base_yaw);
         float forward_z = std::cos(base_yaw);
         
-        // Proyectar la dirección del hueso sobre este vector frontal.
-        // Esto da una distancia firmada que permite que la rodilla se doble sin retorcerse.
         float dist_xz = dir.x * forward_x + dir.z * forward_z;
         
         float pitch = std::atan2(-dir.y, dist_xz);
@@ -417,17 +414,14 @@ private:
 
         fabrik.solve(anchor, foot);
 
-        // NUEVO: Calcular el yaw base para TODA la pierna, igual que en el 2-bone IK
         Vector3 leg_dir = foot - anchor;
         float base_yaw = std::atan2(leg_dir.x, leg_dir.z);
-
         const auto& jp = fabrik.joint_positions;
         for (int i = 0; i < (int)nodes.size(); i++)
         {
             Vector3 from(jp[i].x, jp[i].y, jp[i].z);
             Vector3 to(jp[i + 1].x, jp[i + 1].y, jp[i + 1].z);
 
-            // NUEVO: Usar la función con el yaw bloqueado
             write_segment_transform_fixed_yaw(nodes[i],
                                             t_priv_offsets[i], t_pub_offsets[i],
                                             from, to, base_yaw, yaw_offset);

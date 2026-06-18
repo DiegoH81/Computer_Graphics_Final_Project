@@ -64,6 +64,11 @@ public:
         root->traslate(world_delta, true);
     }
 
+    void wander(float dt, const SurfaceFunction& surface, float speed = 0.75f, float rotation_speed = 60.0f){
+        move(Vector3(0.0f,0.0f,dt * speed));
+        update(dt,surface);
+    }
+
     void rotate(float angle_deg)
     {
         get_root()->rotate_y_local(angle_deg, true);
@@ -75,6 +80,8 @@ public:
         SceneNode* torso_node = get_torso();
 
         Vector3 avg_normal(0, 0, 0);
+        float avg_y = 0.0f;
+
         for (int i = 0; i < N; i++)
         {
             SurfaceHit hit = surface.project(legs[i].current_foot);
@@ -82,7 +89,6 @@ public:
         }
         avg_normal = normalize(avg_normal);
 
-        float avg_y = 0.0f;
         for (int i = 0; i < N; i++)
         {
             avg_y += legs[i].current_foot.y;

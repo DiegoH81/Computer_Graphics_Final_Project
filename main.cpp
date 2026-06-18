@@ -578,9 +578,6 @@ int main()
     //Nenufar lilypad_flor(current_path,NENUFAR_FLOWER); 
     //lilypad_flor.get_root()->traslate(Vector3(1.0f, -0.8f, 1.5f),true);
 
-
-
-
 	Mushroom hongo1(current_path,BIG_MUSHROOM, UNIDO);
 	Bush hojas0 (current_path, 1,UNIDO);
 	Bush pasto(current_path, 0, UNIDO);
@@ -715,28 +712,12 @@ int main()
         shaders.use_shader("LIGHT_SHADER");
         shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);
 
-        float spd = 1.5f * delta_time;
-        float rot  = 60.0f * delta_time;
-
-        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-            carabajito.move(Vector3(0.0f, 0.0f, -spd));
-        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-            carabajito.move(Vector3(0.0f, 0.0f, spd));
-        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-            carabajito.move(Vector3(-spd, 0.0f, 0.0f));
-        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-            carabajito.move(Vector3( spd, 0.0f, 0.0f));
-        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-            carabajito.rotate(rot);
-        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-            carabajito.rotate(-rot);
-
 		root->draw(shaders, textures, Matrix_4());
         movable_root->draw(shaders, textures, Matrix_4());
 
-        geckito.update(delta_time, wave);
-        carabajito.update(delta_time, wave);
-        aranita.update(delta_time, wave);
+        geckito.wander(delta_time, wave, 1.5f);
+        carabajito.wander(delta_time, wave, 0.75f);
+        aranita.wander(delta_time, wave, 0.75);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
