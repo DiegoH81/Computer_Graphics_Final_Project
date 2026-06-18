@@ -46,6 +46,8 @@ Integrantes:
 #include "bottle.h"
 #include "terrain.h"
 #include "table.h"
+#include "creature_base.h"
+#include "base.h"
 
 
 
@@ -91,7 +93,6 @@ SceneNode* root = new SceneNode(0);
 SceneNode* movable_root = new SceneNode(0);
 SceneNode* glass_root = new SceneNode(1);
 SceneNode* water_root = new SceneNode(2);
-Gecko* ptr = nullptr;
 
 Shrimp* shrimpy = nullptr;
 
@@ -99,7 +100,6 @@ float offset = 1.0f;
 float angle = 10.0f;
 float sequence_timer = 0.0f;
 
-bool is_moving = true;
 bool sequence_running = false;
 int width = 1920, height = 1080;
 
@@ -239,7 +239,7 @@ void block_3()
 
 void block_4()
 {
-    auto projection_matrix = get_perspective(60.0f, float(width)/float(height), 0.1f, 100.0f);
+    auto projection_matrix = get_perspective(60.0f, float(width)/float(height), 0.1f, 200.0f);
 
     shaders.use_shader("UNIQUE");
     shaders.set_mat4("UNIQUE", "projection", projection_matrix);
@@ -256,7 +256,7 @@ void block_4()
 
 void block_5()
 {
-    auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 100.0f);
+    auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 200.0f);
 
 
     shaders.use_shader("UNIQUE");
@@ -286,7 +286,7 @@ void frame_buffer_size_call_back(GLFWwindow* in_window, int in_w, int in_h)
     width = in_w;
     height = in_h;
 
-    auto projection_matrix = get_perspective(45.0f, float(in_w)/float(in_h), 0.1f, 100.0f);
+    auto projection_matrix = get_perspective(45.0f, float(in_w)/float(in_h), 0.1f, 200.0f);
 
     shaders.use_shader("UNIQUE");
     shaders.set_mat4("UNIQUE", "projection", projection_matrix);
@@ -298,6 +298,15 @@ void frame_buffer_size_call_back(GLFWwindow* in_window, int in_w, int in_h)
 
 void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, int mods)
 {
+    if ( key == GLFW_KEY_G && (action == GLFW_PRESS || action == GLFW_REPEAT))
+    {
+        update_current_light(preset_id + 1);
+        std::cout << "Current light preset: " << preset_id << "\n";
+    }
+
+    if (sequence_running)
+        return;
+
     if (action == GLFW_PRESS || action == GLFW_REPEAT)
     {
         if (key ==GLFW_KEY_ESCAPE)
@@ -326,8 +335,6 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
             camera_world.zoom(offset);
         else if ( key == GLFW_KEY_C)
             camera_world.zoom(-offset);
-        else if ( key == GLFW_KEY_T)
-            is_moving = !is_moving;
         else if ( key == GLFW_KEY_1 )
         {
             block_1();
@@ -340,7 +347,7 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
             if (sequence_running)
                 return;
 
-            camera_world.set_pos(Point3(0.0f, 15.0f, 30.0f));
+            camera_world.set_pos(Point3(0.0f, 15.0f, 40.0f));
             camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
         }
         else if ( key == GLFW_KEY_5 )
@@ -349,7 +356,7 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         {
             if (sequence_running)
                 return;
-            camera_world.set_pos(Point3(0.0f, 15.0f, 30.0f));
+            camera_world.set_pos(Point3(0.0f, 15.0f, 40.0f));
             camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
 
             camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", ""),
@@ -400,12 +407,38 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
                 return;
             light_animations.add_animation({AnimationInfo(ALL_IDs, 360, "ROTATE_C_Z", "PUBLIC")}, 6.0);
         }
-        else if ( key == GLFW_KEY_G )
-        {
-            update_current_light(preset_id + 1);
-            std::cout << "Current light preset: " << preset_id << "\n";
-        }
     }	
+}
+
+
+void print_menu()
+{
+    std::cout << "\n\n====================Info====================\n";
+    std::cout << "Hecho por:\n";
+    std::cout << "- Jose Cornejo\n";
+    std::cout << "- Diego Hidalgo\n";
+    std::cout << "- Astrid Huarcaya\n";
+    std::cout << "====================Menu====================\n";
+    std::cout << "1. Iniciar animación\n";
+    std::cout << "2. Reestablecer camara\n";
+    std::cout << "5. Girar camaron\n";
+    std::cout << "6. Orbitar camara alrededor del frasco\n";
+    std::cout << "7. Camara adentro del frasco\n";
+    std::cout << "8. Vista superior del frasco\n";
+    std::cout << "9. Vista de afuera hacia adentro del frasco\n";
+    std::cout << "0. Orbitar sol\n";
+    std::cout << "G. Cambiar preset de luz\n";
+    std::cout << "W. Mover camara arriba\n";
+    std::cout << "A. Mover camara izquierda\n";
+    std::cout << "S. Mover camara abajo\n";
+    std::cout << "D. Mover camara derecha\n";
+    std::cout << "X. Zoom\n";
+    std::cout << "C. Zoom out\n";
+    std::cout << "I/O. Orbitar X\n";
+    std::cout << "K/L. Orbitar Y\n";
+    std::cout << "N/M. Orbitar Z\n";
+    std::cout << "============================================\n\n\n";
+
 }
 
 int main()
@@ -474,12 +507,13 @@ int main()
     Color turquesa(0.0f, 128.0f, 128.0f, true);
     Color purple(157.0f, 0.0f, 255.0f, true);
     Color golden(225.0f, 190.0f, 150.0f, true);
-    Color le_lime(133.0f, 235.0f, 52.0f, true);
     Color red(255.0f, 0.0f, 0.0f, true);
     Color white(255.0f, 255.0f, 255.0f, true);
+    
+    Color brown(130.0f, 77.0f, 44.0f, true);
 
     // Camera
-    camera_world.set_pos(Point3(0.0f, 15.0f, 30.0f));
+    camera_world.set_pos(Point3(0.0f, 15.0f, 40.0f));
     camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
 
 
@@ -488,69 +522,10 @@ int main()
     
 	nodes.push_back(root);
 	
-    Cube cubito(0.3f);
-    cubito.add_faces();
-    cubito.set_face_color(0, &red);
-    cubito.set_face_color(1, &radioactive);
-    cubito.set_face_color(2, &red);
-    cubito.set_face_color(3, &radioactive);
-    cubito.set_face_color(4, &red);
-    cubito.set_face_color(5, &radioactive);
-    cubito.set_face_color(6, &red);
-    cubito.set_face_color(7, &radioactive);
-
-    cubito.add_edges(&le_lime);
-    cubito.set_edge_color(0, &radioactive);
-    cubito.set_edge_color(6, &radioactive);
-
-    cubito.add_points(&purple);
-    cubito.set_point_color(0, &radioactive);
-    cubito.set_point_color(6, &radioactive);
-
-    SceneNode* cubito_node = new SceneNode(1, &cubito);
-    cubito_node->traslate(Vector3(-0.5f, 0.0f, 0.0f), true);
-
-    Pyramid piramide(0.3f, 0.2f);
-    piramide.add_faces(&golden);
-    piramide.set_face_color(0, &pink);
-    piramide.set_face_color(1, &radioactive);
-    piramide.set_face_color(2, &turquesa);
-    piramide.set_face_color(3, &radioactive);
-    piramide.set_face_color(4, &pink);
-
-    piramide.add_edges(&le_lime);
-    piramide.add_points(&purple);
-    SceneNode* piramide_node = new SceneNode(2, &piramide);
-    piramide_node->traslate(Vector3(0.5f, 0.0f, 0.0f), true);
-
-
-    Cone conito(40, 0.3f, 0.2f);
-    conito.add_faces();
-    conito.set_face_color(0, &pink);
-    conito.set_face_color(1, &radioactive);
-
-    conito.add_edges(&le_lime);
-    conito.add_points(&purple);
-    SceneNode* conito_node = new SceneNode(3, &conito);
-    conito_node->traslate(Vector3(0.0f, -0.5f, 0.0f), true);
-
-    Sphere esferita(40, 0.3f);
-    esferita.add_faces(&golden);
-    esferita.set_face_color(0, &pink);
-    esferita.set_face_color(4, &pink);
-    //esferita.add_edges(&le_lime);
-    //esferita.add_points(&purple);
-
-    SceneNode* sphere_node = new SceneNode(3, &esferita);
-    sphere_node->traslate(Vector3(0.0f, 0.5f, 0.0f), true);
-    
     Gecko geckito(current_path);
 
     //geckito.get_root()->traslate(Vector3(0.0f, 15.0f, -2.0f), true);
     geckito.get_root()->traslate(Vector3(0.0f, 0.0f, -2.0f), true);
-    ptr = &geckito;
-
-
     
     Spider aranita(current_path);
     aranita.get_root()->traslate(Vector3(0.7f, 15.0f, 0.0f), true);
@@ -581,9 +556,6 @@ int main()
     //Nenufar lilypad_flor(current_path,NENUFAR_FLOWER); 
     //lilypad_flor.get_root()->traslate(Vector3(1.0f, -0.8f, 1.5f),true);
 
-
-
-
 	Mushroom hongo1(current_path,BIG_MUSHROOM, UNIDO);
 	Bush hojas0 (current_path, 1,UNIDO);
 	Bush pasto(current_path, 0, UNIDO);
@@ -593,6 +565,7 @@ int main()
 	Bottle botella(current_path); 
     //botella.get_root()->scale(Vector3(0.85f, 0.85f, 0.85f), true);
 	
+    Base cylinder_base(current_path);
 
 	/*
     root->add_children(cubito_node);
@@ -626,6 +599,7 @@ int main()
 	root->add_children(lilypad.get_root());
 	root->add_children(terreno.get_root());
 	root->add_children(mesa.get_root());
+    root->add_children(cylinder_base.get_root());
 	
 	glass_root->add_children(botella.get_root());	
 	water_root->add_children(terreno.get_water());
@@ -638,7 +612,7 @@ int main()
     float delta_time = 0.0f;
     float last_frame = 0.0f;
 	
-    auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 100.0f);
+    auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 200.0f);
     shaders.use_shader("UNIQUE");
     shaders.set_mat4("UNIQUE", "projection", projection_matrix);
 
@@ -646,10 +620,12 @@ int main()
     shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
 
 
-    PlaneSurface plane;
-    WaveSurface wave;
+    PlaneSurface plane(11);
+    WaveSurface wave(10.5);
     MountainSurface mountain;
 
+
+    print_menu();
     while(!glfwWindowShouldClose(window))
     {
         float current_frame = glfwGetTime();
@@ -718,26 +694,12 @@ int main()
         shaders.use_shader("LIGHT_SHADER");
         shaders.set_mat4("LIGHT_SHADER", "view", view_matrix);
 
-        float spd = 1.5f * delta_time;
-        float rot  = 60.0f * delta_time;
-
-        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-            geckito.move(Vector3(0.0f, 0.0f, -spd));
-        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-            geckito.move(Vector3(0.0f, 0.0f, spd));
-        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-            geckito.move(Vector3(-spd, 0.0f, 0.0f));
-        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-            geckito.move(Vector3( spd, 0.0f, 0.0f));
-        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-            geckito.rotate(rot);
-        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-            geckito.rotate(-rot);
-
 		root->draw(shaders, textures, Matrix_4());
         movable_root->draw(shaders, textures, Matrix_4());
 
-        geckito.update(delta_time, plane);
+        geckito.wander(delta_time, wave, 1.5f);
+        carabajito.wander(delta_time, wave, 0.75f);
+        aranita.wander(delta_time, wave, 0.75);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
