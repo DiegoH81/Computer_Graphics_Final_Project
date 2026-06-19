@@ -275,7 +275,11 @@ void block_6()
     shrimp_animation.add_animation({AnimationInfo(ALL_IDs, 1080, "ROTATE_Y", "PUBLIC")}, 15.0);
     camera_animations.add_animation({AnimationInfo(0, -7.0f, "ZOOM", "")}, 5.0);
 }
-
+void block_7()
+{
+    camera_world.set_pos(Point3(0.0f, 40.0f, -19.0f));
+    camera_world.set_objective(Point3(0.0f, 25.0f, 0.0f));
+}
 
 void frame_buffer_size_call_back(GLFWwindow* in_window, int in_w, int in_h)
 {
@@ -349,8 +353,13 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
             camera_world.set_pos(Point3(0.0f, 30.0f, 90.0f));
             camera_world.set_objective(Point3(0.0f, 25.0f, 0.0f));
         }
-        else if ( key == GLFW_KEY_5 )
+        else if ( key == GLFW_KEY_4 )
             shrimp_animation.add_animation({AnimationInfo(ALL_IDs, 1080, "ROTATE_Y", "PUBLIC")}, 15.0);
+        else if ( key == GLFW_KEY_5 )
+        {
+            camera_world.set_pos(Point3(0.0f, 40.0f, -19.0f));
+            camera_world.set_objective(Point3(0.0f, 25.0f, 0.0f));
+        }
         else if ( key == GLFW_KEY_6 )
         {
             if (sequence_running)
@@ -413,7 +422,8 @@ void print_menu()
     std::cout << "====================Menu====================\n";
     std::cout << "1. Iniciar animación\n";
     std::cout << "2. Reestablecer camara\n";
-    std::cout << "5. Girar camaron\n";
+    std::cout << "4. Girar camaron\n";
+    std::cout << "5. Vista de arriba\n";
     std::cout << "6. Orbitar camara alrededor del frasco\n";
     std::cout << "7. Camara adentro del frasco\n";
     std::cout << "8. Vista superior del frasco\n";
@@ -487,8 +497,6 @@ int main()
     presets.push_back(&deep_sea);
     presets.push_back(&candle_light);
     
-    
-    
 	
     // Colors
     Color pink(255.0f, 0.0f, 255.0f, true);
@@ -505,7 +513,7 @@ int main()
     Color brown(130.0f, 77.0f, 44.0f, true);
 
     // Camera
-    camera_world.set_pos(Point3(0.0f, 30.0f, 90.0f));
+    camera_world.set_pos(Point3(-8.0f, 30.0f, -70.0f));
     camera_world.set_objective(Point3(0.0f, 25.0f, 0.0f));
 
 
@@ -557,13 +565,6 @@ int main()
     //botella.get_root()->scale(Vector3(0.85f, 0.85f, 0.85f), true);
 	
     Base cylinder_base(current_path);
-
-	/*
-    root->add_children(cubito_node);
-    root->add_children(piramide_node);
-    root->add_children(conito_node);
-    root->add_children(sphere_node);
-    */
 
 
     for (auto ptr: presets[current_id]->get_point_lights_ptr())
@@ -655,6 +656,11 @@ int main()
             {
                 block_6();
                 sequence_block = 5;
+            }
+            else if(sequence_block == 5 && sequence_timer >= BLOCK_1_DURATION + BLOCK_2_DURATION + BLOCK_3_DURATION + BLOCK_4_DURATION + BLOCK_5_DURATION + BLOCK_6_DURATION)
+            {
+                block_7();
+                sequence_block = 6;
                 sequence_running = false;
                 sequence_timer = 0.0f;
             }
