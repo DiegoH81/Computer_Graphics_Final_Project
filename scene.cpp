@@ -119,3 +119,9 @@ void SceneNode::scale(const Vector3& in_s, bool is_public)
     if (is_public)
         public_transform  = public_transform * E;
 }
+
+void SceneNode::set_full_transform(const Matrix_4& m)
+{
+    private_transform = m;
+    public_transform = m;
+}

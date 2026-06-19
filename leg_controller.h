@@ -1,78 +1,17 @@
 #ifndef LEG_CONTROLLER_H
 #define LEG_CONTROLLER_H
 
+#include "fabrik.h"
+#include "matrix.h"
 #include "scene.h"
 #include "surface.h"
 #include "vector.h"
-#include "matrix.h"
-#include "fabrik.h"
-#include <vector>
 #include <cmath>
-
-inline Point3 extract_world_pos(const Matrix_4& m)
-{
-    return Point3(m.matrix[3], m.matrix[7], m.matrix[11]);
-}
-
-inline Matrix_4 make_rotation_to_dir(const Vector3& dir, float yaw_offset)
-{
-    float yaw = std::atan2(dir.x, dir.z) + yaw_offset;
-    float pitch = std::atan2(-dir.y, std::sqrt(dir.x * dir.x + dir.z * dir.z));
-
-    float cy = std::cos(yaw);
-    float sy = std::sin(yaw);
-    float cx = std::cos(pitch);
-    float sx = std::sin(pitch);
-
-    Matrix_4 R;
-    R.set_matrix({
-        cy, sy * sx, sy * cx, 0,
-        0, cx, -sx, 0,
-        -sy, cy * sx, cy * cx, 0,
-        0, 0, 0, 1
-    });
-    return R;
-}
-
-inline void write_segment_transform(SceneNode* node,
-                                    const Vector3& t_priv,
-                                    const Vector3& t_pub,
-                                    const Vector3& from,
-                                    const Vector3& to,
-                                    float yaw_offset = 0.0f)
-{
-    Vector3 dir = to - from;
-    float len = vec_length(dir);
-    if (len < 0.0001f)
-    {
-        return;
-    }
-
-    float yaw = std::atan2(dir.x, dir.z) + yaw_offset;
-    float pitch = std::atan2(-dir.y, std::sqrt(dir.x * dir.x + dir.z * dir.z));
-
-    float cy = std::cos(yaw);
-    float sy = std::sin(yaw);
-    float cx = std::cos(pitch);
-    float sx = std::sin(pitch);
-
-    node->private_transform.set_matrix({
-        cy, sy * sx, sy * cx, t_priv.x,
-        0, cx, -sx, t_priv.y,
-        -sy, cy * sx, cy * cx, t_priv.z,
-        0, 0, 0, 1
-    });
-    node->public_transform.set_matrix({
-        cy, sy * sx, sy * cx, t_pub.x,
-        0, cx, -sx, t_pub.y,
-        -sy, cy * sx, cy * cx, t_pub.z,
-        0, 0, 0, 1
-    });
-}
+#include <vector>
 
 class LegController
 {
-public:
+  public:
     Vector3 rest_offset;
     Vector3 anchor_offset;
     float step_range = 0.52f;
@@ -132,20 +71,10 @@ public:
     std::vector<Vector3> t_priv_offsets;
     std::vector<Vector3> t_pub_offsets;
 
-    FABRIKSolver fabrik;
+    Fabrik fabrik;
 
-    bool use_analytic_2bone = false;
-    float thigh_len = 0.15f;
-    float shin_len = 0.12f;
-
-    LegController()
-    {
-    }
-
-    void init(const std::vector<SceneNode*>& in_nodes,
-              const std::vector<float>& in_lengths,
-              Vector3 in_rest_offset,
-              Vector3 in_anchor_offset)
+    void init(const std::vector<SceneNode*>& in_nodes, const std::vector<float>& in_lengths,
+              Vector3 in_rest_offset, Vector3 in_anchor_offset)
     {
         nodes = in_nodes;
         rest_offset = in_rest_offset;
@@ -159,56 +88,15 @@ public:
 
         for (int i = 0; i < (int)nodes.size(); i++)
         {
-            t_priv_offsets[i] = {
-                nodes[i]->private_transform.matrix[3],
-                nodes[i]->private_transform.matrix[7],
-                nodes[i]->private_transform.matrix[11]
-            };
-            t_pub_offsets[i] = {
-                nodes[i]->public_transform.matrix[3],
-                nodes[i]->public_transform.matrix[7],
-                nodes[i]->public_transform.matrix[11]
-            };
-        }
-    }
-
-    void init(SceneNode* in_thigh,
-              SceneNode* in_shin,
-              Vector3 in_rest_offset,
-              Vector3 in_anchor_offset,
-              float in_thigh_len,
-              float in_shin_len)
-    {
-        use_analytic_2bone = true;
-        thigh_len = in_thigh_len;
-        shin_len = in_shin_len;
-
-        nodes = { in_thigh, in_shin };
-        rest_offset = in_rest_offset;
-        anchor_offset = in_anchor_offset;
-        current_foot = in_rest_offset;
-
-        t_priv_offsets.resize(2);
-        t_pub_offsets.resize(2);
-
-        for (int i = 0; i < 2; i++)
-        {
-            t_priv_offsets[i] = {
-                nodes[i]->private_transform.matrix[3],
-                nodes[i]->private_transform.matrix[7],
-                nodes[i]->private_transform.matrix[11]
-            };
-            t_pub_offsets[i] = {
-                nodes[i]->public_transform.matrix[3],
-                nodes[i]->public_transform.matrix[7],
-                nodes[i]->public_transform.matrix[11]
-            };
+            t_priv_offsets[i] = nodes[i]->private_transform.get_translation();
+            t_pub_offsets[i] = nodes[i]->public_transform.get_translation();
         }
     }
 
     void update(float dt, const Matrix_4& torso_world, const SurfaceFunction& surface)
     {
-        Point3 torso_pos = extract_world_pos(torso_world);
+        Vector3 torso_t = torso_world.get_translation();
+        Point3 torso_pos(torso_t.x, torso_t.y, torso_t.z);
         Point3 anchor_world = torso_pos + anchor_offset;
 
         Vector3 torso_vel(0, 0, 0);
@@ -221,11 +109,9 @@ public:
         has_prev = true;
 
         float lookahead = 0.18f;
-        Point3 rest_world(
-            torso_pos.x + rest_offset.x + torso_vel.x * lookahead,
-            torso_pos.y + rest_offset.y,
-            torso_pos.z + rest_offset.z + torso_vel.z * lookahead
-        );
+        Point3 rest_world(torso_pos.x + rest_offset.x + torso_vel.x * lookahead,
+                          torso_pos.y + rest_offset.y,
+                          torso_pos.z + rest_offset.z + torso_vel.z * lookahead);
 
         SurfaceHit rest_hit = surface.project(rest_world);
         Point3 rest_surf = rest_hit.position;
@@ -279,9 +165,8 @@ public:
                 current_foot.z += dz * ratio;
                 step_t += dt * step_speed / step_total_dist;
                 step_t = std::min(step_t, 1.0f);
-                current_foot.y = start_foot.y
-                               + (target_foot.y - start_foot.y) * step_t
-                               + step_height * std::sin(step_t * 3.14159265f);
+                current_foot.y = start_foot.y + (target_foot.y - start_foot.y) * step_t +
+                                 step_height * std::sin(step_t * 3.14159265f);
             }
         }
         else
@@ -290,120 +175,12 @@ public:
             current_foot.y = hit.position.y;
         }
 
-        if (use_analytic_2bone)
-        {
-            solve_ik_2bone(anchor_world, current_foot);
-        }
-        else
-        {
-            solve_ik_fabrik(anchor_world, current_foot);
-        }
+        solve_ik_fabrik(anchor_world, current_foot);
     }
 
-private:
+  private:
     Point3 prev_torso_pos;
     bool has_prev = false;
-
-    inline void write_segment_transform_fixed_yaw(SceneNode* node,
-                                              const Vector3& t_priv,
-                                              const Vector3& t_pub,
-                                              const Vector3& from,
-                                              const Vector3& to,
-                                              float base_yaw,
-                                              float yaw_offset = 0.0f)
-    {
-        Vector3 dir = to - from;
-        float len = vec_length(dir);
-        if (len < 0.0001f)
-        {
-            return;
-        }
-
-        float forward_x = std::sin(base_yaw);
-        float forward_z = std::cos(base_yaw);
-        
-        float dist_xz = dir.x * forward_x + dir.z * forward_z;
-        
-        float pitch = std::atan2(-dir.y, dist_xz);
-        float final_yaw = base_yaw + yaw_offset;
-
-        float cy = std::cos(final_yaw);
-        float sy = std::sin(final_yaw);
-        float cx = std::cos(pitch);
-        float sx = std::sin(pitch);
-
-        node->private_transform.set_matrix({
-            cy, sy * sx, sy * cx, t_priv.x,
-            0, cx, -sx, t_priv.y,
-            -sy, cy * sx, cy * cx, t_priv.z,
-            0, 0, 0, 1
-        });
-        node->public_transform.set_matrix({
-            cy, sy * sx, sy * cx, t_pub.x,
-            0, cx, -sx, t_pub.y,
-            -sy, cy * sx, cy * cx, t_pub.z,
-            0, 0, 0, 1
-        });
-    }
-
-    void solve_ik_2bone(const Point3& anchor, const Point3& foot)
-    {
-        Vector3 dir = foot - anchor;
-        float dist = vec_length(dir);
-
-        float max_reach = thigh_len + shin_len - 0.001f;
-        if (dist > max_reach)
-        {
-            dist = max_reach;
-        }
-        if (dist < 0.001f)
-        {
-            dist = 0.001f;
-        }
-
-        float L1 = thigh_len;
-        float L2 = shin_len;
-
-        float cos_knee = (L1 * L1 + L2 * L2 - dist * dist) / (2.0f * L1 * L2);
-        cos_knee = std::max(-1.0f, std::min(1.0f, cos_knee));
-        float knee_rad = std::acos(cos_knee);
-
-        float cos_hip = (L1 * L1 + dist * dist - L2 * L2) / (2.0f * L1 * dist);
-        cos_hip = std::max(-1.0f, std::min(1.0f, cos_hip));
-        float hip_rad = std::acos(cos_hip);
-
-        float yaw = std::atan2(dir.x, dir.z) + yaw_offset;
-        float pitch = std::atan2(-dir.y, std::sqrt(dir.x * dir.x + dir.z * dir.z));
-
-        float ry = yaw;
-        float rx = pitch + hip_rad;
-        float cy = std::cos(ry);
-        float sy = std::sin(ry);
-        float cx = std::cos(rx);
-        float sx = std::sin(rx);
-
-        auto write = [&](SceneNode* node, const Vector3& tp, const Vector3& tpu,
-                         float r00, float r01, float r02,
-                         float r10, float r11, float r12,
-                         float r20, float r21, float r22) {
-            node->private_transform.set_matrix({ r00, r01, r02, tp.x, r10, r11, r12, tp.y, r20, r21, r22, tp.z, 0, 0, 0, 1 });
-            node->public_transform.set_matrix({ r00, r01, r02, tpu.x, r10, r11, r12, tpu.y, r20, r21, r22, tpu.z, 0, 0, 0, 1 });
-        };
-
-        write(nodes[0], t_priv_offsets[0], t_pub_offsets[0],
-              cy, sy * sx, sy * cx,
-              0, cx, -sx,
-              -sy, cy * sx, cy * cx);
-
-        float rk = knee_rad - 3.14159265f;
-        float ck = std::cos(rk);
-        float sk = std::sin(rk);
-
-        write(nodes[1], t_priv_offsets[1], t_pub_offsets[1],
-              1, 0, 0,
-              0, ck, -sk,
-              0, sk, ck);
-    }
 
     void solve_ik_fabrik(const Point3& anchor, const Point3& foot)
     {
@@ -416,15 +193,52 @@ private:
 
         Vector3 leg_dir = foot - anchor;
         float base_yaw = std::atan2(leg_dir.x, leg_dir.z);
-        const auto& jp = fabrik.joint_positions;
+        std::vector<Point3> jp = fabrik.joint_positions;
+
         for (int i = 0; i < (int)nodes.size(); i++)
         {
             Vector3 from(jp[i].x, jp[i].y, jp[i].z);
             Vector3 to(jp[i + 1].x, jp[i + 1].y, jp[i + 1].z);
 
-            write_segment_transform_fixed_yaw(nodes[i],
-                                            t_priv_offsets[i], t_pub_offsets[i],
-                                            from, to, base_yaw, yaw_offset);
+            Vector3 dir = to - from;
+            float len = vec_length(dir);
+
+            if (len < 0.0001f)
+            {
+                continue;
+            }
+
+            float forward_x = std::sin(base_yaw);
+            float forward_z = std::cos(base_yaw);
+
+            float dist_xz = dir.x * forward_x + dir.z * forward_z;
+
+            float pitch = std::atan2(-dir.y, dist_xz);
+            float final_yaw = base_yaw + yaw_offset;
+
+            float cy = std::cos(final_yaw);
+            float sy = std::sin(final_yaw);
+            float cx = std::cos(pitch);
+            float sx = std::sin(pitch);
+
+            SceneNode* node = nodes[i];
+            const Vector3& t_priv = t_priv_offsets[i];
+            const Vector3& t_pub = t_pub_offsets[i];
+
+            node->private_transform.set_matrix({cy, sy * sx, sy * cx, t_priv.x, 0, cx, -sx,
+                                                t_priv.y, -sy, cy * sx, cy * cx, t_priv.z, 0, 0, 0,
+                                                1});
+
+            if (t_priv.x == t_pub.x && t_priv.y == t_pub.y && t_priv.z == t_pub.z)
+            {
+                node->public_transform = node->private_transform;
+            }
+            else
+            {
+                node->public_transform.set_matrix({cy, sy * sx, sy * cx, t_pub.x, 0, cx, -sx,
+                                                   t_pub.y, -sy, cy * sx, cy * cx, t_pub.z, 0, 0, 0,
+                                                   1});
+            }
         }
     }
 };

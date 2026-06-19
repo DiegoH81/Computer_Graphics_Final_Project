@@ -75,8 +75,6 @@ Integrantes:
 
 // Path
 std::filesystem::path current_path = std::filesystem::current_path().parent_path() / "ownProjects" / "COMPUTER_GRAPHICS_FINAL_PROJECT";
-//current_path = current_path.parent_path();
-//current_path = current_path / "ownProjects" / "COMPUTER_GRAPHICS_FINAL_PROJECT";
 
 Color background_color(191, 133, 76, true);
 Camera camera_world;
@@ -193,24 +191,24 @@ void block_1()
     light_animations.add_animation({AnimationInfo(ALL_IDs, 360, "ROTATE_C_Z", "PUBLIC")}, 3.5);
 
     // From camaroncin
-    camera_world.set_pos(Point3(-10.0f, 15.5f, 0.0f));
-    camera_world.set_objective(Point3(0.0f, 11.5f, 0.0f));
+    camera_world.set_pos(Point3(-27.0f, 38.5f, 0.0f));
+    camera_world.set_objective(Point3(0.0f, 30.5f, 0.0f));
 
     camera_animations.add_animation({AnimationInfo(0, 0.0f, "NONE", "")}, 1.0);
     // To pecera
-    camera_animations.add_animation({AnimationInfo(0, 10.0f, "ZOOM", "")}, 5.0);
+    camera_animations.add_animation({AnimationInfo(0, 23.0f, "ZOOM", "")}, 5.0);
 
     // De vuelta miramos al camaroncin
     camera_animations.add_animation({AnimationInfo(0, 180.0f, "ROTATE_Y", "")}, 3.0);
-    camera_animations.add_animation({AnimationInfo(0, -25.0f, "ROTATE_Z", "")}, 1.5);
-    camera_animations.add_animation({AnimationInfo(0, -8.0f, "ZOOM", "")}, 3.5);
+    camera_animations.add_animation({AnimationInfo(0, -20.0f, "ROTATE_Z", "")}, 1.5);
+    camera_animations.add_animation({AnimationInfo(0, -25.0f, "ZOOM", "")}, 3.5);
     camera_animations.add_animation({AnimationInfo(0, 8.0f, "ROTATE_Z", "")}, 3.5);
 
     
     camera_animations.add_animation({AnimationInfo(0, 0.0f, "NONE", "")}, 3.5);
 
     // Zoom OUT
-    camera_animations.add_animation({AnimationInfo(0, -20.0f, "ZOOM", ""),
+    camera_animations.add_animation({AnimationInfo(0, -40.0f, "ZOOM", ""),
                                      AnimationInfo(0, 15.0f, "ROTATE_Z", "")}, 4.5);
     
     // Orbita
@@ -220,8 +218,8 @@ void block_1()
 void block_2()
 {
     update_current_light(4);
-    camera_world.set_pos(Point3(0.0f, 15.0f, 30.0f));
-    camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
+    camera_world.set_pos(Point3(0.0f, 35.0f, 60.0f));
+    camera_world.set_objective(Point3(0.0f, 25.0f, 0.0f));
 
     camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", ""),
                                      AnimationInfo(0, 10.0f, "ZOOM", "")}, 7.0);
@@ -230,8 +228,8 @@ void block_2()
 void block_3()
 {
     update_current_light(3);
-    camera_world.set_pos(Point3(0.0f, 15.0f, 30.0f));
-    camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
+    camera_world.set_pos(Point3(0.0f, 35.0f, 70.0f));
+    camera_world.set_objective(Point3(0.0f, 25.0f, 0.0f));
 
     camera_animations.add_animation({AnimationInfo(0, 360, "ORBIT_Y_NO_SET", ""),
                                      AnimationInfo(0, 10.0f, "ZOOM", "")}, 6.0);
@@ -239,7 +237,7 @@ void block_3()
 
 void block_4()
 {
-    auto projection_matrix = get_perspective(60.0f, float(width)/float(height), 0.1f, 200.0f);
+    auto projection_matrix = get_perspective(60.0f, float(width)/float(height), 0.1f, 300.0f);
 
     shaders.use_shader("UNIQUE");
     shaders.set_mat4("UNIQUE", "projection", projection_matrix);
@@ -248,15 +246,15 @@ void block_4()
     shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
 
     update_current_light(5);
-    camera_world.set_pos(Point3(3.9f, 11.0f, 0.0f));
-    camera_world.set_objective(Point3(0.0f, 11.0f, 0.0f));
+    camera_world.set_pos(Point3(13.9f, 30.0f, 0.0f));
+    camera_world.set_objective(Point3(0.0f, 30.0f, 0.0f));
 
     camera_animations.add_animation({AnimationInfo(0, 360, "ORBIT_Y_NO_SET", "")}, 6.0);
 }
 
 void block_5()
 {
-    auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 200.0f);
+    auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 300.0f);
 
 
     shaders.use_shader("UNIQUE");
@@ -266,8 +264,8 @@ void block_5()
     shaders.set_mat4("LIGHT_SHADER", "projection", projection_matrix);
 
     update_current_light(1);
-    camera_world.set_pos(Point3(3.9f, 11.0f, 0.0f));
-    camera_world.set_objective(Point3(0.0f, 11.0f, 0.0f));
+    camera_world.set_pos(Point3(13.9f, 30.0f, 0.0f));
+    camera_world.set_objective(Point3(0.0f, 30.0f, 0.0f));
     camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", "")}, 10.0);
 }
 
@@ -286,7 +284,7 @@ void frame_buffer_size_call_back(GLFWwindow* in_window, int in_w, int in_h)
     width = in_w;
     height = in_h;
 
-    auto projection_matrix = get_perspective(45.0f, float(in_w)/float(in_h), 0.1f, 200.0f);
+    auto projection_matrix = get_perspective(45.0f, float(in_w)/float(in_h), 0.1f, 300.0f);
 
     shaders.use_shader("UNIQUE");
     shaders.set_mat4("UNIQUE", "projection", projection_matrix);
@@ -304,14 +302,15 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         std::cout << "Current light preset: " << preset_id << "\n";
     }
 
+    if (key ==GLFW_KEY_ESCAPE && (action == GLFW_PRESS || action == GLFW_REPEAT))
+        glfwSetWindowShouldClose(in_window, true);
+
     if (sequence_running)
         return;
 
     if (action == GLFW_PRESS || action == GLFW_REPEAT)
     {
-        if (key ==GLFW_KEY_ESCAPE)
-            glfwSetWindowShouldClose(in_window, true);
-        else if ( key == GLFW_KEY_A )
+        if ( key == GLFW_KEY_A )
             camera_world.traslate(Vector3(-offset, 0.0f, 0.0f));
         else if ( key == GLFW_KEY_D)
             camera_world.traslate(Vector3(offset, 0.0f, 0.0f));
@@ -347,8 +346,8 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
             if (sequence_running)
                 return;
 
-            camera_world.set_pos(Point3(0.0f, 15.0f, 40.0f));
-            camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
+            camera_world.set_pos(Point3(0.0f, 30.0f, 90.0f));
+            camera_world.set_objective(Point3(0.0f, 25.0f, 0.0f));
         }
         else if ( key == GLFW_KEY_5 )
             shrimp_animation.add_animation({AnimationInfo(ALL_IDs, 1080, "ROTATE_Y", "PUBLIC")}, 15.0);
@@ -356,8 +355,8 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         {
             if (sequence_running)
                 return;
-            camera_world.set_pos(Point3(0.0f, 15.0f, 40.0f));
-            camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
+            camera_world.set_pos(Point3(0.0f, 35.0f, 70.0f));
+            camera_world.set_objective(Point3(0.0f, 25.0f, 0.0f));
 
             camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", ""),
                                              AnimationInfo(0, 10.0f, "ZOOM", "")}, 7.0);
@@ -366,8 +365,8 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         {
             if (sequence_running)
                 return;
-            camera_world.set_pos(Point3(3.9f, 11.0f, 0.0f));
-            camera_world.set_objective(Point3(0.0f, 11.0f, 0.0f));
+            camera_world.set_pos(Point3(0.0f, 35.0f, 60.0f));
+            camera_world.set_objective(Point3(0.0f, 25.0f, 0.0f));
 
             camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", "")}, 10.0);
         }
@@ -375,8 +374,9 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         {
             if (sequence_running)
                 return;
-            camera_world.set_pos(Point3(2.0f, 14.0f, 0.0f));
-            camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
+                
+            camera_world.set_pos(Point3(13.9f, 30.0f, 0.0f));
+            camera_world.set_objective(Point3(0.0f, 30.0f, 0.0f));
 
             camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", "")}, 10.0);
         }
@@ -384,22 +384,14 @@ void key_call_back(GLFWwindow* in_window, int key, int scan_code, int action, in
         {
             if (sequence_running)
                 return;
-            camera_world.set_pos(Point3(-10.0f, 15.5f, 0.0f));
-            camera_world.set_objective(Point3(0.0f, 11.5f, 0.0f));
+            camera_world.set_pos(Point3(0.0f, 35.0f, 60.0f));
+            camera_world.set_objective(Point3(0.0f, 30.0f, 0.0f));
 
-            camera_animations.add_animation({AnimationInfo(0, 10.0f, "ZOOM", "")}, 5.0);
+            camera_animations.add_animation({AnimationInfo(0, 35.0f, "ZOOM", "")}, 5.0);
 
-            camera_animations.add_animation({AnimationInfo(0, 180.0f, "ROTATE_Y", "")}, 3.0);
-            camera_animations.add_animation({AnimationInfo(0, -25.0f, "ROTATE_Z", "")}, 1.5);
-            camera_animations.add_animation({AnimationInfo(0, -8.0f, "ZOOM", "")}, 3.5);
-            camera_animations.add_animation({AnimationInfo(0, 8.0f, "ROTATE_Z", "")}, 3.5);
+            camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", "")}, 6.0);
 
-            camera_animations.add_animation({AnimationInfo(0, 0.0f, "NONE", "")}, 3.5);
-
-            camera_animations.add_animation({AnimationInfo(0, -20.0f, "ZOOM", ""),
-                                             AnimationInfo(0, 15.0f, "ROTATE_Z", "")}, 4.5);
-                                
-            camera_animations.add_animation({AnimationInfo(0, 720, "ORBIT_Y_NO_SET", "")}, 7.0);
+            update_current_light(0);
         }
         else if ( key == GLFW_KEY_0 )
         {
@@ -513,8 +505,8 @@ int main()
     Color brown(130.0f, 77.0f, 44.0f, true);
 
     // Camera
-    camera_world.set_pos(Point3(0.0f, 15.0f, 40.0f));
-    camera_world.set_objective(Point3(0.0f, 10.0f, 0.0f));
+    camera_world.set_pos(Point3(0.0f, 30.0f, 90.0f));
+    camera_world.set_objective(Point3(0.0f, 25.0f, 0.0f));
 
 
     // Figuras
@@ -525,17 +517,16 @@ int main()
     Gecko geckito(current_path);
 
     //geckito.get_root()->traslate(Vector3(0.0f, 15.0f, -2.0f), true);
-    geckito.get_root()->traslate(Vector3(0.0f, 0.0f, -2.0f), true);
+    geckito.get_root()->traslate(Vector3(2.0f, 27.95, 5.0f), true);
     
     Spider aranita(current_path);
-    aranita.get_root()->traslate(Vector3(0.7f, 15.0f, 0.0f), true);
-	
+    aranita.get_root()->traslate(Vector3(2.0f, 27.95, 4.5f), true);
+
+	Bettle carabajito(current_path);
+	carabajito.get_root()->traslate(Vector3(2.0f, 27.95, 5.0f),true);
+
 	Butterfly mariposa(current_path);
     mariposa.get_root()->traslate(Vector3(0.0f, 15.0f, 0.0f), true);
-	
-	Bettle carabajito(current_path);
-	carabajito.get_root()->traslate(Vector3(0.0f, 15.0f, 0.0f),true);
-  
 	
     Tadpole tadpolin(current_path, UNIDO);
 	Terrain terreno(current_path);
@@ -604,6 +595,11 @@ int main()
 	glass_root->add_children(botella.get_root());	
 	water_root->add_children(terreno.get_water());
     
+    // Scale
+    root->scale(Vector3(2.75f, 2.75f, 2.75f), true);
+    water_root->scale(Vector3(2.75f, 2.75f, 2.75f), true);
+    glass_root->scale(Vector3(2.75f, 2.75f, 2.75f), true);
+
     // Bucle
 	glPointSize(10.0f);
     glEnable(GL_DEPTH_TEST);
@@ -612,7 +608,7 @@ int main()
     float delta_time = 0.0f;
     float last_frame = 0.0f;
 	
-    auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 200.0f);
+    auto projection_matrix = get_perspective(45.0f, float(width)/float(height), 0.1f, 300.0f);
     shaders.use_shader("UNIQUE");
     shaders.set_mat4("UNIQUE", "projection", projection_matrix);
 
@@ -621,8 +617,7 @@ int main()
 
 
     PlaneSurface plane(11);
-    WaveSurface wave(10.5);
-    MountainSurface mountain;
+    WaveSurface wave(27.95);
 
 
     print_menu();
@@ -697,9 +692,9 @@ int main()
 		root->draw(shaders, textures, Matrix_4());
         movable_root->draw(shaders, textures, Matrix_4());
 
-        geckito.wander(delta_time, wave, 1.5f);
-        carabajito.wander(delta_time, wave, 0.75f);
-        aranita.wander(delta_time, wave, 0.75);
+        geckito.wander(delta_time, wave, 0.75f, 30, 0, 2, 3, 10 );
+        carabajito.wander(delta_time, wave, 0.75f, 30, 0, 2, 3, 10);
+        aranita.wander(delta_time, wave, 0.75, 30, 0, 2, 3, 12);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
