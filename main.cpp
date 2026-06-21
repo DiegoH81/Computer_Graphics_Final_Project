@@ -577,6 +577,37 @@ int main()
 	movable_root->add_children(carabajito.get_root());
 
 
+
+    Pyramid le_piramid(5.0f, 2.0f);
+    le_piramid.add_faces();
+
+    Cube le_cube(3.0f);
+    le_cube.add_faces();
+
+    Cone le_cone(30, 7.0f, 3.0f);
+    le_cone.add_faces();
+
+    Sphere le_esfere(40, 5.0f);
+    le_esfere.add_faces();
+
+    SceneNode* le_piramid_n = new SceneNode(1, &le_piramid);
+    le_piramid_n->traslate(Vector3(10.0f, 5.0f, 0.0f), true);
+
+    SceneNode* le_cube_n = new SceneNode(1, &le_cube);
+    le_cube_n->traslate(Vector3(15.0f, 5.0f, 0.0f), true);
+
+    SceneNode* le_cone_n = new SceneNode(1, &le_cone);
+    le_cone_n->traslate(Vector3(20.0f, 5.0f, 0.0f), true);
+
+    SceneNode* le_esfere_n = new SceneNode(1, &le_esfere);
+    le_esfere_n->traslate(Vector3(25.0f, 5.0f, 0.0f), true);
+
+    root->add_children(le_piramid_n);
+    root->add_children(le_cube_n);
+    root->add_children(le_cone_n);
+    root->add_children(le_esfere_n);
+
+
     root->add_children(hongo1.get_root());
 
     root->add_children(tadpolin.get_root());
