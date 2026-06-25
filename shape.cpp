@@ -568,8 +568,8 @@ void Pyramid::create_pyramid(Color *in_color)
     info_faces.push_back(IndicesInfo(0, 3, GL_TRIANGLES, YES_EBO, in_color));
 
     // TOP - FR - BR - RIGHT
-    v1 = Vector3(fr.x - top.x, fr.y - top.y, fr.z - top.z);
-    v2 = Vector3(br.x - top.x, br.y - top.y, br.z - top.z);
+    v1 = fr - top;
+    v2 = br - top;
     normal = cross(v1, v2);
     normal = normalize(normal);
 
@@ -581,8 +581,8 @@ void Pyramid::create_pyramid(Color *in_color)
     info_faces.push_back(IndicesInfo(3, 3, GL_TRIANGLES, YES_EBO, in_color));
 
     // BACK - TOP - BR - BL
-    v1 = Vector3(br.x - top.x, br.y - top.y, br.z - top.z);
-    v2 = Vector3(bl.x - top.x, bl.y - top.y, bl.z - top.z);
+    v1 = br - top;
+    v2 = bl - top;
     normal = cross(v1, v2);
     normal = normalize(normal);
 
@@ -594,8 +594,8 @@ void Pyramid::create_pyramid(Color *in_color)
     info_faces.push_back(IndicesInfo(6, 3, GL_TRIANGLES, YES_EBO, in_color));
 
     // LEFT - TOP - BL - FL
-    v1 = Vector3(bl.x - top.x, bl.y - top.y, bl.z - top.z);
-    v2 = Vector3(fl.x - top.x, fl.y - top.y, fl.z - top.z);
+    v1 = bl - top;
+    v2 = fl - top;
     normal = cross(v1, v2);
     normal = normalize(normal);
 
@@ -626,6 +626,127 @@ void Pyramid::create_pyramid(Color *in_color)
     indices.push_back(start_idx + 5);
     
     info_faces.push_back(IndicesInfo(12, 6, GL_TRIANGLES, YES_EBO, in_color));
+}
+
+// PYRAMID 3
+Pyramid3::Pyramid3(const float& in_height, const float& in_base)
+    : Shape(), height(in_height), base(in_base)
+{
+    create_pyramid(&base_color);
+    setup_edges(&base_color);
+    setup_points(&base_color);
+
+    init_buffers();
+}
+
+void Pyramid3::setup_points(Color* in_color) 
+{
+    int s_indice = indices.size();
+
+    unsigned int top = 0;
+    unsigned int fl  = 1;
+    unsigned int fr  = 2;
+    unsigned int br  = 5;
+
+    indices.push_back(top);
+    indices.push_back(fl);
+    indices.push_back(fr);
+    indices.push_back(br);
+
+    for (int i = 0; i < 4; i++)
+        info_points.push_back(IndicesInfo(s_indice + i, 1, GL_POINTS, NO_EBO, in_color));
+}
+
+void Pyramid3::setup_edges(Color* in_color) 
+{
+    int s_indice = indices.size();
+
+    unsigned int top = 0;
+    unsigned int fl = 1;
+    unsigned int fr = 2;
+    unsigned int br = 5;
+
+
+    indices.push_back(top); indices.push_back(fl);
+    indices.push_back(top); indices.push_back(fr);
+    indices.push_back(top); indices.push_back(br);
+
+    indices.push_back(fl);  indices.push_back(fr);
+    indices.push_back(fr);  indices.push_back(br);
+    indices.push_back(fl);  indices.push_back(fr);
+
+    for (int i = 0; i < 6; i++)
+        info_edges.push_back(IndicesInfo(s_indice + (2 * i), 2, GL_LINES, YES_EBO, in_color));
+}
+
+void Pyramid3::create_pyramid(Color *in_color)
+{
+    float h = height / 2.0f;
+    float b = base  / 2.0f;
+
+
+    Point3 top(center.x, center.y + h, center.z);
+    Point3 fl(center.x - b, center.y - h, center.z + b); // Front-Left
+    Point3 fr(center.x + b, center.y - h, center.z + b); // Front-Right
+    Point3 br(center.x + b, center.y - h, center.z - b); // Back-Right
+
+    Vector3 v1, v2, normal;
+    unsigned int start_idx;
+
+    // TOP, FL, FR - FRONT
+    v1 = Vector3(fl.x - top.x, fl.y - top.y, fl.z - top.z);
+    v2 = Vector3(fr.x - top.x, fr.y - top.y, fr.z - top.z);
+    normal = cross(v1, v2); 
+    normal = normalize(normal);
+
+    start_idx = vertices.size();
+    vertices.push_back(Vertex(top, normal, Point2(0,0)));
+    vertices.push_back(Vertex(fl, normal, Point2(0,0)));
+    vertices.push_back(Vertex(fr, normal, Point2(0,0)));
+    indices.push_back(start_idx); indices.push_back(start_idx + 1); indices.push_back(start_idx + 2);
+    info_faces.push_back(IndicesInfo(0, 3, GL_TRIANGLES, YES_EBO, in_color));
+
+    // TOP - FR - BR - RIGHT
+    v1 = Vector3(fr.x - top.x, fr.y - top.y, fr.z - top.z);
+    v2 = Vector3(br.x - top.x, br.y - top.y, br.z - top.z);
+    normal = cross(v1, v2);
+    normal = normalize(normal);
+
+    start_idx = vertices.size();
+    vertices.push_back(Vertex(top, normal, Point2(0,0)));
+    vertices.push_back(Vertex(fr, normal, Point2(0,0)));
+    vertices.push_back(Vertex(br, normal, Point2(0,0)));
+    indices.push_back(start_idx); indices.push_back(start_idx + 1); indices.push_back(start_idx + 2);
+    info_faces.push_back(IndicesInfo(3, 3, GL_TRIANGLES, YES_EBO, in_color));
+
+    // BACK - TOP - BR - FL
+    v1 = top - br;
+    v2 = fl - br;
+    normal = cross(v1, v2);
+    normal = normalize(normal);
+
+    start_idx = vertices.size();
+    vertices.push_back(Vertex(top, normal, Point2(0,0)));
+    vertices.push_back(Vertex(br, normal, Point2(0,0)));
+    vertices.push_back(Vertex(fl, normal, Point2(0,0)));
+    indices.push_back(start_idx); indices.push_back(start_idx + 1); indices.push_back(start_idx + 2);
+    info_faces.push_back(IndicesInfo(6, 3, GL_TRIANGLES, YES_EBO, in_color));
+
+    
+
+    // BASE
+    Vector3 down_normal(0.0f, -1.0f, 0.0f);
+    start_idx = vertices.size();
+    
+    vertices.push_back(Vertex(fl, down_normal, Point2(0,0)));
+    vertices.push_back(Vertex(br, down_normal, Point2(0,0)));
+    vertices.push_back(Vertex(fr, down_normal, Point2(0,0)));
+    
+    indices.push_back(start_idx);
+    indices.push_back(start_idx + 1);
+    indices.push_back(start_idx + 2);
+    
+    info_faces.push_back(IndicesInfo(9, 3, GL_TRIANGLES, YES_EBO, in_color));
 }
 
 // CUBE
@@ -935,7 +1056,6 @@ void Sphere::create_sphere(Color* in_color)
 
             Point3 pos(x + center.x, y + center.y, z + center.z);
             Vector3 normal(cos_stack * cos_sector, cos_stack * sin_sector, sin_stack);
-            //vertices.push_back(Point3(x + center.x, y + center.y, z + center.z));
 
             vertices.push_back(Vertex(pos, normal, Point2(0, 0)));
         }

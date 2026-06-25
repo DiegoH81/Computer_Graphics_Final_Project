@@ -144,6 +144,19 @@ private:
     void setup_points(Color* in_color = &base_color) override;
 };
 
+class Pyramid3 : public Shape
+{
+public:
+    Pyramid3(const float& in_height, const float& in_base);
+
+private:
+    float height, base;
+
+    void create_pyramid(Color *in_color);
+    void setup_edges(Color* in_color = &base_color) override;
+    void setup_points(Color* in_color = &base_color) override;
+};
+
 class Cube : public Shape
 {
 public:

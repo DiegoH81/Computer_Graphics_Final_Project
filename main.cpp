@@ -48,6 +48,7 @@ Integrantes:
 #include "table.h"
 #include "creature_base.h"
 #include "base.h"
+#include "teapot.h"
 
 
 
@@ -581,6 +582,9 @@ int main()
     Pyramid le_piramid(5.0f, 2.0f);
     le_piramid.add_faces();
 
+    Pyramid3 le_piramid_3(5.0f, 2.0f);
+    le_piramid_3.add_faces();
+
     Cube le_cube(3.0f);
     le_cube.add_faces();
 
@@ -590,8 +594,12 @@ int main()
     Sphere le_esfere(40, 5.0f);
     le_esfere.add_faces();
 
+
     SceneNode* le_piramid_n = new SceneNode(1, &le_piramid);
     le_piramid_n->traslate(Vector3(10.0f, 5.0f, 0.0f), true);
+
+    SceneNode* le_piramid_n_3 = new SceneNode(1, &le_piramid_3);
+    le_piramid_n_3->traslate(Vector3(15.0f, 10.0f, 0.0f), true);
 
     SceneNode* le_cube_n = new SceneNode(1, &le_cube);
     le_cube_n->traslate(Vector3(15.0f, 5.0f, 0.0f), true);
@@ -602,7 +610,14 @@ int main()
     SceneNode* le_esfere_n = new SceneNode(1, &le_esfere);
     le_esfere_n->traslate(Vector3(25.0f, 5.0f, 0.0f), true);
 
+
+    Teapot le_teapot(current_path);
+    le_teapot.get_root()->scale(Vector3(4.0f, 4.0f, 4.0f), true);
+    le_teapot.get_root()->traslate(Vector3(15.0f, 15.0f, 0.0f), true);
+
+    root->add_children(le_teapot.get_root());
     root->add_children(le_piramid_n);
+    root->add_children(le_piramid_n_3);
     root->add_children(le_cube_n);
     root->add_children(le_cone_n);
     root->add_children(le_esfere_n);
