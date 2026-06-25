@@ -137,22 +137,25 @@ vec3 get_spotlight(vec3 norm, SpotLight in_light, Material in_material)
 
 void main()
 {
+    vec3 norm = normalize(Normal);
+
+    vec3 result = get_directional_light(norm, directional_light, material);
+    
+    for (int i = 0; i < num_point_lights; i++)
+        result += get_point_light(norm, point_lights[i], material);
+    
+    for (int i = 0; i < num_spot_lights; i++)
+        result += get_spotlight(norm, spot_lights[i], material);
+
+    //FragColor = vec4(result, material.alpha_value);
+
+
     if(useTexture)
     {
-        FragColor = texture(ourTexture, TexCoord);
+        vec4 tex_color = texture(ourTexture, TexCoord);
+        FragColor = vec4(result * tex_color.rgb, tex_color.a);
+        //FragColor = texture(ourTexture, TexCoord);
     }
     else
-    {
-        vec3 norm = normalize(Normal);
-
-        vec3 result = get_directional_light(norm, directional_light, material);
-		
-		for (int i = 0; i < num_point_lights; i++)
-			result += get_point_light(norm, point_lights[i], material);
-		
-		for (int i = 0; i < num_spot_lights; i++)
-			result += get_spotlight(norm, spot_lights[i], material);
-
         FragColor = vec4(result, material.alpha_value);
-    }
 }
