@@ -24,9 +24,7 @@ public:
 
         Mesh3D* body_mesh = new Mesh3D(in_current_path, "bottle.obj");
         //body_mesh->shader_name = "GLASS_SHADER";
-        body_mesh->add_faces(&white);
-        body_mesh->set_material(&material_glass);
-
+        body_mesh->add_faces(&material_glass);
 
         root = new SceneNode(0);
         body = new SceneNode(1, body_mesh);

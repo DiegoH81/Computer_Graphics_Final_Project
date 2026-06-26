@@ -47,14 +47,11 @@ public:
 
 			
     
-        terrain_mesh->add_faces(&green_earth);
-        terrain_mesh->set_material(&material_terrain);
+        terrain_mesh->add_faces(&material_terrain);
 		
-		terrain_bottom_mesh->add_faces(&brown_earth);
-        terrain_bottom_mesh->set_material(&material_dirt);
+		terrain_bottom_mesh->add_faces(&material_dirt);
 
-        water_mesh->add_faces(&blue_water);
-        water_mesh->set_material(&material_water);
+        water_mesh->add_faces(&material_water);
 
         root = new SceneNode(0);
         terrain = new SceneNode(1, terrain_mesh);

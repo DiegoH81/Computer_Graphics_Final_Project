@@ -56,8 +56,7 @@ public:
 		}
       
 	   
-        nenufar_mesh->add_faces(&green);
-        nenufar_mesh->set_material(&material_leaf);
+        nenufar_mesh->add_faces(&material_leaf);
 		
 		root = new SceneNode(0);
         nenufar = new SceneNode(1, nenufar_mesh);
@@ -66,16 +65,14 @@ public:
 		
 		if (flower1_mesh) 
 		{
-            flower1_mesh->add_faces(&pink);
-            flower1_mesh->set_material(&material_flower1);
+            flower1_mesh->add_faces(&material_flower1);
 			flower = new SceneNode(2, flower1_mesh);
 			nenufar->add_children(flower);
 
         }
         if (flower2_mesh) 
 		{
-            flower2_mesh->add_faces(&purple);
-            flower2_mesh->set_material(&material_flower2);        
+            flower2_mesh->add_faces(&material_flower2);
 			flower2 = new SceneNode(3, flower2_mesh);
 			nenufar->add_children(flower2);
         }

@@ -65,18 +65,13 @@ public:
 			material_flower.ambient   = Vector3(0.20f, 0.15f, 0.15f);
 			material_flower.diffuse   = Vector3(0.90f, 0.60f, 0.60f);
 			
-            body_mesh->add_faces(&green);
-            top1_mesh->add_faces(&white);  
-            top2_mesh->add_faces(&red);  
-            top3_mesh->add_faces(&yellow);  
-            top4_mesh->add_faces(&blue);  
-			
-			
-            body_mesh->set_material(&material_leaf);
-			top1_mesh->set_material(&material_flower);
-			top2_mesh->set_material(&material_flower2);
-			top3_mesh->set_material(&material_flower3);
-			top4_mesh->set_material(&material_flower4);
+            body_mesh->add_faces(&material_leaf);
+            top1_mesh->add_faces(&material_flower);  
+            top2_mesh->add_faces(&material_flower2);  
+            top3_mesh->add_faces(&material_flower3);  
+            top4_mesh->add_faces(&material_flower4);  
+	
+
 			
             body = new SceneNode(1, body_mesh);
             head1 = new SceneNode(2, top1_mesh);
@@ -94,33 +89,31 @@ public:
             body_mesh = new Mesh3D(base / "SEPARADO", "hierva_flores1.obj");
             top1_mesh = new Mesh3D(base / "SEPARADO", "hierva_flores2.obj");
 
-            body_mesh->add_faces(&green);
-            body_mesh->set_material(&material_leaf);
+            body_mesh->add_faces(&material_leaf);
 
             switch(color)
             { 
                 case 0: 
                     material_flower.ambient = Vector3(0.20f, 0.20f, 0.20f);
                     material_flower.diffuse = Vector3(0.90f, 0.90f, 0.90f);
-                    top1_mesh->add_faces(&white);
+                    top1_mesh->add_faces(&material_flower);
                     break;
                 case 1: 
                     material_flower.ambient = Vector3(0.20f, 0.02f, 0.02f);
                     material_flower.diffuse = Vector3(0.85f, 0.10f, 0.10f);
-                    top1_mesh->add_faces(&red);
+                    top1_mesh->add_faces(&material_flower);
                     break;
                 case 2: 
                     material_flower.ambient = Vector3(0.20f, 0.18f, 0.02f);
                     material_flower.diffuse = Vector3(0.90f, 0.80f, 0.10f);
-                    top1_mesh->add_faces(&yellow);
+                    top1_mesh->add_faces(&material_flower);
                     break;
                 case 3: 
                     material_flower.ambient = Vector3(0.02f, 0.05f, 0.20f);
                     material_flower.diffuse = Vector3(0.10f, 0.30f, 0.85f);
-                    top1_mesh->add_faces(&blue);
+                    top1_mesh->add_faces(&material_flower);
                     break;
             }
-            top1_mesh->set_material(&material_flower);
 
             body  = new SceneNode(1, body_mesh);
             head1 = new SceneNode(2, top1_mesh);

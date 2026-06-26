@@ -25,8 +25,7 @@ public:
         teapot_mesh = new Mesh3D(in_current_path, "teapot.obj");
 
 
-        teapot_mesh->add_faces();
-        teapot_mesh->set_material(&teapot_material);
+        teapot_mesh->add_faces(&teapot_material);
 		
 
         root = new SceneNode(0);

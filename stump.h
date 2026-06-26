@@ -28,8 +28,7 @@ public:
         else
             body_mesh = new Mesh3D(base / "SEPARADO", "tronco.obj");
 
-        body_mesh->add_faces(&brown);
-        body_mesh->set_material(&material_trunk);
+        body_mesh->add_faces(&material_trunk);
     
 
         root = new SceneNode(0);

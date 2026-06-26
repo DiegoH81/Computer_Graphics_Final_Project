@@ -35,9 +35,8 @@ public:
         if (mode)
         {
             body_mesh1 = new Mesh3D(base / "UNIDO", "algae.obj");
-            body_mesh1->add_faces(&green);
-            body_mesh1->set_material(&material_algae);
-
+            body_mesh1->add_faces(&material_algae);
+            
             alga1 = new SceneNode(1, body_mesh1);
         }
 		else
@@ -54,23 +53,14 @@ public:
 			body_mesh8 = new Mesh3D(base / "SEPARADO", "alga8.obj");
 			
 			
-			body_mesh1->add_faces(&green);
-			body_mesh2->add_faces(&green);
-			body_mesh3->add_faces(&green);
-			body_mesh4->add_faces(&green);
-			body_mesh5->add_faces(&green);
-			body_mesh6->add_faces(&green);
-			body_mesh7->add_faces(&green);
-			body_mesh8->add_faces(&green);
-			
-			body_mesh1->set_material(&material_algae);
-			body_mesh2->set_material(&material_algae);			
-			body_mesh3->set_material(&material_algae);
-			body_mesh4->set_material(&material_algae);	
-			body_mesh5->set_material(&material_algae);
-			body_mesh6->set_material(&material_algae);			
-			body_mesh7->set_material(&material_algae);
-			body_mesh8->set_material(&material_algae);
+			body_mesh1->add_faces(&material_algae);
+			body_mesh2->add_faces(&material_algae);
+			body_mesh3->add_faces(&material_algae);
+			body_mesh4->add_faces(&material_algae);
+			body_mesh5->add_faces(&material_algae);
+			body_mesh6->add_faces(&material_algae);
+			body_mesh7->add_faces(&material_algae);
+			body_mesh8->add_faces(&material_algae);
 
 			alga1 = new SceneNode(1, body_mesh1);
 			alga2 = new SceneNode(2, body_mesh2);

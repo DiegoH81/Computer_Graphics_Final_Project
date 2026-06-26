@@ -57,15 +57,10 @@ public:
 			bush_mesh3 = new Mesh3D(base / "UNIDO", "medium_bush.obj"); 
 			bush_mesh4 = new Mesh3D(base / "UNIDO", "big_bush.obj");   
 			
-			bush_mesh1->add_faces(&green_grass); 
-			bush_mesh2->add_faces(&green_small); 
-			bush_mesh3->add_faces(&green_medium);
-			bush_mesh4->add_faces(&green_big);
-			
-			bush_mesh1->set_material(&material_grass);
-			bush_mesh2->set_material(&material_small);
-			bush_mesh3->set_material(&material_medium);			   
-			bush_mesh4->set_material(&material_big);
+			bush_mesh1->add_faces(&material_grass); 
+			bush_mesh2->add_faces(&material_small); 
+			bush_mesh3->add_faces(&material_medium);
+			bush_mesh4->add_faces(&material_big);
 			
 			bush1 = new SceneNode(1, bush_mesh1);
 			bush2 = new SceneNode(2, bush_mesh2);
@@ -110,8 +105,8 @@ public:
 					break;
 			}
 			
-			bush_mesh1->add_faces(&green_big);  
-			bush_mesh1->set_material(&material_grass);
+			bush_mesh1->add_faces(&material_grass);
+            
 			bush1 = new SceneNode(1, bush_mesh1);
 			root->add_children(bush1);
 		}

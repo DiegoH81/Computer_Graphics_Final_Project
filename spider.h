@@ -22,8 +22,7 @@ class Spider : public CreatureBase<8>
         auto makeL = [&](const char* file) -> Mesh3D*
         {
             Mesh3D* m = new Mesh3D(in_current_path, file);
-            m->add_faces(&gray);
-            m->set_material(&material_skin);
+            m->add_faces(&material_skin);
             return m;
         };
         auto makeR = makeL;

@@ -29,8 +29,7 @@ public:
             body_mesh = new Mesh3D(base / "SEPARADO", "rocas_cueva.obj");
 
 
-        body_mesh->add_faces(&gray);
-        body_mesh->set_material(&material_stone);
+        body_mesh->add_faces(&material_stone);
 
         root = new SceneNode(0);
         body = new SceneNode(1, body_mesh);

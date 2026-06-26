@@ -48,23 +48,15 @@ public:
 		Mesh3D* lil_body_mesh = new Mesh3D(in_current_path, "lil_shrimp.obj");
 		
 		
-        chair_top_mesh->add_faces(&blue);
-        chair_bottom_top_mesh->add_faces(&gray);
-        chair_bottom_bottom_mesh->add_faces(&gray);
-		eyes_mesh->add_faces(&black);
-		body_mesh->add_faces(&orange);
+        chair_top_mesh->add_faces(&chair_material);
+        chair_bottom_top_mesh->add_faces(&metal_material);
+        chair_bottom_bottom_mesh->add_faces(&metal_material);
+		eyes_mesh->add_faces(&eye_material);
+		body_mesh->add_faces(&skin_material);
 		
-		lil_eyes_mesh->add_faces(&black);
-		lil_body_mesh->add_faces(&orange);
+		lil_eyes_mesh->add_faces(&eye_material);
+		lil_body_mesh->add_faces(&skin_material);
 		
-        chair_bottom_top_mesh->set_material(&metal_material);
-        chair_bottom_bottom_mesh->set_material(&metal_material);
-		chair_top_mesh->set_material(&chair_material);
-        eyes_mesh->set_material(&eye_material);    
-        body_mesh->set_material(&skin_material);
-
-		lil_eyes_mesh->set_material(&eye_material);  
-		lil_body_mesh->set_material(&skin_material);
 
         root = new SceneNode(0);
         upper_root = new SceneNode(1);

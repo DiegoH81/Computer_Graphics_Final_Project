@@ -35,11 +35,8 @@ public:
             Mesh3D* body_mesh = new Mesh3D(base / "UNIDO", "tadpoles.obj");
             Mesh3D* eyes_mesh = new Mesh3D(base / "UNIDO", "tadpole_eyes.obj");
 
-            body_mesh->add_faces(&skin);  
-            eyes_mesh->add_faces(&black); 
-
-			body_mesh->set_material(&material);
-			eyes_mesh->set_material(&material_eyes);
+            body_mesh->add_faces(&material);  
+            eyes_mesh->add_faces(&material_eyes); 
 			
             head = new SceneNode(1, body_mesh);
             eyes = new SceneNode(2, eyes_mesh);
@@ -55,17 +52,11 @@ public:
             Mesh3D* tail_2_mesh = new Mesh3D(base / "SEPARADO", "TADPOLE_tail_2.obj");
             Mesh3D* tail_3_mesh = new Mesh3D(base / "SEPARADO", "TADPOLE_tail_3.obj");
 
-		    head_mesh->add_faces(&skin);
-			eyes_mesh->add_faces(&black);
-			tail_1_mesh->add_faces(&skin);
-			tail_2_mesh->add_faces(&skin);
-			tail_3_mesh->add_faces(&skin);
-
-			head_mesh->set_material(&material);
-			eyes_mesh->set_material(&material_eyes);
-			tail_1_mesh->set_material(&material);
-			tail_2_mesh->set_material(&material);
-			tail_3_mesh->set_material(&material);
+		    head_mesh->add_faces(&material);
+			eyes_mesh->add_faces(&material_eyes);
+			tail_1_mesh->add_faces(&material);
+			tail_2_mesh->add_faces(&material);
+			tail_3_mesh->add_faces(&material);
 
             head = new SceneNode(1, head_mesh);
             eyes = new SceneNode(2, eyes_mesh);

@@ -23,20 +23,16 @@ public:
         material.shininess = 14.0f;
 
         Mesh3D* torso_mesh = new Mesh3D(in_current_path, "torso_BUTTERFLY.obj");
-        torso_mesh->add_faces(&black);
-        torso_mesh->set_material(&material);
+        torso_mesh->add_faces(&material);
 
         Mesh3D* antenitas_mesh = new Mesh3D(in_current_path, "antenitas_BUTTERFLY.obj");
-        antenitas_mesh->add_faces(&black);
-        antenitas_mesh->set_material(&material);
+        antenitas_mesh->add_faces(&material);
 
         Mesh3D* ala_izq_mesh = new Mesh3D(in_current_path, "ala_izq_BUTTERFLY.obj");
-        ala_izq_mesh->add_faces(&orange);
-        ala_izq_mesh->set_material(&material);
+        ala_izq_mesh->add_faces(&material);
 
         Mesh3D* ala_der_mesh = new Mesh3D(in_current_path, "ala_der_BUTTERFLY.obj");
-        ala_der_mesh->add_faces(&orange);
-        ala_der_mesh->set_material(&material);
+        ala_der_mesh->add_faces(&material);
 
 
         root = new SceneNode(0);

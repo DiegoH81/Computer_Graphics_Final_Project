@@ -28,8 +28,7 @@ class Gecko : public CreatureBase<4>
         auto make_skin = [&](const char* file) -> Mesh3D*
         {
             Mesh3D* m = new Mesh3D(in_current_path, file);
-            m->add_faces(&green);
-            m->set_material(&skin_material);
+            m->add_faces(&skin_material);
             return m;
         };
 
@@ -48,8 +47,7 @@ class Gecko : public CreatureBase<4>
         Mesh3D* ppi2_mesh = make_skin("pata_D_I_2_GECKO.obj");
 
         Mesh3D* eyes_mesh = new Mesh3D(in_current_path, "ojos_GECKO.obj");
-        eyes_mesh->add_faces(&black);
-        eyes_mesh->set_material(&eye_material);
+        eyes_mesh->add_faces(&eye_material);
 
         m_root = new SceneNode(0);
         m_torso = new SceneNode(1, torso_mesh);

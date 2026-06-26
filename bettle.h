@@ -22,8 +22,7 @@ class Bettle : public CreatureBase<6>
         auto make = [&](const char* file) -> Mesh3D*
         {
             Mesh3D* m = new Mesh3D(in_current_path, file);
-            m->add_faces(&gold);
-            m->set_material(&material_skin);
+            m->add_faces(&material_skin);
             return m;
         };
 

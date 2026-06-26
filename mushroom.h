@@ -54,20 +54,14 @@ public:
 			honguito_body = new Mesh3D(base / "UNIDO", "honguito_tronco.obj");
 			honguito_hat = new Mesh3D(base / "UNIDO", "honguito_copa.obj");
 
-			body_mesh->add_faces(&white);
-			hat_mesh->add_faces(&red);
-			hat2_mesh->add_faces(&orange);
-			hat3_mesh->add_faces(&purple);
-			honguito_body->add_faces(&white);
-			honguito_hat->add_faces(&cream);
+			body_mesh->add_faces(&material_body);
+			hat_mesh->add_faces(&material_hat);
+			hat2_mesh->add_faces(&material_hat);
+			hat3_mesh->add_faces(&material_hat);
+			honguito_body->add_faces(&material_body);
+			honguito_hat->add_faces(&material_honguito);
 
-			body_mesh->set_material(&material_body);
-			hat_mesh->set_material(&material_hat);
-			hat2_mesh->set_material(&material_hat);
-			hat3_mesh->set_material(&material_hat);
-			honguito_body->set_material(&material_body);
-			honguito_hat->set_material(&material_honguito);
-			
+		
 			body = new SceneNode(1, body_mesh);
 			hat = new SceneNode(2, hat_mesh);
 			hat2 = new SceneNode(3, hat2_mesh);
@@ -86,20 +80,16 @@ public:
             if (type) {
                 body_mesh = new Mesh3D(base / "SEPARADO", "hongo1.obj");
                 hat_mesh = new Mesh3D(base / "SEPARADO", "hongo2.obj");
-                hat_mesh->add_faces(&red);
-				hat_mesh->set_material(&material_hat);
+                hat_mesh->add_faces(&material_hat);
             } 
 			
 			else {
                 body_mesh = new Mesh3D(base / "SEPARADO", "honguitos1.obj");
                 hat_mesh = new Mesh3D(base / "SEPARADO", "honguitos2.obj");
-                hat_mesh->add_faces(&cream);
-				hat_mesh->set_material(&material_honguito);
+                hat_mesh->add_faces(&material_honguito);
             }
 
-            body_mesh->add_faces(&white);
-            body_mesh->set_material(&material_body);
-			
+            body_mesh->add_faces(&material_body);
            
 			body = new SceneNode(1, body_mesh);
 			hat = new SceneNode(2, hat_mesh);

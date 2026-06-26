@@ -585,14 +585,30 @@ int main()
     Pyramid3 le_piramid_3(5.0f, 2.0f);
     le_piramid_3.add_faces();
 
+    Color my_green(0.0f, 1.0f, 0.0f, false);
+    Color my_red(1.0f, 0.0f, 0.0f, false);
+
+    Material gren_mtl(my_green);
+    Material red_mtl(my_red);
+
     Cube le_cube(3.0f);
-    le_cube.add_faces();
+    le_cube.add_points(&gren_mtl);
+    le_cube.add_edges(&red_mtl);
+
+    le_cube.add_faces(&gren_mtl);
+    le_cube.set_face_color(0,&red_mtl);
+    le_cube.set_face_color(2,&red_mtl);
+
+
 
     Cone le_cone(30, 7.0f, 3.0f);
     le_cone.add_faces();
 
     Sphere le_esfere(40, 5.0f);
     le_esfere.add_faces();
+    le_esfere.set_face_color(0,&red_mtl);
+    le_esfere.set_face_color(2,&red_mtl);
+    le_esfere.set_face_color(4,&red_mtl);
 
 
     SceneNode* le_piramid_n = new SceneNode(1, &le_piramid);
@@ -602,7 +618,7 @@ int main()
     le_piramid_n_3->traslate(Vector3(15.0f, 10.0f, 0.0f), true);
 
     SceneNode* le_cube_n = new SceneNode(1, &le_cube);
-    le_cube_n->traslate(Vector3(15.0f, 5.0f, 0.0f), true);
+    le_cube_n->traslate(Vector3(15.0f, 5.0f, 5.0f), true);
 
     SceneNode* le_cone_n = new SceneNode(1, &le_cone);
     le_cone_n->traslate(Vector3(20.0f, 5.0f, 0.0f), true);
@@ -648,7 +664,7 @@ int main()
     glass_root->scale(Vector3(2.75f, 2.75f, 2.75f), true);
 
     // Bucle
-	glPointSize(10.0f);
+	glPointSize(30.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);  
 

@@ -36,12 +36,8 @@ public:
         base_mesh_down = new Mesh3D(in_current_path, "cylinder_base_1.obj");
 
 
-        base_mesh->add_faces();
-        base_mesh->set_material(&floor_material);
-
-        base_mesh_down->add_faces();
-        base_mesh_down->set_material(&floor_down_material);
-		
+        base_mesh->add_faces(&floor_material);
+        base_mesh_down->add_faces(&floor_down_material);
 
         root = new SceneNode(0);
         base = new SceneNode(1, base_mesh);

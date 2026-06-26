@@ -35,11 +35,9 @@ public:
         bottom_mesh = new Mesh3D(in_current_path, "table_bottom.obj");
 
 
-        top_mesh->add_faces(&marble);
-        top_mesh->set_material(&material_marble);
+        top_mesh->add_faces(&material_marble);
 
-        bottom_mesh->add_faces(&metal);
-        bottom_mesh->set_material(&material_metal);
+        bottom_mesh->add_faces(&material_metal);
 		
 
         root = new SceneNode(0);
